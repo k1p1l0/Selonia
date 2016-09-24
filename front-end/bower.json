@@ -1,0 +1,20 @@
+{
+  "name": "front-end",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "k1p1l0 <s0ht@mail.ru>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}

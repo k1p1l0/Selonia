@@ -1,0 +1,9 @@
+{
+	"keyId": "AKIAIUMCJGSBQ5ZP6QEQ",
+	"accessId": "s5jNiFsCdYG8NT8T8Z6Jpic+LXvsCUc6A0wiG0ql",
+	"endpointapi": "www.arwenack.com",
+	"email": "mddb.net@txm.net",
+	"templatesFolder": "templates",
+	"templateBuilder": "ejs",
+	"folderLambda": "/tmp"
+}
