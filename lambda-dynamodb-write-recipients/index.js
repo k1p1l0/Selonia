@@ -3,26 +3,17 @@
 const AWS = require('aws-sdk');
 const doClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'});
 
-function init (event, context, callback) {
-	const TableName = 'selonia-recipients';
-	
+const TableName = 'selonia-recipients';
+
+function init (event, context, callback) {	
 	if (typeof event.recipients === 'object') {
 		doClient.scan({TableName}, (err, data) => {
 			if (err) {
 				callback(err, null);
 			} else {
-					let recipients = makeRecipients(event.recipients, data.Count),
-							items = makeItems(recipients);
-
-					sendItems({
-				    RequestItems: {
-				      'selonia-recipients': items
-				    },
-
-				    'ReturnConsumedCapacity': 'TOTAL',
-
-				    'ReturnItemCollectionMetrics': 'SIZE'
-					});
+				if (unpackageItems(event.recipients, data.Count)) {
+					callback(null, 'Alright!');
+				}
 			}		
 		});
 	} else {
@@ -31,43 +22,58 @@ function init (event, context, callback) {
 }
 
 function sendItems(params) {
-  console.log("SENDING:");
-  console.log(params);
-
   doClient.batchWrite(params, function(err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log(data);           // successful response
+	  if (err) {
+	  	console.log(err);
+	  }
+	  else {
+	 		console.log(data);
+	  }
 	});
 }
 
 function makeRecipients (arrayRecipients, startPosition) {
-	let recipientArray = [];
-
-	arrayRecipients.forEach((recipient, i) => {
-		let Item = {
+	return arrayRecipients.map((recipient, i) => {
+		return {
 			id: startPosition + i + 1,
 			email: recipient.email,
 			name: recipient.name
 		};
-
-		recipientArray.push(Item);
 	});
-
-	return recipientArray;
 }
 
 function makeItems (recipients) {
-	let items = [];
-
-	recipients.forEach((recipient) => {
-	    items.push({
-	        PutRequest: { 
-	        	Item: recipient 
-	        }
-	    })
+	return recipients.map((recipient) => {
+		return {
+			PutRequest: {
+				Item: recipient
+			}
+		};
 	});
+}
 
-	return items;
+function prepareRequest (items) {
+	return {
+    'RequestItems': {
+      [TableName]: items
+    },
+
+    'ReturnConsumedCapacity': 'TOTAL',
+
+    'ReturnItemCollectionMetrics': 'SIZE'
+	}
+}
+
+function unpackageItems (packageRecipients, startPosition) {
+	let recipients, items, params
+
+	recipients = makeRecipients(packageRecipients, startPosition);
+	items = makeItems(recipients);
+	params = prepareRequest(items);
+
+	sendItems(params);
+
+	return true;
 }
 
 exports.handler = init;

@@ -1,12 +1,14 @@
-const API_URL = 'https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod/recipients';
+'use strict';
 
-$(() => {
+var API_URL = 'https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod/recipients';
+
+$(function() {
 	$.ajax({
 		type: 'GET',
 		url: API_URL,
 
 		success: function(data) {
-			data.Items.forEach((item, i) => {
+			data.Items.forEach(function(item, i) {
 				$('.loader').hide();
 				$('#main-table').show();
 				$('#main-table tbody tr:last').after
@@ -33,7 +35,7 @@ $(() => {
 	})
 });
 
-$('#addOne').on('click', () => {
+$('#addOne').on('click', function() {
 	$.ajax({
 		type: 'POST',
 		url: API_URL,
