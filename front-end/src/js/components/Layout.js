@@ -2,6 +2,7 @@ import React from "react";
 
 import Panel from './Panel';
 import TemplatesChooser from './TemplatesChooser';
+import Chooser from './Chooser';
 
 class Container extends React.Component {
 	render() {
@@ -100,9 +101,40 @@ export default class Layout extends React.Component {
 		super(props);
 
 		this.state = {
-			recipients: []
+			recipients: [],
+			campgains: [],
+			campgainSelected: localStorage.getItem('selectCampgain')
 		};
 	}
+
+	loadCompgain() {
+    $.ajax({
+      type: 'GET',
+			url: "https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod/campgains",
+
+			success: function(data) {
+				this.setState({campgains: data.Items});
+			}.bind(this)
+    });
+  }
+
+  createCampgain({name}) {
+    $.ajax({
+      type: 'POST',
+			url: "https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod/campgains",
+			data: JSON.stringify({
+				"campgain": {
+					name
+				}
+			}),
+			contentType: "application/json",
+
+			success: function(data) {
+				console.log(data);
+				// this.setState({campgains: data.Items});
+			}.bind(this)
+    });
+  }
 
 	loadRecipientFromServer() {
     $.ajax({
@@ -119,9 +151,7 @@ export default class Layout extends React.Component {
     });
   }
 
-  createRecipientFromClient({name, email, id}) {
-  	this.setRecipients({name, email, id}); //lazy-load
-
+  createRecipientFromClient({name, email}) {
   	 $.ajax({
      	type: 'POST',
 			url: this.props.source,
@@ -141,8 +171,8 @@ export default class Layout extends React.Component {
   }
 
 	componentDidMount() {
-    this.loadRecipientFromServer();
-    // setInterval(this.loadRecipientFromServer.bind(this), 10000);
+    // this.loadRecipientFromServer();
+    setInterval(this.loadRecipientFromServer.bind(this), 1000);
   }
 
 	getRecipients() {
@@ -150,21 +180,25 @@ export default class Layout extends React.Component {
 	}
 
 	setRecipients(newOne) {
-		this.setState({recipients: this.getRecipients().concat(newOne)});
+		this.setState({recipients: this.state.recipients.concat(newOne)});
 	}
 
   render() {
     return (
     	<Container>
-    		<Navbar />
+    		<Navbar load={this.loadCompgain.bind(this)} get={this.state.campgains} />
     		<List get={this.getRecipients.bind(this)} set={this.setRecipients.bind(this)} createNew={this.createRecipientFromClient.bind(this)} />
-    		<Panel />
+    		<Panel createCampgain={this.createCampgain.bind(this)} />
     	</Container>
-    )
+    )	
   }
 }
 
 class Navbar extends React.Component {
+	componentDidMount() {
+    this.props.load();
+  }
+
 	render() {
 		return (
 			<nav class="navbar navbar-default">
@@ -175,7 +209,7 @@ class Navbar extends React.Component {
 	        	</div>
 	        	<div class="col-lg-2">
 	        		<p style={{marginTop: '10px'}}>	
-	        			<TemplatesChooser />
+	        			<Chooser values={this.props.get} name="campgains" text="campgain"/>
 							</p>
 	        	</div>
 	        </div>

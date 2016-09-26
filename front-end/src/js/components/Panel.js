@@ -3,6 +3,14 @@ import React from 'react';
 import TemplatesChooser from './TemplatesChooser';
 
 export default class Panel extends React.Component {
+	createCampgain() {
+		let data = {
+			name: $('#inputCampgain').val()
+		};
+
+		this.props.createCampgain(data);
+	}
+
 	render() {
 		return (
 			<div class="col-lg-4">
@@ -13,13 +21,12 @@ export default class Panel extends React.Component {
 	  					<div class="row">
 
 							    <div class="col-lg-8">
-							      <input type="email" class="form-control" id="inputEmail3" placeholder="Input campgain.."/>
+							      <input type="email" class="form-control" id="inputCampgain" placeholder="Input campgain.."/>
 							    </div>
 
 							    <div class="col-lg-4">
-							      <button type="submit" class="btn btn-primary btn-block">Create</button>
+							      <button type="submit" onClick={this.createCampgain.bind(this)} class="btn btn-primary btn-block">Create</button>
 							    </div>
-
 	  					</div>
 	  				</div>
 					</div>
