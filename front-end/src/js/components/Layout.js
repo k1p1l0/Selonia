@@ -35,66 +35,60 @@ class RecipientTable extends React.Component {
 }
 
 class List extends React.Component {
-	constructor() {
-		super();
-
-		this.state = {
-			localRecipients: []
-		};
-	}
-
 	onClick() {
 		let data = {
 			name: $('#nameInput').val(),
-			email: $('#emailInput').val()
+			email: $('#emailInput').val(),
+			id: this.props.get().length + 1
 		}
 
-		this.props.recipients().push(data);
-		this.forceUpdate();
 		this.props.createNew(data);
 	}
 
 	render() {
 		function sortById (a, b) {
-			return a.id > b.id;
+			return a.id - b.id;
 		}
 
-		this.state.localRecipients = this.props.recipients().sort(sortById);
-
-		let recipients = this.state.localRecipients.map((recipient) => {
-			return <RecipientTable data={recipient} key={recipient.id} />;
-    });
+ 		var recipients = this.props.get().sort(sortById).map(function(recipient) {
+      return (
+				<RecipientTable data={recipient} key={recipient.id} />
+      );
+    }.bind(this));
 
 		return (
 			<div class="col-lg-8">
-				<div class="loader"></div>
-				<table class="table table-hover animate-bottom" id="main-table">
-					<thead>
-						<tr>
-							<th>#</th>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Template</th>
-							<th>Actions</th>
+				<div class="panel panel-default">
+				  <div class="panel-heading">CSV List</div>
+					<div class="loader"></div>
+					<table class="table animate-bottom" id="main-table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Template</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{recipients}
+						</tbody>
+						<tfoot>
+						<tr class="success">
+							<td colSpan="2">
+								<input type="text" class="form-control" id="nameInput" placeholder="Name input"/>
+							</td>
+							<td>
+								<input type="text" class="form-control" id="emailInput" placeholder="Email input"/>
+							</td>
+							<td colSpan="2">
+								<button type="button" class="btn btn-success" onClick={this.onClick.bind(this)} style={{width: '100%'}}>Add</button>
+							</td>
 						</tr>
-					</thead>
-					<tbody>
-						{recipients}
-					</tbody>
-					<tfoot>
-					<tr class="success">
-						<td colSpan="2">
-							<input type="text" class="form-control" id="nameInput" placeholder="Name input"/>
-						</td>
-						<td>
-							<input type="text" class="form-control" id="emailInput" placeholder="Email input"/>
-						</td>
-						<td colSpan="2">
-							<button type="button" class="btn btn-success" onClick={this.onClick.bind(this)} style={{width: '100%'}}>Add</button>
-						</td>
-					</tr>
-					</tfoot>
-				</table>
+						</tfoot>
+					</table>
+				</div>
 			</div>
 		)
 	}
@@ -125,7 +119,9 @@ export default class Layout extends React.Component {
     });
   }
 
-  createRecipientFromClient({name, email}) {
+  createRecipientFromClient({name, email, id}) {
+  	this.setRecipients({name, email, id}); //lazy-load
+
   	 $.ajax({
      	type: 'POST',
 			url: this.props.source,
@@ -153,11 +149,15 @@ export default class Layout extends React.Component {
 		return this.state.recipients;
 	}
 
+	setRecipients(newOne) {
+		this.setState({recipients: this.getRecipients().concat(newOne)});
+	}
+
   render() {
     return (
     	<Container>
     		<Navbar />
-    		<List recipients={this.getRecipients.bind(this)} createNew={this.createRecipientFromClient.bind(this)} />
+    		<List get={this.getRecipients.bind(this)} set={this.setRecipients.bind(this)} createNew={this.createRecipientFromClient.bind(this)} />
     		<Panel />
     	</Container>
     )
@@ -171,15 +171,11 @@ class Navbar extends React.Component {
 			  <div class="container">
 			    <div class="row">
 	      		<div class="col-lg-10">
-	        		<p><a class="navbar-brand" href="#">Compaign name</a></p>
+	        		<p><a class="navbar-brand" href="#">Campaign name</a></p>
 	        	</div>
 	        	<div class="col-lg-2">
 	        		<p style={{marginTop: '10px'}}>	
-        				<select name="templates" class="form-control" defaultValue="def">
-							    <option disabled value="def">Choose template</option>
-							    <option value="origin">Origin</option>
-							    <option value="new">New</option>
-								</select>
+	        			<TemplatesChooser />
 							</p>
 	        	</div>
 	        </div>

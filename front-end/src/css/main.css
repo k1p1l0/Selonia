@@ -48,3 +48,11 @@
 .btn {
   margin-left: 5px;
 }
+
+.col-lg-8 {
+  padding-right: 0;
+}
+
+.btn-block {
+  width: 90px;
+}

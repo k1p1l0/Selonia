@@ -13,12 +13,13 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "react": "^0.14.6",
+    "react-addons-css-transition-group": "^15.3.2",
     "react-dom": "^0.14.6",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.16.1"
   },
   "devDependencies": {
-  	"bower": "latest"
+    "bower": "latest"
   },
   "scripts": {
     "dev": "./node_modules/.bin/webpack-dev-server --content-base src --inline --hot",
