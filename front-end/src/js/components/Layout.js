@@ -30,11 +30,11 @@ export default class LayoutContainer extends React.Component {
     $.ajax({
       type: 'POST',
 			url: this.props.source,
-			data: JSON.stringify({
+			data: {
 				"campgain": {
 					name
 				}
-			}),
+			},
 			contentType: "application/json",
 
 			success: function(data) {
@@ -48,9 +48,7 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	setSelectedId(id) {
-		this.setState({selectedCampgainId: id}, () => {
-			console.log('Only now :(');
-		});
+		this.setState({selectedCampgainId: id});
 	}
 
 	render() {
@@ -58,7 +56,7 @@ export default class LayoutContainer extends React.Component {
 									 createCampgain={this.createCampgain.bind(this)} 
 									 source={this.props.source} 
 									 selectedCampgainId={this.state.selectedCampgainId} 
-									 setSelectedId={this.setSelectedId.bind(this)} 
+									 setSelectedId={this.setSelectedId.bind(this)}
 					  />
 	}
 }

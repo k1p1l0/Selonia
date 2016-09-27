@@ -2,6 +2,7 @@ import React from 'react';
 
 export default class CampgainsChooser extends React.Component {
 	changeCampgain (e) {
+		console.log(1);
 		localStorage.setItem('selectCampgain', e.target.value);
 
 		this.props.setSelectedId(e.target.value);

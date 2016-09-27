@@ -11,18 +11,29 @@ export default class ListContainer extends React.Component {
 		};
 	}
 
-	loadRecipients(id) {
+	loadRecipients(newId) {
+		var URL = (newId > 0) ? `${this.props.source}/${newId}`: `${this.props.source}/${this.props.selectedCampgainId}`
+
     $.ajax({
       type: 'GET', 
-			url: `${this.props.source}/${this.props.selectedCampgainId}`,
+			url: URL,
 
 			success: function(data) {
-				this.setState({recipients: data.Items});
-
+				if (data.Items.length === 0) {
+					this.setState({recipients: []})
+				} else {
+					this.setState({recipients: data.Items});
+				}
+				
 				$('.loader').hide();
 				$('#main-table').show();
 
-			}.bind(this)
+			}.bind(this),
+
+			error: function (xhr, ajaxOptions, thrownError) {
+        console.log(xhr.status);
+        console.log(thrownError);
+      }
     });
   }
 
@@ -48,32 +59,34 @@ export default class ListContainer extends React.Component {
     });
   }
 
-	componentDidMount() {
-    this.loadRecipients(this.props.selectedCampgainId);
-    setInterval(this.loadRecipients.bind(this), 1000);
+  componentWillMount() {
+  	this.loadRecipients();
   }
 
-	getRecipients() {
-		return this.state.recipients;
-	}
+	shouldComponentUpdate(nextProps, nextState) {
+		if(this.props.selectedCampgainId !== nextProps.selectedCampgainId) {
+			this.loadRecipients(nextProps.selectedCampgainId);
+    	return true;
+		} else if (nextState.recipients.length > 0) {
+			return true;
+		}
+
+		return false;
+  }
 
 	setRecipients(newOne) {
 		this.setState({recipients: this.state.recipients.concat(newOne)});
 	}
 
-	reloadRecipients() {
-		this.loadRecipients(this.props.selectedCampgainId);
-	}
-
 	render() {
-		return <List get={this.getRecipients.bind(this)} set={this.setRecipients.bind(this)} createNew={this.createRecipientFromClient.bind(this)} />
+		return <List get={this.state.recipients} set={this.setRecipients.bind(this)} createNew={this.createRecipientFromClient.bind(this)} />
 	}
 }
 
 class List extends React.Component {
 	onClick() {
 		let data = {
-			id: this.props.get().length + 1,
+			id: this.props.get.length + 1,
 			name: $('#nameInput').val(),
 			email: $('#emailInput').val(),
 			templateId: 1
@@ -87,7 +100,7 @@ class List extends React.Component {
 			return a.id - b.id;
 		}
 
- 		var recipients = this.props.get().sort(sortById).map(function(recipient) {
+ 		var recipients = this.props.get.sort(sortById).map(function(recipient) {
       return (
 				<RecipientTable data={recipient} key={recipient.id} />
       );
