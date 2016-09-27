@@ -1,8 +1,10 @@
 import React from 'react';
 
-export default class Chooser extends React.Component {
+export default class CampgainsChooser extends React.Component {
 	changeCampgain (e) {
 		localStorage.setItem('selectCampgain', e.target.value);
+
+		this.props.setSelectedId(e.target.value);
 	}
 
 	getCampgainSelected () {
