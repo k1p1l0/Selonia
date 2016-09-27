@@ -45,7 +45,7 @@ export default class LayoutContainer extends React.Component {
 				this.setState({
 					campgains: this.state.campgains.concat(data),
 					alert: true,
-					message: 'Successfully added new campgain - ' + data.name
+					message: 'Successfully added new campaign - ' + data.name
 				});
 			}.bind(this)
     });

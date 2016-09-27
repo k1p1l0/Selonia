@@ -14,7 +14,7 @@
     height: 60px;
     animation: spin 2s linear infinite;
     position: relative;
-    margin: 0 auto;
+    margin: 20px auto;
 }
 
 @keyframes spin {
@@ -72,5 +72,9 @@
   0% {top: -100px}
   50% {top: 0}
   100% {top: -100px}
+}
+
+#fileTemplate {
+  display: none;
 }
 

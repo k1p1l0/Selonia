@@ -19,17 +19,18 @@ export default class ListContainer extends React.Component {
 			url: URL,
 
 			success: function(data) {
-				if (data.Items.length === 0) {
-					this.setState({recipients: []}, function() {
-						this.forceUpdate();
-					}.bind(this));
-				} else {
-					this.setState({recipients: data.Items});
+				if (data.Items) {
+					if (data.Items.length === 0) {
+						this.setState({recipients: []}, function() {
+							this.forceUpdate();
+						}.bind(this));
+					} else {
+						this.setState({recipients: data.Items});
+					}
+					
+					$('.loader').hide();
+					$('#main-table').show();
 				}
-				
-				$('.loader').hide();
-				$('#main-table').show();
-
 			}.bind(this),
 
 			error: function (xhr, ajaxOptions, thrownError) {
@@ -99,7 +100,7 @@ class List extends React.Component {
 	}
 
 	render() {
-		let campgainName = localStorage.getItem('selectCampgainName');
+		let campgainName = localStorage.getItem('selectCampgainName') || 'Please choose or create campaign.';
 
 		function sortById (a, b) {
 			return a.id - b.id;
@@ -114,8 +115,28 @@ class List extends React.Component {
 		return (
 			<div class="col-lg-8">
 				<div class="panel panel-default">
-				  <div class="panel-heading">{campgainName}</div>
-					<div class="loader"></div>
+				  <div class="panel-heading">
+				  	<div class="row">
+				  		<div class="col-lg-2">
+						  	<div class="btn-group">
+									  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled={~campgainName.indexOf('Please')}>
+									    {campgainName} <span class="caret"></span>
+									  </button>
+									  <ul class="dropdown-menu">
+									    <li><a href="#">Delete list</a></li>
+									    <li><a href="#">Delete campgain</a></li>
+									    <li role="separator" class="divider"></li>
+									    <li><a href="#">Send to all</a></li>
+									  </ul>
+								</div>
+							</div>
+				  	</div>
+				  </div>
+
+					<div class="loader">
+					</div>
+
+
 					<table class="table animate-bottom" id="main-table">
 						<thead>
 							<tr>

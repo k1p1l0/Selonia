@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class CampgainsChooser extends React.Component {
+export default class CampaignsChooser extends React.Component {
 	changeCampgain (e) {
 		let target = e.target.options;
 
@@ -15,7 +15,6 @@ export default class CampgainsChooser extends React.Component {
 	}
 
 	render() {
-
 		var options = this.props.values.map(function(value) {
       return (
 				<option value={value.id} key={value.id}>{value.name}</option>
@@ -30,3 +29,4 @@ export default class CampgainsChooser extends React.Component {
 		)
 	}
 }
+
