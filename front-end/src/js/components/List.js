@@ -99,6 +99,8 @@ class List extends React.Component {
 	}
 
 	render() {
+		let campgainName = localStorage.getItem('selectCampgainName');
+
 		function sortById (a, b) {
 			return a.id - b.id;
 		}
@@ -112,7 +114,7 @@ class List extends React.Component {
 		return (
 			<div class="col-lg-8">
 				<div class="panel panel-default">
-				  <div class="panel-heading">CSV List</div>
+				  <div class="panel-heading">{campgainName}</div>
 					<div class="loader"></div>
 					<table class="table animate-bottom" id="main-table">
 						<thead>

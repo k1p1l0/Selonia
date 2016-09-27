@@ -8,6 +8,8 @@ export default class Panel extends React.Component {
 			name: $('#inputCampgain').val()
 		};
 
+		$('#inputCampgain').val('');
+
 		this.props.createCampgain(data);
 	}
 

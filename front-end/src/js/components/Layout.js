@@ -11,7 +11,8 @@ export default class LayoutContainer extends React.Component {
 
 		this.state = {
 			campgains: [],
-			selectedCampgainId: localStorage.getItem('selectCampgain'),
+			selectedCampgainId: localStorage.getItem('selectCampgainId'),
+			selectedCampgainName: localStorage.getItem('selectedCampgainName'),
 			message: '',
 			alert: false
 		};

@@ -2,16 +2,20 @@ import React from 'react';
 
 export default class CampgainsChooser extends React.Component {
 	changeCampgain (e) {
-		localStorage.setItem('selectCampgain', e.target.value);
+		let target = e.target.options;
+
+		localStorage.setItem('selectCampgainName', target[target.selectedIndex].text);
+		localStorage.setItem('selectCampgainId', e.target.value);
 
 		this.props.setSelectedId(e.target.value);
 	}
 
 	getCampgainSelected () {
-		return localStorage.getItem('selectCampgain');
+		return localStorage.getItem('selectCampgainId');
 	}
 
 	render() {
+
 		var options = this.props.values.map(function(value) {
       return (
 				<option value={value.id} key={value.id}>{value.name}</option>
