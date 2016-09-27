@@ -20,7 +20,9 @@ export default class ListContainer extends React.Component {
 
 			success: function(data) {
 				if (data.Items.length === 0) {
-					this.setState({recipients: []})
+					this.setState({recipients: []}, function() {
+						this.forceUpdate();
+					}.bind(this));
 				} else {
 					this.setState({recipients: data.Items});
 				}
@@ -52,8 +54,8 @@ export default class ListContainer extends React.Component {
 
 			contentType: "application/json",
 
-			success: function(data) {
-				console.log(data);
+			success: function() {
+				this.props.setAlert('Successfully added new recipient');
 				this.loadRecipients();
 			}.bind(this)
     });
@@ -92,6 +94,7 @@ class List extends React.Component {
 			templateId: 1
 		}
 
+		this.props.set(data);
 		this.props.createNew(data);
 	}
 
@@ -100,7 +103,7 @@ class List extends React.Component {
 			return a.id - b.id;
 		}
 
- 		var recipients = this.props.get.sort(sortById).map(function(recipient) {
+ 		let recipients = this.props.get.sort(sortById).map(function(recipient) {
       return (
 				<RecipientTable data={recipient} key={recipient.id} />
       );

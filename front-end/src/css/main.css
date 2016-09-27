@@ -56,3 +56,21 @@
 .btn-block {
   width: 90px;
 }
+
+.aler-box {
+  animation-name: example;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+@keyframes example {
+  0% {top: -100px}
+  50% {top: 0}
+  100% {top: -100px}
+}
+
