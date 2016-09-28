@@ -1,6 +1,6 @@
 import React from "react";
 
-import Alert from './Alert';
+import Alert from '../components/Alert';
 import Navbar from './Navbar';
 import Panel from './Panel';
 import ListContainer from './List';
@@ -92,7 +92,7 @@ class Layout extends React.Component {
 	    		<Navbar get={this.props.campgains} setSelectedId={this.props.setSelectedId} />
 	    		<Alert show={this.props.showAlert}>{this.props.message}</Alert>
 	    		<ListContainer source={this.props.source} selectedCampgainId={this.props.selectedCampgainId} setAlert={this.props.setAlert} />
-	    		<Panel createCampgain={this.props.createCampgain} />
+	    		<Panel createCampgain={this.props.createCampgain} setAlert={this.props.setAlert} />
 				</div>
 			</div>	
     )	

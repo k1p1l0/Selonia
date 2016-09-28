@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CampaignsChooser from './CampaignsChooser';
+import CampaignsChooser from '../components/CampaignsChooser';
 
 export default class Navbar extends React.Component {
 	render() {

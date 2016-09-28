@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TemplatesChooser from './TemplatesChooser';
+import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 export default class Panel extends React.Component {
 	createCampgain() {
@@ -38,7 +38,7 @@ export default class Panel extends React.Component {
 	  				<div class="panel-body">
 	  					<div class="row">
 	  						<div class="col-lg-8">
-	  							<TemplatesChooser />
+	  							<TemplatesChooserContainer />
 	  						</div>
 	  						<div class="col-lg-4">
 	  							<button type="button" class="btn btn-primary btn-block" disabled>Send to all</button>
@@ -48,7 +48,7 @@ export default class Panel extends React.Component {
 					</div>
 
 					<UploadRecipients />
-					<UploadTemplateContainer />
+					<UploadTemplateContainer setAlert={this.props.setAlert}/>
 			</div>
 		)
 	}
@@ -82,11 +82,13 @@ class UploadTemplateContainer extends React.Component {
 		AWS.config.update({
 		  accessKeyId: 'AKIAJ5QNK3SH4E2TFHQQ',
 		  secretAccessKey: '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',
-		  region: 'eu-west-1'
+		  region: 'us-east-1'
 		});
 
 		let S3 = new AWS.S3();
-		let fileChooser = document.getElementById('fileTemplate');
+		let fileChooser = document.getElementById('fileTemplate'),
+				templateName = document.getElementById('templateName');
+
 		let file = fileChooser.files[0];
 
 		if (!file) {
@@ -105,24 +107,23 @@ class UploadTemplateContainer extends React.Component {
 		}
 
 	  let params = {
-	  	Bucket: 'www.arwenack.com',
-	    Key: 'selonia/templates' + '/' + templateName + '/' + file.name,
+	  	Bucket: 'selonia.static',
+	    Key: 'templates' + '/' + templateName.value + '/' + file.name,
 	    ContentType: file.type,
 	    Body: file,
 	    ACL: 'public-read'
 	  };
 
-	  console.log(params);
-
-		 // Upload the file
-	  S3.upload(params, function(err, data) {
+	  S3.upload(params, function(err) {
 	    if (err) {
-	      console.log(err);
-	      console.log(data);
+	      this.props.setAlert(err, 1);
 	    } else {
-	      alert("Template uploaded successfully!");
+	    	$('#buttonFile').removeClass('btn-success');
+	    	templateName.value = "";
+
+	      this.props.setAlert('Template uploaded successfully!');
 	    }
-	  });
+	  }.bind(this));
 	}
 
 	render() {

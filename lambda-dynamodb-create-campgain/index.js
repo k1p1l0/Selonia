@@ -3,13 +3,13 @@
 const AWS = require('aws-sdk');
 const doClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'});
 
-const TableName = 'selonia-campaigns';
+const TableName = 'selonia-templates';
 
 function init (event, context, callback) {	
 	let params = {
 		Item: {
 			id: Date.now(),
-			name: event.name
+			name: decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(1, 1))
 		},
 
 		TableName

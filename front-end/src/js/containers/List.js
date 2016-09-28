@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TemplatesChooser from './TemplatesChooser';
+import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 export default class ListContainer extends React.Component {
 	constructor(props) {
@@ -136,7 +136,6 @@ class List extends React.Component {
 					<div class="loader">
 					</div>
 
-
 					<table class="table animate-bottom" id="main-table">
 						<thead>
 							<tr>
@@ -159,7 +158,7 @@ class List extends React.Component {
 								<input type="text" class="form-control" id="emailInput" placeholder="Email input"/>
 							</td>
 							<td>
-								<TemplatesChooser />
+								<TemplatesChooserContainer />
 							</td>
 							<td>
 								<button type="button" class="btn btn-success" onClick={this.onClick.bind(this)} style={{width: '95%'}}>Add</button>
@@ -181,7 +180,7 @@ class RecipientTable extends React.Component {
 				<td>{this.props.data.name}</td>
 				<td>{this.props.data.email}</td>
 				<td>
-					<TemplatesChooser />
+					<TemplatesChooserContainer />
 				</td>
 				<td>
 					<button type="button" class="btn btn-success" disabled>Send</button>
