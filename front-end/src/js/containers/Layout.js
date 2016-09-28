@@ -11,6 +11,7 @@ export default class LayoutContainer extends React.Component {
 
 		this.state = {
 			campgains: [],
+			templates: [],
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectedCampgainName'),
 			message: '',
@@ -21,7 +22,7 @@ export default class LayoutContainer extends React.Component {
 	loadCompgain() {
     $.ajax({
       type: 'GET',
-			url: this.props.source,
+			url: `${this.props.source}/campgains`,
 
 			success: function(data) {
 				this.setState({
@@ -31,11 +32,23 @@ export default class LayoutContainer extends React.Component {
     });
   }
 
+  loadTemplates() {
+    $.ajax({
+      type: 'GET',
+			url: `${this.props.source}/templates`,
+
+			success: function(data) {
+				this.setState({
+					templates: data.Items
+				});
+			}.bind(this)
+    });
+  }
+
   createCampgain({name}) {
-  	console.log(name)
     $.ajax({
       type: 'POST',
-			url: this.props.source,
+			url: `${this.props.source}/campgains`,
 			data: JSON.stringify({
 				name
 			}),
@@ -52,10 +65,13 @@ export default class LayoutContainer extends React.Component {
   }
 
 	componentWillMount() {
-		this.loadCompgain();
+		setInterval(function() {
+			this.loadCompgain();
+			this.loadTemplates();
+		}.bind(this), 1000)
 	}
 
-	setSelectedId(id) {
+	setSelectedCampgainId(id) {
 		this.setState({selectedCampgainId: id});
 	}
 
@@ -72,13 +88,15 @@ export default class LayoutContainer extends React.Component {
 		return (
 			<Layout 
 				campgains={this.state.campgains} 
-				createCampgain={this.createCampgain.bind(this)} 
-				source={this.props.source} 
-				selectedCampgainId={this.state.selectedCampgainId} 
-				setSelectedId={this.setSelectedId.bind(this)}
-				setAlert={this.setAlert.bind(this)}
+				templates={this.state.templates}
 				message={this.state.message}
-				showAlert={this.state.alert}>
+				showAlert={this.state.alert}
+				selectedCampgainId={this.state.selectedCampgainId} 
+				source={this.props.source} 
+				createCampgain={this.createCampgain.bind(this)} 
+				setSelectedId={this.setSelectedCampgainId.bind(this)}
+				setAlert={this.setAlert.bind(this)}
+				getTemplates={this.loadTemplates.bind(this)}>
 			</Layout>
 		)
 	}
@@ -91,8 +109,8 @@ class Layout extends React.Component {
 				<div class="row">
 	    		<Navbar get={this.props.campgains} setSelectedId={this.props.setSelectedId} />
 	    		<Alert show={this.props.showAlert}>{this.props.message}</Alert>
-	    		<ListContainer source={this.props.source} selectedCampgainId={this.props.selectedCampgainId} setAlert={this.props.setAlert} />
-	    		<Panel createCampgain={this.props.createCampgain} setAlert={this.props.setAlert} />
+	    		<ListContainer source={this.props.source} selectedCampgainId={this.props.selectedCampgainId} setAlert={this.props.setAlert} templates={this.props.templates}/>
+	    		<Panel createCampgain={this.props.createCampgain} setAlert={this.props.setAlert} templates={this.props.templates} getTemplates={this.props.getTemplates}/>
 				</div>
 			</div>	
     )	

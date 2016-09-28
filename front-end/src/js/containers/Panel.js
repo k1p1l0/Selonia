@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
+import TemplatesChooser from '../components/TemplatesChooser';
 
 export default class Panel extends React.Component {
 	createCampgain() {
@@ -38,7 +38,7 @@ export default class Panel extends React.Component {
 	  				<div class="panel-body">
 	  					<div class="row">
 	  						<div class="col-lg-8">
-	  							<TemplatesChooserContainer />
+								<TemplatesChooser options={this.props.templates} />
 	  						</div>
 	  						<div class="col-lg-4">
 	  							<button type="button" class="btn btn-primary btn-block" disabled>Send to all</button>
@@ -48,7 +48,7 @@ export default class Panel extends React.Component {
 					</div>
 
 					<UploadRecipients />
-					<UploadTemplateContainer setAlert={this.props.setAlert}/>
+					<UploadTemplateContainer setAlert={this.props.setAlert} getTemplates={this.props.getTemplates} />
 			</div>
 		)
 	}
@@ -139,8 +139,7 @@ class UploadTemplate extends React.Component {
 	onChange() {
 		$('#buttonFile').addClass('btn-success');
 	}
-
-
+	
 	render() {
 		return (
 			<div class="panel panel-default">
