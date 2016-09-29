@@ -1,31 +1,27 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const docClient = new AWS.DynamoDB.DocumentClient();
+const doClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'});
 
-AWS.config.region = 'eu-west-1';
+const TableName = 'selonia-templates';
 
-function init (event, context, callback) {		
-		// let S3 = new AWS.S3();
+function init (event, context, callback) {	
+	let params = {
+		Item: {
+			id: Date.now(),
+			name: decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(1, 1))
+		},
 
-	 //  let params = {
-	 //  	Bucket: 'www.arwenack.com',
-	 //    Key: 'selonia/templates' + '/' + templateName + '/' + file.name,
-	 //    ContentType: file.type,
-	 //    Body: file,
-	 //    ACL: 'public-read'
-	 //  };
+		TableName
+	};
 
-	 //  console.log(params);
+	doClient.put(params, (err, data) => {
+		if (err) {
+			callback(err, null);
+		} else {
+			callback(null, data);
+		}
+	});
+}
 
-		//  // Upload the file
-	 //  S3.upload(params, function(err, data) {
-	 //    if (err) {
-	 //      callback(err, null);
-	 //    } else {
-	 //      callback(null, data);
-	 //    }
-	 //  });
-	}
-
-	exports.handler = init;
+exports.handler = init;

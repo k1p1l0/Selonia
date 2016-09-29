@@ -33,8 +33,8 @@ export default class Panel extends React.Component {
 	  					</div>
 	  				</div>
 					</div>
-					<UploadRecipientsContainer source={this.props.source} />
-					<UploadTemplatesContainer setAlert={this.props.setAlert} getTemplates={this.props.getTemplates} />
+					<UploadRecipientsContainer  setAlert={this.props.setAlert} source={this.props.source} />
+					<UploadTemplatesContainer setAlert={this.props.setAlert} />
 			</div>
 		)
 	}

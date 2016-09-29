@@ -12,7 +12,7 @@ export default class LayoutContainer extends React.Component {
 		this.state = {
 			campgains: [],
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
-			selectedCampgainName: localStorage.getItem('selectedCampgainName'),
+			selectedCampgainName: localStorage.getItem('selectCampgainName'),
 		};
 
 		this.alertOptions = {

@@ -36,7 +36,7 @@ export default class UploadTemplateContainer extends React.Component {
 	    ACL: 'public-read'
 	  };
 
-	  S3.upload(params, function(err,data) {
+	  S3.upload(params, function(err, data) {
 	    if (!err) {
 	    	(function(This) {
 	    		let $fileChooser = $('#fileTemplate'),
