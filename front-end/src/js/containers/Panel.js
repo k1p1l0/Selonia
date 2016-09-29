@@ -32,21 +32,6 @@ export default class Panel extends React.Component {
 	  					</div>
 	  				</div>
 					</div>
-
-				<div class="panel panel-default">
-	  			<div class="panel-heading">Send to</div>
-	  				<div class="panel-body">
-	  					<div class="row">
-	  						<div class="col-lg-8">
-								<TemplatesChooser options={this.props.templates} />
-	  						</div>
-	  						<div class="col-lg-4">
-	  							<button type="button" class="btn btn-primary btn-block" disabled>Send to all</button>
-	  						</div>
-	  					</div>
-	  				</div>
-					</div>
-
 					<UploadRecipients />
 					<UploadTemplateContainer setAlert={this.props.setAlert} getTemplates={this.props.getTemplates} />
 			</div>
@@ -86,8 +71,7 @@ class UploadTemplateContainer extends React.Component {
 		});
 
 		let S3 = new AWS.S3();
-		let fileChooser = document.getElementById('fileTemplate'),
-				templateName = document.getElementById('templateName');
+		let fileChooser = document.getElementById('fileTemplate');
 
 		let file = fileChooser.files[0];
 
@@ -114,14 +98,19 @@ class UploadTemplateContainer extends React.Component {
 	    ACL: 'public-read'
 	  };
 
-	  S3.upload(params, function(err) {
-	    if (err) {
-	      this.props.setAlert(err, 1);
-	    } else {
-	    	$('#buttonFile').removeClass('btn-success');
-	    	templateName.value = "";
+	  S3.upload(params, function(err,data) {
+	    if (!err) {
+	    	(function(This) {
+	    		let $fileChooser = $('#fileTemplate'),
+	    				$buttonFile = $('#buttonFile');
 
-	      this.props.setAlert('Template uploaded successfully!');
+	    		$buttonFile.removeClass('btn-success');
+		    	templateName.value = "";
+
+		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
+
+	      	This.props.setAlert('Template (' + data.Key.split('/').splice(1,1).pop() + ' uploaded successfully!');
+	    	})(this)
 	    }
 	  }.bind(this));
 	}

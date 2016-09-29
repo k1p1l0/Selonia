@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TemplatesChooser from '../components/TemplatesChooser';
+import TemplatesChooserContainer from '../components/TemplatesChooser';
 
 export default class ListContainer extends React.Component {
 	constructor(props) {
@@ -27,7 +27,7 @@ export default class ListContainer extends React.Component {
 					} else {
 						this.setState({recipients: data.Items});
 					}
-					
+
 					$('.loader').hide();
 					$('#main-table').show();
 				}
@@ -40,7 +40,7 @@ export default class ListContainer extends React.Component {
     });
   }
 
-  createRecipientFromClient({name, email, templateId}) {
+  createRecipientFromClient({name, email, templateId, templateName}) {
   	 $.ajax({
      	type: 'POST',
 			url: `${this.props.source}/campgains/${this.props.selectedCampgainId}`,
@@ -49,13 +49,15 @@ export default class ListContainer extends React.Component {
 					campgainId: parseInt(this.props.selectedCampgainId),
 					name,
 					email,
-					templateId
+					templateId,
+					templateName
 				}]
 			}),
 
 			contentType: "application/json",
 
-			success: function() {
+			success: function(data) {
+				console.log(data);
 				this.props.setAlert('Successfully added new recipient');
 				this.loadRecipients();
 			}.bind(this)
@@ -82,7 +84,7 @@ export default class ListContainer extends React.Component {
 	}
 
 	render() {
-		return <List get={this.state.recipients} set={this.setRecipients.bind(this)} createNew={this.createRecipientFromClient.bind(this)} templates={this.props.templates} />
+		return <List get={this.state.recipients} set={this.setRecipients.bind(this)} source={this.props.source} createNew={this.createRecipientFromClient.bind(this)} />
 	}
 }
 
@@ -92,7 +94,8 @@ class List extends React.Component {
 			id: Date.now(),
 			name: $('#nameInput').val(),
 			email: $('#emailInput').val(),
-			templateId: parseInt($('select[name="newRecipientTemplate"] option:selected').val())
+			templateId: parseInt($('select[name="newRecipientTemplate"] option:selected').val()),
+			templateName: $('select[name="newRecipientTemplate"] option:selected').text()
 		};
 
 		this.props.set(data);
@@ -101,17 +104,9 @@ class List extends React.Component {
 	}
 
 	clear() {
-			$('#nameInput').val('');	
-			$('#emailInput').val('');	
-			$('select[name="newRecipientTemplate"]').val('def');
-	}
-
-	getTemplateName(id) {
-		let one = this.props.templates.filter(function (template) {
-			return template.id === id
-		}).pop();
-
-		return (typeof one === 'object') ? one.name: 'No template';
+		$('#nameInput').val('');	
+		$('#emailInput').val('');	
+		$('select[name="newRecipientTemplate"]').val('def');
 	}
 
 	render() {
@@ -122,7 +117,6 @@ class List extends React.Component {
 		}
 
  		let recipients = this.props.get.sort(sortById).map(function(recipient, i) {
- 			recipient.templateName = this.getTemplateName(recipient.templateId);
       return (
 				<RecipientTable data={recipient} key={recipient.id} i={i}/>
       );
@@ -174,7 +168,7 @@ class List extends React.Component {
 								<input type="text" class="form-control" id="emailInput" placeholder="Email input"/>
 							</td>
 							<td>
-								<TemplatesChooser selectName="newRecipientTemplate" options={this.props.templates} />
+								<TemplatesChooserContainer source={this.props.source} selectName="newRecipientTemplate" />
 							</td>
 							<td>
 								<button type="button" class="btn btn-success" onClick={this.onClick.bind(this)} style={{width: '95%'}}>Add</button>

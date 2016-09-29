@@ -11,7 +11,6 @@ export default class LayoutContainer extends React.Component {
 
 		this.state = {
 			campgains: [],
-			templates: [],
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectedCampgainName'),
 			message: '',
@@ -27,19 +26,6 @@ export default class LayoutContainer extends React.Component {
 			success: function(data) {
 				this.setState({
 					campgains: data.Items
-				});
-			}.bind(this)
-    });
-  }
-
-  loadTemplates() {
-    $.ajax({
-      type: 'GET',
-			url: `${this.props.source}/templates`,
-
-			success: function(data) {
-				this.setState({
-					templates: data.Items
 				});
 			}.bind(this)
     });
@@ -65,10 +51,7 @@ export default class LayoutContainer extends React.Component {
   }
 
 	componentWillMount() {
-		setInterval(function() {
-			this.loadCompgain();
-			this.loadTemplates();
-		}.bind(this), 1000)
+		this.loadCompgain();
 	}
 
 	setSelectedCampgainId(id) {
@@ -95,8 +78,7 @@ export default class LayoutContainer extends React.Component {
 				source={this.props.source} 
 				createCampgain={this.createCampgain.bind(this)} 
 				setSelectedId={this.setSelectedCampgainId.bind(this)}
-				setAlert={this.setAlert.bind(this)}
-				getTemplates={this.loadTemplates.bind(this)}>
+				setAlert={this.setAlert.bind(this)}>
 			</Layout>
 		)
 	}
@@ -109,7 +91,7 @@ class Layout extends React.Component {
 				<div class="row">
 	    		<Navbar get={this.props.campgains} setSelectedId={this.props.setSelectedId} />
 	    		<Alert show={this.props.showAlert}>{this.props.message}</Alert>
-	    		<ListContainer source={this.props.source} selectedCampgainId={this.props.selectedCampgainId} setAlert={this.props.setAlert} templates={this.props.templates}/>
+	    		<ListContainer source={this.props.source} selectedCampgainId={this.props.selectedCampgainId} setAlert={this.props.setAlert} getTemplates={this.props.getTemplates} templates={this.props.templates}/>
 	    		<Panel createCampgain={this.props.createCampgain} setAlert={this.props.setAlert} templates={this.props.templates} getTemplates={this.props.getTemplates}/>
 				</div>
 			</div>	
