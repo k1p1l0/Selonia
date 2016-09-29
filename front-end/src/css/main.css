@@ -74,7 +74,8 @@
   100% {top: -100px}
 }
 
-#fileTemplate {
+#fileTemplate,
+#fileCsv {
   display: none;
 }
 

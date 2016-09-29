@@ -57,8 +57,11 @@ export default class ListContainer extends React.Component {
 			contentType: "application/json",
 
 			success: function(data) {
-				console.log(data);
-				this.props.setAlert('Successfully added new recipient');
+				if (!data.errorMessage) {
+					this.props.setAlert({message: 'Successfully added new recipient', type: 'success'});
+				} else {
+					this.props.setAlert({message: data.errorMessage, type: 'error'});
+				}
 				this.loadRecipients();
 			}.bind(this)
     });
