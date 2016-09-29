@@ -1,6 +1,6 @@
 import React from 'react';
 
-import TemplatesChooserContainer from '../components/TemplatesChooser';
+import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 export default class ListContainer extends React.Component {
 	constructor(props) {

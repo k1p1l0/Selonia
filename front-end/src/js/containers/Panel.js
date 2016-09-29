@@ -1,7 +1,5 @@
 import React from 'react';
 
-import TemplatesChooser from '../components/TemplatesChooser';
-
 export default class Panel extends React.Component {
 	createCampgain() {
 		let data = {
