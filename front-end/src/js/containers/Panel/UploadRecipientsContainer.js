@@ -14,7 +14,7 @@ export default class UploadRecipientsContainer extends React.Component {
 		let fileChooser = document.getElementById('fileCsv');
 		let file = fileChooser.files[0];
 		let templateName = $('select[name="csvTemplate"] option:selected').text();
-		let campgainName = localStorage.getItem('selectCampgainName');
+		let campgainId = localStorage.getItem('selectCampgainId');
 
 		if (!file) {
 			this.props.setAlert({message:'You must choose a file to upload', type:'info'});
@@ -31,14 +31,14 @@ export default class UploadRecipientsContainer extends React.Component {
 			return;
 		}
 
-		if (campgainName === null) {
+		if (campgainId === null) {
 			this.props.setAlert({message:'You must choose campaign', type:'info'});
 			return;
 		}
 
 		let params = {
 	  	Bucket: 'selonia.static',
-	    Key: 'temp' + '/' + campgainName + '/' + templateName + '/' + file.name,
+	    Key: 'temp' + '/' + campgainId + '/' + templateName + '/' + file.name,
 	    ContentType: file.type,
 	    Body: file,
 	    ACL: 'public-read'
@@ -56,13 +56,15 @@ export default class UploadRecipientsContainer extends React.Component {
 
 	      	This.props.setAlert({message: 'Recipients ' + data.Key.split('/').splice(1,1).pop() + ' uploaded successfully!', type: 'success'});
 	    	})(this)
+	    } else {
+	    	console.log(err);
 	    }
 	  }.bind(this));
 	}
 
 	render() {
 		return <UploadRecipients onUpload={this.onUpload.bind(this)} source={this.props.source}/>
-	}
+	} 
 }
 
 class UploadRecipients extends React.Component {

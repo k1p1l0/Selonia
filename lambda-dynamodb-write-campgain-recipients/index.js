@@ -37,7 +37,8 @@ function makeRecipients (arrayRecipients, startPosition) {
 			email: recipient.email,
 			name: recipient.name,
 			campgainId: recipient.campgainId,
-			templateId: recipient.templateId
+			templateId: recipient.templateId,
+			templateName: recipient.templateName,
 		};
 	});
 }
