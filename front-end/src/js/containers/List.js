@@ -1,6 +1,7 @@
 import React from 'react';
 
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
+import PanelHeading from './List/PanelHeading';
 
 export default class ListContainer extends React.Component {
 	constructor(props) {
@@ -12,7 +13,11 @@ export default class ListContainer extends React.Component {
 	}
 
 	loadRecipients(newId) {
-		var URL = (newId > 0) ? `${this.props.source}/campgains/${newId}`: `${this.props.source}/campgains/${this.props.selectedCampgainId}`
+		var URL = (newId > 0) ? `${this.props.source}/campgains/${newId}`: `${this.props.source}/campgains/${this.props.getCampgainId}`
+
+		if (~URL.indexOf('null') || this.props.getCampgainId === null) {
+			return;
+		}
 
     $.ajax({
       type: 'GET', 
@@ -40,17 +45,17 @@ export default class ListContainer extends React.Component {
     });
   }
 
-  createRecipientFromClient({name, email, templateId, templateName}) {
+  createRecipientFromClient({id, name, email, templateName}) {
   	 $.ajax({
      	type: 'POST',
-			url: `${this.props.source}/campgains/${this.props.selectedCampgainId}`,
+			url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
 			data: JSON.stringify({
 				"recipients": [{
-					campgainId: parseInt(this.props.selectedCampgainId),
+					id,
 					name,
 					email,
-					templateId,
-					templateName
+					templateName,
+					campgainId: parseInt(this.props.getCampgainId)
 				}]
 			}),
 
@@ -69,35 +74,41 @@ export default class ListContainer extends React.Component {
 
   componentWillMount() {
   	this.loadRecipients();
+  	setInterval(this.loadRecipients.bind(this), 1500);
   }
 
-	shouldComponentUpdate(nextProps, nextState) {
-		if(this.props.selectedCampgainId !== nextProps.selectedCampgainId) {
-			this.loadRecipients(nextProps.selectedCampgainId);
-    	return true;
-		} else if (nextState.recipients.length > 0) {
-			return true;
-		}
+	// shouldComponentUpdate(nextProps, nextState) {
+	// 	if(this.props.getCampgainId !== nextProps.getCampgainId) {
+	// 		this.loadRecipients(nextProps.getCampgainId);
+ //    	return true;
+	// 	} else if (nextState.recipients.length > 0) {
+	// 		return true;
+	// 	}
 
-		return false;
-  }
+	// 	return false;
+ //  }
 
 	setRecipients(newOne) {
 		this.setState({recipients: this.state.recipients.concat(newOne)});
 	}
 
 	render() {
-		return <List get={this.state.recipients} set={this.setRecipients.bind(this)} source={this.props.source} createNew={this.createRecipientFromClient.bind(this)} />
+		return <List 
+			get={this.state.recipients} 
+			set={this.setRecipients.bind(this)} 
+			source={this.props.source} 
+			createNew={this.createRecipientFromClient.bind(this)}
+			setSelectedCampgainId={this.props.setSelectedCampgainId}
+			getCampgains={this.props.getCampgains} />
 	}
 }
 
 class List extends React.Component {
 	onClick() {
 		let data = {
-			id: Date.now(),
+			id: parseInt($('#nameInput').val().hashCode()),
 			name: $('#nameInput').val(),
 			email: $('#emailInput').val(),
-			templateId: parseInt($('select[name="newRecipientTemplate"] option:selected').val()),
 			templateName: $('select[name="newRecipientTemplate"] option:selected').text()
 		};
 
@@ -113,8 +124,6 @@ class List extends React.Component {
 	}
 
 	render() {
-		let campgainName = localStorage.getItem('selectCampgainName') || 'Please choose or create campaign.';
-
 		function sortById (a, b) {
 			return a.id - b.id;
 		}
@@ -128,23 +137,7 @@ class List extends React.Component {
 		return (
 			<div class="col-lg-8">
 				<div class="panel panel-default">
-				  <div class="panel-heading">
-				  	<div class="row">
-				  		<div class="col-lg-2">
-						  	<div class="btn-group">
-									  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled={~campgainName.indexOf('Please')}>
-									    {campgainName} <span class="caret"></span>
-									  </button>
-									  <ul class="dropdown-menu">
-									    <li><a href="#">Delete list</a></li>
-									    <li><a href="#">Delete campgain</a></li>
-									    <li role="separator" class="divider"></li>
-									    <li><a href="#">Send to all</a></li>
-									  </ul>
-								</div>
-							</div>
-				  	</div>
-				  </div>
+					<PanelHeading setSelectedCampgainId={this.props.setSelectedCampgainId} getCampgains={this.props.getCampgains}/>
 
 					<div class="loader">
 					</div>
@@ -203,3 +196,14 @@ class RecipientTable extends React.Component {
 		)
 	}
 }
+
+String.prototype.hashCode = function() {
+  var hash = 0, i, chr, len;
+  if (this.length === 0) return hash;
+  for (i = 0, len = this.length; i < len; i++) {
+    chr   = this.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
