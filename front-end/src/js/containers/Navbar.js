@@ -12,12 +12,12 @@ export default class Navbar extends React.Component {
 
 	        <ul class="nav navbar-nav">
 	          <li class="active"><a href="#">Main <span class="sr-only">(current)</span></a></li>
-        		<li><a href="#">Logs</a></li>
+        		<li><a href="#" disabled>Logs</a></li>
 	        </ul>
 	        	<div class="navbar-right">
 		        	<form class="navbar-form navbar-left">
-				        <button type="submit" class="btn btn-default">Profile</button>
-				        <button type="submit" class="btn btn-default">Logout</button>
+				        <button type="submit" class="btn btn-default" disabled>Profile</button>
+				        <button type="submit" class="btn btn-default" disabled>Logout</button>
 	      			</form>
 	        	</div>
 	        </div>

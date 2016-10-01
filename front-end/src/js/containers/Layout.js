@@ -2,8 +2,8 @@ import React from "react";
 import AlertContainer from 'react-alert';
 
 import Navbar from './Navbar';
-import Panel from './Panel';
-import ListContainer from './List';
+import Panel from './Panel/Panel';
+import ListContainer from './List/List';
 
 export default class LayoutContainer extends React.Component {
 	constructor(props) {
@@ -32,9 +32,6 @@ export default class LayoutContainer extends React.Component {
 			success: function(data) {
 				this.setState({
 					campgains: data.Items
-				}, function() {
-					console.log(this.state.campgains);
-					this.forceUpdate();
 				});
 			}.bind(this)
     });
@@ -58,7 +55,7 @@ export default class LayoutContainer extends React.Component {
 			}),
 			contentType: "application/json",
 
-			success: function(data) {
+			success: function(data) {				
 				this.setState({
 					campgains: this.state.campgains.concat(data)
 				});

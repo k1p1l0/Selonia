@@ -54,7 +54,7 @@ export default class UploadRecipientsContainer extends React.Component {
 
 		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
 
-	      	This.props.setAlert({message: 'Recipients ' + data.Key.split('/').splice(1,1).pop() + ' uploaded successfully!', type: 'success'});
+	      	This.props.setAlert({message: 'Recipients ' + localStorage.getItem('selectCampgainName') + ' uploaded successfully!', type: 'success'});
 	    	})(this)
 	    } else {
 	    	console.log(err);

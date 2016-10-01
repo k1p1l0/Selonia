@@ -1,7 +1,7 @@
 import React from 'react';
 
-import UploadRecipientsContainer from './Panel/UploadRecipientsContainer';
-import UploadTemplatesContainer from './Panel/UploadTemplatesContainer';
+import UploadRecipientsContainer from './UploadRecipientsContainer';
+import UploadTemplatesContainer from './UploadTemplatesContainer';
 
 export default class Panel extends React.Component {
 	createCampgain() {

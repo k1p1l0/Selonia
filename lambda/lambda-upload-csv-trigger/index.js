@@ -11,6 +11,8 @@ AWS.config.update({
   region: 'us-east-1'
 });
 
+const FUNCTION_NAME = 'create-campgain-recipients';
+
 function getCsv (params, callback) {
   var s3 = new AWS.S3(params),
   		reader, writer;
@@ -27,7 +29,7 @@ function readCsv (config, params, callback) {
     .on('data', function(csvrow) {
         let user = csvrow.toString().split(','),
         		hashUser = {
-        			id: parseInt(user[0].hashCode()),
+        			id: parseInt(user[0].hashCode() + user[1].hashCode()),
         			name: user[0],
         			email: user[1],
         			campgainId: params.keyCampgainId,
@@ -44,7 +46,7 @@ function writeUsers(event, callback) {
 	var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
 	console.log(event);
 	let params = {
-		FunctionName: 'write-dynamdb',
+		FunctionName: FUNCTION_NAME,
   	Payload: JSON.stringify(event, null, 2) // pass params
 	};
 

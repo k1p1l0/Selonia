@@ -7,13 +7,7 @@ const TableName = 'selonia-recipients';
 
 function init (event, context, callback) {	
 	if (typeof event.recipients === 'object') {
-		doClient.scan({TableName}, (err, data) => {
-			if (err) {
-				callback(err, null);
-			} else {
-				unpackageItems(event.recipients, data.Count, callback);
-			}		
-		});
+		unpackageItems(event.recipients, callback);
 	} else {
 		callback(null, 'We need an array of recipients!');
 	}
@@ -30,14 +24,13 @@ function sendItems(params, cb) {
 	});
 }
 
-function makeRecipients (arrayRecipients, startPosition) {
-	return arrayRecipients.map((recipient, i) => {
+function makeRecipients (arrayRecipients) {
+	return arrayRecipients.map((recipient) => {
 		return {
-			id: startPosition + i + 1,
+			id: recipient.id,
 			email: recipient.email,
 			name: recipient.name,
 			campgainId: recipient.campgainId,
-			templateId: recipient.templateId,
 			templateName: recipient.templateName,
 		};
 	});
@@ -65,10 +58,10 @@ function prepareRequest (items) {
 	}
 }
 
-function unpackageItems (packageRecipients, startPosition, cb) {
+function unpackageItems (packageRecipients, cb) {
 	let recipients, items, params
 
-	recipients = makeRecipients(packageRecipients, startPosition);
+	recipients = makeRecipients(packageRecipients);
 	items = makeItems(recipients);
 	params = prepareRequest(items);
 
