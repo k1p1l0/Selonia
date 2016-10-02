@@ -46,7 +46,7 @@ export default class ListContainer extends React.Component {
   }
 
   createRecipientFromClient({id, name, email, templateName}) {
-  	this.setRecipients({id, name, email, templateName});
+  	// this.setRecipients({id, name, email, templateName});
 
   	 $.ajax({
      	type: 'POST',
@@ -65,7 +65,7 @@ export default class ListContainer extends React.Component {
 
 			success: function(data) {
 				if (!data.errorMessage) {
-					this.props.setAlert({message: 'Successfully added new recipient', type: 'success'});
+					this.props.setAlert({message: 'Recipient is successfully added ', type: 'success'});
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
@@ -75,8 +75,6 @@ export default class ListContainer extends React.Component {
   }
 
   deleteRecipient(id) {
-  	console.log(id);
-
   	$.ajax({
   		type: 'DELETE',
   		url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
@@ -87,15 +85,33 @@ export default class ListContainer extends React.Component {
 
   		success: function(data) {
   			if (!data.errorMessage) {
-					this.props.setAlert({message: 'Successfully deleted recipient', type: 'success'});
+					this.props.setAlert({message: 'Recipient is successfully deleted ', type: 'success'});
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
 				this.loadRecipients();
   		}.bind(this)
   	});
-
   }
+
+  deleteList() {
+  	$.ajax({
+  		type: 'DELETE',
+  		url: `${this.props.source}/campgains`,
+  		data: JSON.stringify({
+  			id: this.props.getCampgainId
+  		}),
+  		contentType: "application/json",
+
+  		success: function(data) {
+  			if (!data.errorMessage) {
+					this.props.setAlert({message: 'List is successfully deleted', type: 'success'});
+				} else {
+					this.props.setAlert({message: data.errorMessage, type: 'error'});
+				}
+  		}.bind(this)
+  	});
+	}
 
   componentWillMount() {
   	this.loadRecipients();
@@ -114,7 +130,8 @@ export default class ListContainer extends React.Component {
 			createNew={this.createRecipientFromClient.bind(this)}
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			getCampgains={this.props.getCampgains} 
-			deleteRecipient={this.deleteRecipient.bind(this)} />
+			deleteRecipient={this.deleteRecipient.bind(this)}
+			deleteList={this.deleteList.bind(this)} />
 	}
 }
 
@@ -123,7 +140,10 @@ class List extends React.Component {
 		return (
 			<div class="col-lg-8">
 				<div class="panel panel-default">
-					<ListHeader setSelectedCampgainId={this.props.setSelectedCampgainId} getCampgains={this.props.getCampgains} />
+					<ListHeader 
+						setSelectedCampgainId={this.props.setSelectedCampgainId} 
+						deleteList={this.props.deleteList} 
+						getCampgains={this.props.getCampgains} />
 
 					<div class="loader">
 					</div>

@@ -61,7 +61,7 @@ export default class LayoutContainer extends React.Component {
 				});
 
 				this.setAlert({
-	  			message: 'Successfully added new campaign - ' + data.name,
+	  			message: 'Campaign is successfully added  - ' + data.name,
 	  			type: 'success'
   			});
 
