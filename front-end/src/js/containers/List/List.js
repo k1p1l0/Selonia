@@ -99,13 +99,37 @@ export default class ListContainer extends React.Component {
   		type: 'DELETE',
   		url: `${this.props.source}/campgains`,
   		data: JSON.stringify({
-  			id: this.props.getCampgainId
+  			id: this.props.getCampgainId,
+  			deleteCampgain: false
   		}),
   		contentType: "application/json",
 
   		success: function(data) {
   			if (!data.errorMessage) {
 					this.props.setAlert({message: 'List is successfully deleted', type: 'success'});
+				} else {
+					this.props.setAlert({message: data.errorMessage, type: 'error'});
+				}
+  		}.bind(this)
+  	});
+	}
+
+	deleteCampgain() {
+		localStorage.removeItem('selectCampgainId');
+		localStorage.removeItem('selectCampgainName');
+
+  	$.ajax({
+  		type: 'DELETE',
+  		url: `${this.props.source}/campgains`,
+  		data: JSON.stringify({
+  			id: this.props.getCampgainId,
+  			deleteCampgain: true
+  		}),
+  		contentType: "application/json",
+
+  		success: function(data) {
+  			if (!data.errorMessage) {
+					this.props.setAlert({message: 'Campgain is successfully deleted', type: 'success'});
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
@@ -131,7 +155,8 @@ export default class ListContainer extends React.Component {
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			getCampgains={this.props.getCampgains} 
 			deleteRecipient={this.deleteRecipient.bind(this)}
-			deleteList={this.deleteList.bind(this)} />
+			deleteList={this.deleteList.bind(this)}
+			deleteCampgain={this.deleteCampgain.bind(this)} />
 	}
 }
 
@@ -143,6 +168,7 @@ class List extends React.Component {
 					<ListHeader 
 						setSelectedCampgainId={this.props.setSelectedCampgainId} 
 						deleteList={this.props.deleteList} 
+						deleteCampgain={this.props.deleteCampgain}
 						getCampgains={this.props.getCampgains} />
 
 					<div class="loader">

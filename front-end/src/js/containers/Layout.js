@@ -71,6 +71,7 @@ export default class LayoutContainer extends React.Component {
 
 	componentWillMount() {
 		this.loadCompgain();
+		setInterval(this.loadCompgain.bind(this), 1500);
 	}
 
 	setSelectedCampgainId(id) {

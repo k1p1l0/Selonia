@@ -27,7 +27,7 @@ export default class ListHeader extends React.Component {
 							  </button>
 						</div>
 					  <button {...buttonProps} onClick={this.props.deleteList}>Delete list</button>
-					  <button {...buttonProps} disabled>Delete campaign</button>
+					  <button {...buttonProps} onClick={this.props.deleteCampgain}>Delete campaign</button>
 			  </div>
 		)
 	}
