@@ -15,7 +15,8 @@ const FUNCTION_NAME = 'delete-campgain-recipient';
 
 function init (event, context, callback) {
     const TableName = 'selonia-recipients';
-    
+    const campgainId = parseInt(event.id);
+
     var params = {
         TableName,
         FilterExpression: "#campgainId = :id",
@@ -23,7 +24,7 @@ function init (event, context, callback) {
             "#campgainId": "campgainId",
         },
         ExpressionAttributeValues: {
-             ":id": parseInt(event.id)
+             ":id": campgainId
         }
     };
     
@@ -31,25 +32,54 @@ function init (event, context, callback) {
         if (err) {
            callback(err, null);
         } else {
-        	let lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
-
         	async.each(data.Items, function (recipient) {
-        		let params = {
-							FunctionName: FUNCTION_NAME,
-					  	Payload: JSON.stringify({id: recipient.id}, null, 2) // pass params
-						};
-
-						lambda.invoke(params, function(error, data) {
-							  if (error) {
-							  	console.log(error);
-							  } else {
-							  	console.log(data);
-							  }
-						});
+        		deleteRecipient(recipient);
         	});
-        	callback(null, 'OK?');
+
+        	if (event.deleteCampgain) {
+        		deleteList(campgainId);
+        	}
+
+        	callback(null, 'done');
         }
     });
 }
+
+function deleteRecipient (recipient) {
+	const lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+
+	let params = {
+		FunctionName: FUNCTION_NAME,
+  	Payload: JSON.stringify({id: recipient.id}, null, 2) // pass params
+	};
+
+	lambda.invoke(params, function(error, data) {
+		  if (error) {
+		  	console.log(error);
+		  } else {
+		  	console.log(data);
+		  }
+	});
+}
+
+function deleteList (id) {
+	const TableName = 'selonia-campaigns';
+
+	var params = {
+        TableName,
+        Key: {
+          id
+        }
+    	};
+    
+  docClient.delete(params, function(err, data) {
+      if (err) {
+         console.log(err);
+      } else {
+         console.log(data);
+      }
+  });
+}
+
 
 exports.handler = init;
