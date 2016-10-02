@@ -3,7 +3,7 @@ import React from 'react';
 import TemplatesChooserContainer from '../../components/TemplatesChooserContainer';
 
 export default class ListBody extends React.Component {
-	onClick() {
+	createNewRecipient () {
 		let data = {
 			id: parseInt($('#nameInput').val().hashCode() + $('#emailInput').val().hashCode()),
 			name: $('#nameInput').val(),
@@ -11,9 +11,12 @@ export default class ListBody extends React.Component {
 			templateName: $('select[name="newRecipientTemplate"] option:selected').text()
 		};
 
-		this.props.setRecipient(data);
 		this.props.createNewRecipient(data);
 		this.clear();
+	}
+
+	deleteRecipient(id) {
+		this.props.deleteRecipient(id);
 	}
 
 	clear() {
@@ -29,7 +32,7 @@ export default class ListBody extends React.Component {
 
  		let recipients = this.props.getRecipients.sort(sortById).map(function(recipient, i) {
       return (
-				<RecipientTable data={recipient} key={recipient.id} i={i}/>
+				<RecipientTable data={recipient} key={recipient.id} deleteRecipient={this.deleteRecipient.bind(this)} i={i}/>
       );
     }.bind(this));
 
@@ -59,7 +62,7 @@ export default class ListBody extends React.Component {
 							<TemplatesChooserContainer source={this.props.source} selectName="newRecipientTemplate" />
 						</td>
 						<td>
-							<button type="button" class="btn btn-success" onClick={this.onClick.bind(this)} style={{width: '95%'}}>Add</button>
+							<button type="button" class="btn btn-success" onClick={this.createNewRecipient.bind(this)} style={{width: '95%'}}>Add</button>
 						</td>
 					</tr>
 					</tfoot>
@@ -69,6 +72,10 @@ export default class ListBody extends React.Component {
 }
 
 class RecipientTable extends React.Component {
+	deleteRecipient (id) {
+		this.props.deleteRecipient(id);
+	}
+
 	render() {
 		return (
 			<tr class="animation-bottom">
@@ -80,7 +87,7 @@ class RecipientTable extends React.Component {
 				</td>
 				<td>
 					<button type="button" class="btn btn-success" disabled>Send</button>
-					<button type="button" class="btn btn-danger" disabled>Delete</button>
+					<button type="button" class="btn btn-danger" onClick={this.deleteRecipient.bind(this, this.props.data.id)}>Delete</button>
 				</td>
 			</tr>
 		)

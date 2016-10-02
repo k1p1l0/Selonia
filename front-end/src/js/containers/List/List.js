@@ -46,6 +46,8 @@ export default class ListContainer extends React.Component {
   }
 
   createRecipientFromClient({id, name, email, templateName}) {
+  	this.setRecipients({id, name, email, templateName});
+
   	 $.ajax({
      	type: 'POST',
 			url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
@@ -72,8 +74,32 @@ export default class ListContainer extends React.Component {
     });
   }
 
+  deleteRecipient(id) {
+  	console.log(id);
+
+  	$.ajax({
+  		type: 'DELETE',
+  		url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
+  		data: JSON.stringify({
+  			id
+  		}),
+  		contentType: "application/json",
+
+  		success: function(data) {
+  			if (!data.errorMessage) {
+					this.props.setAlert({message: 'Successfully deleted recipient', type: 'success'});
+				} else {
+					this.props.setAlert({message: data.errorMessage, type: 'error'});
+				}
+				this.loadRecipients();
+  		}.bind(this)
+  	});
+
+  }
+
   componentWillMount() {
   	this.loadRecipients();
+  	
   	setInterval(this.loadRecipients.bind(this), 1500);
   }
 
@@ -84,11 +110,11 @@ export default class ListContainer extends React.Component {
 	render() {
 		return <List 
 			getRecipients={this.state.recipients} 
-			set={this.setRecipients.bind(this)} 
 			source={this.props.source} 
 			createNew={this.createRecipientFromClient.bind(this)}
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
-			getCampgains={this.props.getCampgains} />
+			getCampgains={this.props.getCampgains} 
+			deleteRecipient={this.deleteRecipient.bind(this)} />
 	}
 }
 
@@ -102,7 +128,11 @@ class List extends React.Component {
 					<div class="loader">
 					</div>
 
-					<ListBody setRecipient={this.props.set} source={this.props.source} createNewRecipient={this.props.createNew} getRecipients={this.props.getRecipients} />
+					<ListBody 
+						source={this.props.source} 
+						deleteRecipient={this.props.deleteRecipient} 
+						createNewRecipient={this.props.createNew} 
+						getRecipients={this.props.getRecipients} />
 				</div>
 			</div>
 		)

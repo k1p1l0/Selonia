@@ -77,7 +77,7 @@ export default class LayoutContainer extends React.Component {
 		this.setState({selectedCampgainId: id});
 	}
 
-	setAlert({message, type}){
+	setAlert({message, type}) {
     msg.show(message, {
       type
     });
