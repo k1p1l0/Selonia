@@ -22,8 +22,8 @@ export default class CampaignsChooser extends React.Component {
     }.bind(this));
 
 		return (
-			<select name={this.props.name} class="form-control" onChange={this.changeCampgain.bind(this)} defaultValue="null">
-					<option disabled value="null">Choose {this.props.text}</option>
+			<select name={this.props.name} class="form-control" onChange={this.changeCampgain.bind(this)} defaultValue="def">
+					<option disabled value="def">Choose {this.props.text}</option>
 			    {options}
 			</select>
 		)

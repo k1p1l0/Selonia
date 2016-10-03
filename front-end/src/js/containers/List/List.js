@@ -46,8 +46,6 @@ export default class ListContainer extends React.Component {
   }
 
   createRecipientFromClient({id, name, email, templateName}) {
-  	// this.setRecipients({id, name, email, templateName});
-
   	 $.ajax({
      	type: 'POST',
 			url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
@@ -114,9 +112,20 @@ export default class ListContainer extends React.Component {
   	});
 	}
 
-	deleteCampgain() {
+	cleanCampgainTemp() {
+		$('.loader').show();
+		$('#main-table').hide();
+		
+		this.props.setSelectedCampgainId(null);
+		this.props.stopIntervalCampgainLoad();
 		localStorage.removeItem('selectCampgainId');
 		localStorage.removeItem('selectCampgainName');
+		$('select[name="campaign"]').val('def');
+	  this.props.startIntervalCampgainLoad();
+	}
+
+	deleteCampgain() {
+		this.cleanCampgainTemp();
 
   	$.ajax({
   		type: 'DELETE',
@@ -130,6 +139,7 @@ export default class ListContainer extends React.Component {
   		success: function(data) {
   			if (!data.errorMessage) {
 					this.props.setAlert({message: 'Campgain is successfully deleted', type: 'success'});
+					this.forceUpdate();
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
@@ -143,14 +153,11 @@ export default class ListContainer extends React.Component {
   	setInterval(this.loadRecipients.bind(this), 1500);
   }
 
-	setRecipients(newOne) {
-		this.setState({recipients: this.state.recipients.concat(newOne)});
-	}
-
 	render() {
 		return <List 
 			getRecipients={this.state.recipients} 
 			source={this.props.source} 
+			getCampgainId={this.props.getCampgainId}
 			createNew={this.createRecipientFromClient.bind(this)}
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			getCampgains={this.props.getCampgains} 

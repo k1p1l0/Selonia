@@ -13,6 +13,7 @@ export default class LayoutContainer extends React.Component {
 			campgains: [],
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectCampgainName'),
+			campgainTimerId: null
 		};
 
 		this.alertOptions = {
@@ -39,7 +40,7 @@ export default class LayoutContainer extends React.Component {
 
   createCampgain({name}) {
   	if (!name.length) {
-  		this.setAlert({
+  		this.setAlert({ 
   			message: 'You should enter campaign name',
   			type: 'info'
   		});
@@ -71,7 +72,19 @@ export default class LayoutContainer extends React.Component {
 
 	componentWillMount() {
 		this.loadCompgain();
-		setInterval(this.loadCompgain.bind(this), 1500);
+	}
+
+	startIntervalCampgainLoad() {
+		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 2000);
+		this.setState({campgainTimerId});
+
+		setTimeout(this.stopIntervalCampgainLoad.bind(this), 5000);
+	}
+
+	stopIntervalCampgainLoad() {
+		if (this.state.campgainTimerId) {
+			clearTimeout(this.state.campgainTimerId);
+		}
 	}
 
 	setSelectedCampgainId(id) {
@@ -95,6 +108,8 @@ export default class LayoutContainer extends React.Component {
 				source={this.props.source} 
 				createCampgain={this.createCampgain.bind(this)} 
 				setSelectedCampgainId={this.setSelectedCampgainId.bind(this)}
+				stopIntervalCampgainLoad={this.stopIntervalCampgainLoad.bind(this)}
+				startIntervalCampgainLoad={this.startIntervalCampgainLoad.bind(this)}
 				setAlert={this.setAlert.bind(this)}>
 				<AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
 			</Layout>
@@ -117,6 +132,8 @@ class Layout extends React.Component {
 	    			getTemplates={this.props.getTemplates} 
 	    			getCampgainId={this.props.getCampgainId} 
 	    			setSelectedCampgainId={this.props.setSelectedCampgainId}
+	    			stopIntervalCampgainLoad={this.props.stopIntervalCampgainLoad}
+	    			startIntervalCampgainLoad={this.props.startIntervalCampgainLoad}
 	    			setAlert={this.props.setAlert} />
 
 	    		<Panel 
