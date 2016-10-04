@@ -1,10 +1,12 @@
 'use strict';
 
+const AWS = require('aws-sdk');
+const fs = require('fs');
+const path = require('path');
 const async = require('async');
 const EmailTemplate = require('email-templates').EmailTemplate;
 const nodemailer = require('nodemailer');
 const sesTransport = require('nodemailer-ses-transport');
-const bucket = require('./bucket');
 
 var transporter = nodemailer.createTransport(sesTransport({
     accessKeyId: 'AKIAIUMCJGSBQ5ZP6QEQ',
@@ -12,15 +14,51 @@ var transporter = nodemailer.createTransport(sesTransport({
     rateLimit: 1
 }));
 
-function sendMail({recipients, subject, from, template, callback}) {
+function getTemplate(params, tmpFolder, callback) {
+  var s3 = new AWS.S3(params),
+  		reader, writer, pathToFile;
+  		
+  pathToFile = params.Key.split('/').splice(2, 2).join('/');
+
+  var mkdirSync = function (path) {
+	  try {
+	    fs.mkdirSync(path);
+	  } catch(e) {
+	    if ( e.code != 'EEXIST' ) throw e;
+	  }
+	}
+
+	mkdirSync(tmpFolder);
+
+  fs.writeFile(path.join(tmpFolder, pathToFile), '', function() {
+		writer = fs.createWriteStream(path.join(tmpFolder, pathToFile));
+		reader = s3.getObject(params);
+
+		reader.on('send', function() {		
+			callback(tmpFolder);
+		});
+
+		reader.on('httpData', function(chunk) { writer.write(chunk); });
+		reader.on('httpDone', function() { writer.end(); });
+		reader.send();
+  });
+};
+
+function sendMail(event) {
+	let recipients = event.recipients,
+		subject = event.subject,
+		from = event.from,
+		template = event.template,
+		callback = event.callback;
+
 	let locals = {
 		Bucket: 'selonia.static',
     Key: `templates/${template}/html.ejs`
 	};
 
-	let FOLDER = `./tmp/${template}`;
+	let FOLDER = `/tmp/${template}`;
 
-	bucket.getTemplate(locals, FOLDER, function(folder) {
+	getTemplate(locals, FOLDER, function(folder) {
 			var templateRender = new EmailTemplate(folder);
 
 			async.each(recipients, function (user) {
@@ -45,7 +83,12 @@ function sendMail({recipients, subject, from, template, callback}) {
 	return true;
 }
 
-function sendTo({from, to, subject, html}) {
+function sendTo(event) {
+	let from = event.from,
+		to = event.to,
+		subject = event.subject,
+		html = event.html;
+
   transporter.sendMail({from, to, subject, html}, function(err, responseStatus) {
 	  if (err) {
 	    console.error(err) //TO LOGS
@@ -55,8 +98,9 @@ function sendTo({from, to, subject, html}) {
 	})
 }
 
-function ChopRecipients({recipients}) {
-	var templates = {};
+function ChopRecipients(event) {
+	let recipients = event.recipients, 
+			templates = {};
 
 	recipients.map(function(recipient) {
 		if (!templates[recipient.templateName]) {
@@ -69,8 +113,12 @@ function ChopRecipients({recipients}) {
 	return templates;
 }
 
-let init = (event, context, callback) => {
-	let chopedRecipients, templatesName, { recipients, subject, from, template } = event;
+function init (event, context, callback) {
+	let chopedRecipients, templatesName, 
+			recipients = event.recipients,
+			subject = event.subject,
+			from = event.from,
+			template = event.template;
 
 	if (!event.ownTemplate) {
 		sendMail({recipients, subject, from, template, callback});
@@ -115,8 +163,8 @@ let init = (event, context, callback) => {
 //   "template": "WC2017",
 //   "from": `Hello from UI <mddb.net@txm.net>`
 // }, null, function(a, b) {
-// //   	console.log(a);
-// //   	console.log(b);
-// // });
+//   	console.log(a);
+//   	console.log(b);
+// });
 
 exports.handler = init;
