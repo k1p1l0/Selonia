@@ -41,33 +41,19 @@ function sendMail({recipients, subject, from, template, callback}) {
 
 			callback(null, 'done!');
 	});
+
+	return true;
 }
 
 function sendTo({from, to, subject, html}) {
   transporter.sendMail({from, to, subject, html}, function(err, responseStatus) {
 	  if (err) {
-	    console.error(err)
+	    console.error(err) //TO LOGS
 	  } else {
-	  	console.log('response');
-	  	console.log(responseStatus)
+	  	console.log(responseStatus) //TO LOGS
 	  }
 	})
 }
-
-let init = (event, context, callback) => {
-	let chopedRecipients = ChopRecipients({recipients: event.recipients});
-	let templatesName = Object.keys(chopedRecipients);
-
-	templatesName.map(function(template) {
-		sendMail({
-			recipients: chopedRecipients[template], 
-			subject: event.subject,
-			from: event.from,
-			template, 
-			callback
-		});
-	});
-};
 
 function ChopRecipients({recipients}) {
 	var templates = {};
@@ -83,28 +69,54 @@ function ChopRecipients({recipients}) {
 	return templates;
 }
 
-init({
-	 "recipients": [
-    {
-      "id": 34,
-      "name": "Kirill",
-      "email": "s0ht@mail.ru",
-      "campgainId": 123,
-      "templateName": "origin"
-    },
-    {
-      "id": 36,
-      "name": "Kirill2",
-      "email": "s0ht@mail.ru",
-      "campgainId": 123,
-      "templateName": "WC2017"
-    }
-  ],
-  "subject": "HELLO!!",
-  "from": `Hello from Lambda <mddb.net@txm.net>`
-}, null, function(a, b) {
-  	console.log(a);
-  	console.log(b);
-});
+let init = (event, context, callback) => {
+	let chopedRecipients, templatesName, { recipients, subject, from, template } = event;
+
+	if (!event.ownTemplate) {
+		sendMail({recipients, subject, from, template, callback});
+	}
+
+	if (event.ownTemplate) {
+		chopedRecipients = ChopRecipients({ recipients });
+		templatesName = Object.keys(chopedRecipients);
+
+		templatesName.map(function(template) {
+			sendMail({
+				recipients: chopedRecipients[template], 
+				subject,
+				from,
+				template, 
+				callback
+			});
+		});
+	}
+};
+
+
+// init({
+// 	 "recipients": [
+//     {
+//       "id": 34,
+//       "name": "Kirill",
+//       "email": "s0ht@mail.ru",
+//       "campgainId": 123,
+//       "templateName": "origin"
+//     },
+//     {
+//       "id": 36,
+//       "name": "Kirill2",
+//       "email": "s0ht@mail.ru",
+//       "campgainId": 123,
+//       "templateName": "WC2017"
+//     }
+//   ],
+//   "subject": "HELLO!!",
+//   "ownTemplate": true,
+//   "template": "WC2017",
+//   "from": `Hello from UI <mddb.net@txm.net>`
+// }, null, function(a, b) {
+// //   	console.log(a);
+// //   	console.log(b);
+// // });
 
 exports.handler = init;
