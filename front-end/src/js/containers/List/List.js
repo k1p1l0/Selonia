@@ -116,8 +116,8 @@ export default class ListContainer extends React.Component {
 		$('.loader').show();
 		$('#main-table').hide();
 		
-		this.props.setSelectedCampgainId(null);
 		this.props.stopIntervalCampgainLoad();
+		this.props.setSelectedCampgainId(null);
 		localStorage.removeItem('selectCampgainId');
 		localStorage.removeItem('selectCampgainName');
 		$('select[name="campaign"]').val('def');
@@ -155,6 +155,7 @@ export default class ListContainer extends React.Component {
 
 	render() {
 		return <List 
+			setAlert={this.props.setAlert}
 			getRecipients={this.state.recipients} 
 			source={this.props.source} 
 			getCampgainId={this.props.getCampgainId}
@@ -169,12 +170,19 @@ export default class ListContainer extends React.Component {
 
 class List extends React.Component {
 	render() {
+		if (this.props.getCampgainId === null) {
+			$('.loader').show();
+			$('#main-table').hide();
+		}
+
 		return (
 			<div class="col-lg-8">
 				<div class="panel panel-default">
 					<ListHeader 
 						setSelectedCampgainId={this.props.setSelectedCampgainId} 
+						setAlert={this.props.setAlert}
 						deleteList={this.props.deleteList} 
+						source={this.props.source} 
 						deleteCampgain={this.props.deleteCampgain}
 						getCampgains={this.props.getCampgains} />
 

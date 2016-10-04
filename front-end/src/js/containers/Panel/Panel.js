@@ -24,7 +24,7 @@ export default class Panel extends React.Component {
 	  					<div class="row">
 
 							    <div class="col-lg-8">
-							      <input type="email" class="form-control" id="inputCampgain" placeholder="Input campgain.."/>
+							      <input type="email" class="form-control" id="inputCampgain" placeholder="Input campgain name"/>
 							    </div>
 
 							    <div class="col-lg-4">
@@ -33,6 +33,7 @@ export default class Panel extends React.Component {
 	  					</div>
 	  				</div>
 					</div>
+
 					<UploadRecipientsContainer  setAlert={this.props.setAlert} source={this.props.source} />
 					<UploadTemplatesContainer setAlert={this.props.setAlert} />
 			</div>

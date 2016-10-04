@@ -81,18 +81,18 @@ class UploadRecipients extends React.Component {
 
 		return (
 			<div class="panel panel-default">
-			 <div class="panel-heading">Upload recipients ({campgainName})</div>
+			 <div class="panel-heading">Upload recipients</div>
   			<div class="panel-body">
   				<div class="row">
   					<div class="col-lg-4">
   							<input type='file' onChange={this.onChange.bind(this)} id="fileCsv" />
-						    <input type="button" onClick={this.triggerFile.bind(this)} class="btn" value="Choose csv" id="buttonCsv"/>
+						    <input type="button" onClick={this.triggerFile.bind(this)} class="btn" value="Choose csv" id="buttonCsv" disabled={!campgainName}/>
   					</div>
   					<div class="col-lg-4">
 						    <TemplatesChooserContainer selectName="csvTemplate" source={this.props.source} placeholder="Template" style={{width: '110px'}}/>
 						</div>
   					<div class="col-lg-2">
-  						<button type="button" class="btn btn-primary btn-block" onClick={this.props.onUpload}>Upload</button>
+  						<button type="button" class="btn btn-primary btn-block" onClick={this.props.onUpload} disabled={!campgainName}>Upload</button>
   					</div>
   				</div>		
   			</div>

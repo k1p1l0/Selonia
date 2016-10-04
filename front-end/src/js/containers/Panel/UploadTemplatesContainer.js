@@ -70,7 +70,7 @@ class UploadTemplate extends React.Component {
 	render() {
 		return (
 			<div class="panel panel-default">
-			 <div class="panel-heading">Add template</div>
+			 <div class="panel-heading">Upload template</div>
   			<div class="panel-body">
   				<div class="row">
   					<div class="col-lg-4">
