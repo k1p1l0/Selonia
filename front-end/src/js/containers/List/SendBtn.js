@@ -5,8 +5,8 @@ import { Button, Modal, Popover, OverlayTrigger } from 'react-bootstrap';
 import TemplatesChooserContainer from '../../components/TemplatesChooserContainer';
 
 export default class SendBtn extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       showModal: false,
@@ -16,10 +16,12 @@ export default class SendBtn extends React.Component {
 
   showModal() {
     this.setState({showModal: true});
+
   }
 
   closeModal() {
     this.setState({showModal: false});
+    this.setState({disabledTemplate: false});
   }
 
   changeBox() {
@@ -62,7 +64,7 @@ export default class SendBtn extends React.Component {
     }
 
     this.createPostRequest({
-      from: `${$introduceText} <${$email}@txm.net>`,
+      from: `${$introduceText} <${$email}@${this.props.getDomain}`,
       subject: $subject,
       ownTemplate: $checkOwnTemplate,
       template: $templateName,
@@ -126,7 +128,7 @@ export default class SendBtn extends React.Component {
                <div class="input-group">
                   <input type="text" onChange={this.onChangeDeleteClassWarnings.bind(this)} class="form-control" id="introduceText" placeholder="Introduce text" required/>
                   <input type="text" onChange={this.onChangeDeleteClassWarnings.bind(this)} class="form-control" id="inputEmail" placeholder="noreply" required/>
-                  <OverlayTrigger overlay={PopoverDomain}><p class="input-group-addon form-control-static">@boadens.com</p></OverlayTrigger>
+                  <OverlayTrigger overlay={PopoverDomain}><p class="input-group-addon form-control-static">@{this.props.getDomain}</p></OverlayTrigger>
                 </div>
               </div>
             </div>

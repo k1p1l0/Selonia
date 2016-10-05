@@ -21,8 +21,6 @@ export default class Navbar extends React.Component {
         <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
         <li><a href="#">Logs</a></li>
         <li><a href="#">Templates</a></li>
-        <li><a href="#">Domains</a></li>
-        <li><a href="#">Campgains</a></li>
       </ul>
 	    </div>
 	  </div>

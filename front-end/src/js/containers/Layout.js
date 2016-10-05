@@ -1,9 +1,8 @@
 import React from "react";
 import AlertContainer from 'react-alert';
 
-import Navbar from './Navbar';
 import Panel from './Panel/Panel';
-import ListContainer from './List/List';
+import ListContainer from './List/ListContainer';
 
 export default class LayoutContainer extends React.Component {
 	constructor(props) {
@@ -11,7 +10,7 @@ export default class LayoutContainer extends React.Component {
 
 		this.state = {
 			campgains: [],
-			domains: [],
+			domain: '',
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectCampgainName'),
 			campgainTimerId: null
@@ -26,51 +25,6 @@ export default class LayoutContainer extends React.Component {
     };
 	}
 
-	loadDomains() {
-		$.ajax({
-			type: 'GET',
-			url: `${this.props.source}/domains`,
-
-			success: function(data) {
-				this.setState({
-					domains: data.Items
-				});
-			}.bind(this)
-		});
-	}
-	
-  createDomain({name}) {
-  	if (!name.length) {
-  		this.setAlert({ 
-  			message: 'You should enter domain name',
-  			type: 'info'
-  		});
-
-  		return;
-  	}
-
-    $.ajax({
-      type: 'POST',
-			url: `${this.props.source}/domains`,
-			data: JSON.stringify({
-				name
-			}),
-			contentType: "application/json",
-
-			success: function(data) {				
-				this.setState({
-					domains: this.state.domains.concat(data)
-				});
-
-				this.setAlert({
-	  			message: 'Domain is successfully added  - ' + data.name,
-	  			type: 'success'
-  			});
-
-			}.bind(this)
-    });
-  }
-
 	loadCompgain() {
     $.ajax({
       type: 'GET',
@@ -79,9 +33,23 @@ export default class LayoutContainer extends React.Component {
 			success: function(data) {
 				this.setState({
 					campgains: data.Items
-				});
+				}, function() {
+					this.changeDomainEmail();
+				}.bind(this));
 			}.bind(this)
     });
+  }
+
+  changeDomainEmail() {
+  	this.setState({domain: this.getDomainEmail()});
+  }
+
+ 	getDomainEmail() {
+    return this.state.campgains.filter(function (campgain) {
+      return campgain.id === +this.state.selectedCampgainId;
+    }.bind(this)).map(function (campgain) {
+      return campgain.domain.split('.').splice(1).join('.');
+    }).pop();
   }
 
   createCampgain({name, domain}) {
@@ -144,7 +112,9 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	setSelectedCampgainId(id) {
-		this.setState({selectedCampgainId: id});
+		this.setState({selectedCampgainId: id}, function() {
+			this.changeDomainEmail();
+		}.bind(this));
 	}
 
 	setAlert({message, type}) {
@@ -161,11 +131,13 @@ export default class LayoutContainer extends React.Component {
 				message={this.state.message}
 				showAlert={this.state.alert}
 				getCampgainId={this.state.selectedCampgainId} 
+				getDomain={this.state.domain}
 				source={this.props.source} 
 				createCampgain={this.createCampgain.bind(this)} 
 				setSelectedCampgainId={this.setSelectedCampgainId.bind(this)}
 				stopIntervalCampgainLoad={this.stopIntervalCampgainLoad.bind(this)}
 				startIntervalCampgainLoad={this.startIntervalCampgainLoad.bind(this)}
+				changeDomainEmail={this.changeDomainEmail.bind(this)}
 				setAlert={this.setAlert.bind(this)}>
 				<AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
 			</Layout>
@@ -181,9 +153,11 @@ class Layout extends React.Component {
 	    		<ListContainer 
 	    			source={this.props.source} 
 	    			templates={this.props.templates}
+	    			changeDomainEmail={this.props.changeDomainEmail}
 	    			getCampgains={this.props.campgains} 
 	    			getTemplates={this.props.getTemplates} 
 	    			getCampgainId={this.props.getCampgainId} 
+	    			getDomain={this.props.getDomain}
 	    			setSelectedCampgainId={this.props.setSelectedCampgainId}
 	    			stopIntervalCampgainLoad={this.props.stopIntervalCampgainLoad}
 	    			startIntervalCampgainLoad={this.props.startIntervalCampgainLoad}

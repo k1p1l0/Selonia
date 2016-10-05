@@ -159,16 +159,18 @@ export default class ListContainer extends React.Component {
 
 	render() {
 		return <List 
-			setAlert={this.props.setAlert}
-			getRecipients={this.state.recipients} 
-			source={this.props.source} 
-			getCampgainId={this.props.getCampgainId}
 			createNew={this.createRecipientFromClient.bind(this)}
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
+			setAlert={this.props.setAlert}
+			getRecipients={this.state.recipients} 
+			getCampgainId={this.props.getCampgainId}
+			changeDomainEmail={this.props.changeDomainEmail}
 			getCampgains={this.props.getCampgains} 
+			getDomain={this.props.getDomain}
 			deleteRecipient={this.deleteRecipient.bind(this)}
 			deleteList={this.deleteList.bind(this)}
-			deleteCampgain={this.deleteCampgain.bind(this)} />
+			deleteCampgain={this.deleteCampgain.bind(this)} 
+			source={this.props.source} />
 	}
 }
 
@@ -192,6 +194,7 @@ class List extends React.Component {
 						source={this.props.source} 
 						getCampgainId={this.props.getCampgainId}
 						deleteCampgain={this.props.deleteCampgain}
+						getDomain={this.props.getDomain}
 						getCampgains={this.props.getCampgains} 
 						getRecipients={this.props.getRecipients} />
 
