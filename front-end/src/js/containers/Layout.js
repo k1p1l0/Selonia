@@ -84,10 +84,19 @@ export default class LayoutContainer extends React.Component {
     });
   }
 
-  createCampgain({name}) {
+  createCampgain({name, domain}) {
   	if (!name.length) {
   		this.setAlert({ 
-  			message: 'You should enter campaign name',
+  			message: 'Please enter campaign name',
+  			type: 'info'
+  		});
+
+  		return;
+  	}
+
+  	 if (~domain.indexOf('Domain')) {
+  		this.setAlert({ 
+  			message: 'Please choose domain name',
   			type: 'info'
   		});
 
@@ -98,7 +107,8 @@ export default class LayoutContainer extends React.Component {
       type: 'POST',
 			url: `${this.props.source}/campgains`,
 			data: JSON.stringify({
-				name
+				name,
+				domain
 			}),
 			contentType: "application/json",
 

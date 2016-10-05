@@ -9,7 +9,8 @@ function init (event, context, callback) {
 	let params = {
 		Item: {
 			id: parseInt(event.name.hashCode()),
-			name: event.name
+			name: event.name,
+			domain: event.domain
 		},
 
 		TableName
