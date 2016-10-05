@@ -183,8 +183,10 @@ class List extends React.Component {
 						setAlert={this.props.setAlert}
 						deleteList={this.props.deleteList} 
 						source={this.props.source} 
+						getCampgainId={this.props.getCampgainId}
 						deleteCampgain={this.props.deleteCampgain}
-						getCampgains={this.props.getCampgains} />
+						getCampgains={this.props.getCampgains} 
+						getRecipients={this.props.getRecipients} />
 
 					<div class="loader">
 					</div>

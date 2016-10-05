@@ -27,27 +27,63 @@ export default class SendBtn extends React.Component {
   }
 
   sendEmails() {
-    this.validate();
-  }
+     let $templateName = $('#globalTemplate option:selected').text(),
+        $checkOwnTemplate = $('#ownTemplate').prop('checked'),
+        $introduceText = $('#introduceText').val(),
+        $subject = $('#subject').val(),
+        $email = $('#inputEmail').val();
 
-  validate() {
-    let templateName = $('select[name="globalTemplate"] option:selected').text(),
-        checkOwnTemplate = $('#ownTemplate').prop('checked'),
-        email = $('#inputEmail').val();
+    if (!$introduceText) {
+      this.props.setAlert({message:'Please enter an introduce text', type:'info'});
 
-    if (!email) {
-      this.props.setAlert({message:'You must enter an email', type:'info'});
+      $("#introduceText").closest( ".form-group" ).addClass('has-warning');
+      return;
+    }
+
+    if (!$email) {
+      this.props.setAlert({message:'Please enter an email', type:'info'});
 
       $("#inputEmail").closest( ".form-group" ).addClass('has-warning');
       return;
     }
 
-    if (!templateName || !checkOwnTemplate) {
-      this.props.setAlert({message:'You must choose a template', type:'info'});
+    if (!$subject) {
+      this.props.setAlert({message:'Please enter a subject', type:'info'});
 
-      $('select[name="globalTemplate"]').closest( ".form-group" ).addClass('has-warning');
+      $("#subject").closest( ".form-group" ).addClass('has-warning');
       return;
     }
+
+    if (~$templateName.indexOf('Global') && !$checkOwnTemplate) {
+      this.props.setAlert({message:'Please choose a template', type:'info'});
+
+      $('#globalTemplate').closest( ".form-group" ).addClass('has-warning');
+      return;
+    }
+
+    this.createPostRequest({
+      from: `${$introduceText} <${$email}@txm.net>`,
+      subject: $subject,
+      ownTemplate: $checkOwnTemplate,
+      template: $templateName,
+      recipients: this.props.getRecipients
+    });
+  }
+
+  createPostRequest(event) {
+    $.ajax({
+      type: 'POST',
+      url: `${this.props.source}/campgains/${this.props.getCampgainId}/send`,
+      data: JSON.stringify(event),
+      contentType: "application/json",
+      success: function(data) {
+        if (!data.errorMessage) {
+          this.props.setAlert({message: 'Emails is successfully sent', type: 'success'});
+        } else {
+          this.props.setAlert({message: data.errorMessage, type: 'error'});
+        }
+      }.bind(this)
+    });
   }
 
   onChangeDeleteClassWarnings(e) {
@@ -85,8 +121,8 @@ export default class SendBtn extends React.Component {
               <label for="inputEmail3" class="col-sm-2 control-label">From</label>
               <div class="col-sm-10">
                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Introduce text"/>
-                  <input type="text" onChange={this.onChangeDeleteClassWarnings.bind(this)} class="form-control" id="inputEmail" placeholder="noreply"/>
+                  <input type="text" onChange={this.onChangeDeleteClassWarnings.bind(this)} class="form-control" id="introduceText" placeholder="Introduce text" required/>
+                  <input type="text" onChange={this.onChangeDeleteClassWarnings.bind(this)} class="form-control" id="inputEmail" placeholder="noreply" required/>
                   <OverlayTrigger overlay={PopoverDomain}><p class="input-group-addon form-control-static">@boadens.com</p></OverlayTrigger>
                 </div>
               </div>
@@ -95,7 +131,7 @@ export default class SendBtn extends React.Component {
             <div class="form-group">
               <label for="inputPassword3" class="col-sm-2 control-label">Subject</label>
               <div class="col-sm-10">
-                <OverlayTrigger overlay={PopoverSubject}><input type="text" class="form-control" id="inputPassword3" placeholder="Input subject.."/></OverlayTrigger>
+                <OverlayTrigger overlay={PopoverSubject}><input type="text" onChange={this.onChangeDeleteClassWarnings.bind(this)} class="form-control" id="subject" placeholder="Input subject.."/></OverlayTrigger>
               </div>
             </div>
 

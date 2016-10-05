@@ -26,7 +26,7 @@ export default class ListHeader extends React.Component {
 
 						<h2> {campgainName} <small>{~campgainName.indexOf('Please') ? '': 'Chosen campaign'}</small></h2>	
 				  	
-				  	<SendBtn buttonProps={buttonProps} setAlert={this.props.setAlert} source={this.props.source}/>
+				  	<SendBtn buttonProps={buttonProps} getCampgainId={this.props.getCampgainId} getRecipients={this.props.getRecipients} setAlert={this.props.setAlert} source={this.props.source}/>
 					  <button {...buttonProps} onClick={this.props.deleteList}>Delete list</button>
 					  <button {...buttonProps} onClick={this.props.deleteCampgain}>Delete campaign</button>
 			  </div>
