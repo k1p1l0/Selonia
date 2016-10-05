@@ -1,7 +1,11 @@
 import React from 'react';
 
+import Navbar from '../Navbar';
+
 import ListHeader from './ListHeader';
 import ListBody from './ListBody';
+
+
 
 export default class ListContainer extends React.Component {
 	constructor(props) {
@@ -177,6 +181,9 @@ class List extends React.Component {
 
 		return (
 			<div class="col-lg-8">
+				<Navbar>
+	    	</Navbar>
+
 				<div class="panel panel-default">
 					<ListHeader 
 						setSelectedCampgainId={this.props.setSelectedCampgainId} 

@@ -4,24 +4,29 @@ import React from 'react';
 export default class Navbar extends React.Component {
 	render() {
 		return (
-			<nav class="navbar navbar-default">
-			  <div class="container">
-			  	<div class="navbar-header">
-	        	<p><a class="navbar-brand" href="#">Selonia</a> </p>
-	        </div>
+		<nav class="navbar navbar-default">
+  	<div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Selonia</a>
+    </div>
 
-	        <ul class="nav navbar-nav">
-	          <li class="active"><a href="#">Main <span class="sr-only">(current)</span></a></li>
-        		<li><a href="#" disabled>Logs</a></li>
-	        </ul>
-	        	<div class="navbar-right">
-		        	<form class="navbar-form navbar-left">
-				        <button type="submit" class="btn btn-default" disabled>Profile</button>
-				        <button type="submit" class="btn btn-default" disabled>Logout</button>
-	      			</form>
-	        	</div>
-	        </div>
-			</nav>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Logs</a></li>
+        <li><a href="#">Templates</a></li>
+        <li><a href="#">Domains</a></li>
+        <li><a href="#">Campgains</a></li>
+      </ul>
+	    </div>
+	  </div>
+	</nav>
 		)
 	}
 }

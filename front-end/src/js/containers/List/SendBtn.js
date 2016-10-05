@@ -67,10 +67,12 @@ export default class SendBtn extends React.Component {
       ownTemplate: $checkOwnTemplate,
       template: $templateName,
       recipients: this.props.getRecipients
-    });
+    }, function() {
+      this.closeModal();
+    }.bind(this));
   }
 
-  createPostRequest(event) {
+  createPostRequest(event, callback) {
     $.ajax({
       type: 'POST',
       url: `${this.props.source}/campgains/${this.props.getCampgainId}/send`,
@@ -79,6 +81,7 @@ export default class SendBtn extends React.Component {
       success: function(data) {
         if (!data.errorMessage) {
           this.props.setAlert({message: 'Emails is successfully sent', type: 'success'});
+          callback();
         } else {
           this.props.setAlert({message: data.errorMessage, type: 'error'});
         }
@@ -108,7 +111,7 @@ export default class SendBtn extends React.Component {
     return (
       <div class="btn-group">
         <button {...this.props.buttonProps} onClick={this.showModal.bind(this)}>
-          Send to all
+          Send emails
         </button>
 
         <Modal show={this.state.showModal} onHide={this.closeModal.bind(this)}>
@@ -151,16 +154,11 @@ export default class SendBtn extends React.Component {
                   </div>
                 </div>
               </div>
-
-             <div class="form-group">
-              <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" style={{marginLeft: '0px'}} onClick={this.sendEmails.bind(this)} class="btn btn-default">Send</button>
-              </div>
-            </div>
           </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.closeModal.bind(this)}>Close</Button>
+              <Button onClick={this.closeModal.bind(this)} class="btn btn-danger">Close</Button>
+              <Button onClick={this.sendEmails.bind(this)} class="btn btn-success">Send</Button>
           </Modal.Footer>
         </Modal>
       </div>

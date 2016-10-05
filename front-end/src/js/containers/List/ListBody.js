@@ -86,7 +86,7 @@ class RecipientTable extends React.Component {
 						{this.props.data.templateName}
 				</td>
 				<td>
-					<button type="button" class="btn btn-success" disabled>Send</button>
+					<button type="button" class="btn" disabled>Edit</button>
 					<button type="button" class="btn btn-danger" onClick={this.deleteRecipient.bind(this, this.props.data.id)}>Delete</button>
 				</td>
 			</tr>

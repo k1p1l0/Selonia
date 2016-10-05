@@ -11,7 +11,7 @@ export default class TemplatesChooserContainer extends React.Component {
 
 	componentWillMount() {
 		this.loadTemplates();
-		this.loadInterval = setInterval(this.loadTemplates.bind(this), 5000);
+		// this.loadInterval = setInterval(this.loadTemplates.bind(this), 5000);
 	}
 
 	componentWillUnmount() {
@@ -54,7 +54,7 @@ class TemplatesChooser extends React.Component {
 		  style: this.props.style
 		};
 
-		if (options.length === 0 || this.props.disabled) selectProps.disabled = true;
+		if (this.props.disabled) selectProps.disabled = true;
 
 		return (
 			<select name={this.props.selectName} id={this.props.selectName} class="form-control" {...selectProps}>

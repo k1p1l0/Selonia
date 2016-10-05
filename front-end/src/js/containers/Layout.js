@@ -11,6 +11,7 @@ export default class LayoutContainer extends React.Component {
 
 		this.state = {
 			campgains: [],
+			domains: [],
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectCampgainName'),
 			campgainTimerId: null
@@ -24,6 +25,51 @@ export default class LayoutContainer extends React.Component {
       transition: 'scale'
     };
 	}
+
+	loadDomains() {
+		$.ajax({
+			type: 'GET',
+			url: `${this.props.source}/domains`,
+
+			success: function(data) {
+				this.setState({
+					domains: data.Items
+				});
+			}.bind(this)
+		});
+	}
+	
+  createDomain({name}) {
+  	if (!name.length) {
+  		this.setAlert({ 
+  			message: 'You should enter domain name',
+  			type: 'info'
+  		});
+
+  		return;
+  	}
+
+    $.ajax({
+      type: 'POST',
+			url: `${this.props.source}/domains`,
+			data: JSON.stringify({
+				name
+			}),
+			contentType: "application/json",
+
+			success: function(data) {				
+				this.setState({
+					domains: this.state.domains.concat(data)
+				});
+
+				this.setAlert({
+	  			message: 'Domain is successfully added  - ' + data.name,
+	  			type: 'success'
+  			});
+
+			}.bind(this)
+    });
+  }
 
 	loadCompgain() {
     $.ajax({
@@ -122,9 +168,6 @@ class Layout extends React.Component {
     return (
     	<div class="container content">
 				<div class="row">
-	    		<Navbar>
-	    		</Navbar>
-
 	    		<ListContainer 
 	    			source={this.props.source} 
 	    			templates={this.props.templates}

@@ -22,14 +22,14 @@ export default class ListHeader extends React.Component {
 		
 		return (
 			<div class="panel-heading">
-						<CampaignsChooser values={this.props.getCampgains} name="campaign" text="campaign" setSelectedCampgainId={this.props.setSelectedCampgainId}/>
+				<CampaignsChooser values={this.props.getCampgains} name="campaign" text="campaign" setSelectedCampgainId={this.props.setSelectedCampgainId}/>
 
-						<h2> {campgainName} <small>{~campgainName.indexOf('Please') ? '': 'Chosen campaign'}</small></h2>	
-				  	
-				  	<SendBtn buttonProps={buttonProps} getCampgainId={this.props.getCampgainId} getRecipients={this.props.getRecipients} setAlert={this.props.setAlert} source={this.props.source}/>
-					  <button {...buttonProps} onClick={this.props.deleteList}>Delete list</button>
-					  <button {...buttonProps} onClick={this.props.deleteCampgain}>Delete campaign</button>
-			  </div>
+				<h2> {campgainName} <small>{~campgainName.indexOf('Please') ? '': 'Chosen campaign'}</small></h2>	
+		  	
+		  	<SendBtn buttonProps={buttonProps} getCampgainId={this.props.getCampgainId} getRecipients={this.props.getRecipients} setAlert={this.props.setAlert} source={this.props.source}/>
+			  <button {...buttonProps} onClick={this.props.deleteList}>Delete list</button>
+			  <button {...buttonProps} onClick={this.props.deleteCampgain}>Delete campaign</button>
+			</div>
 		)
 	}
 }
