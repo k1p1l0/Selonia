@@ -47,6 +47,7 @@ export default class UploadTemplateContainer extends React.Component {
 
 		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
 
+		    	This.props.startIntervalTemplateLoad();
 	      	This.props.setAlert({message: 'Template ' + data.Key.split('/').splice(1,1).pop() + ' uploaded successfully!', type: 'success'});
 	    	})(this)
 	    }

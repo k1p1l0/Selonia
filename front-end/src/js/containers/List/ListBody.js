@@ -59,7 +59,7 @@ export default class ListBody extends React.Component {
 							<input type="text" class="form-control" id="emailInput" placeholder="Email input"/>
 						</td>
 						<td>
-							<TemplatesChooserContainer source={this.props.source} selectName="newRecipientTemplate" />
+							<TemplatesChooserContainer templates={this.props.templates} source={this.props.source} selectName="newRecipientTemplate" />
 						</td>
 						<td>
 							<button type="button" class="btn btn-success" onClick={this.createNewRecipient.bind(this)} style={{width: '95%'}}>Add</button>

@@ -44,7 +44,7 @@ export default class UploadRecipientsContainer extends React.Component {
 	    ACL: 'public-read'
 	  };
 
-	  S3.upload(params, function(err, data) {
+	  S3.upload(params, function(err) {
 	    if (!err) {
 	    	(function(This) {
 	    		let $fileChooser = $('#fileCsv'),
@@ -54,6 +54,7 @@ export default class UploadRecipientsContainer extends React.Component {
 
 		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
 
+		    	This.props.startIntervalRecipientsLoad();
 	      	This.props.setAlert({message: 'Recipients ' + localStorage.getItem('selectCampgainName') + ' uploaded successfully!', type: 'success'});
 	    	})(this)
 	    } else {
@@ -63,7 +64,7 @@ export default class UploadRecipientsContainer extends React.Component {
 	}
 
 	render() {
-		return <UploadRecipients onUpload={this.onUpload.bind(this)} source={this.props.source}/>
+		return <UploadRecipients onUpload={this.onUpload.bind(this)} templates={this.props.templates} source={this.props.source}/>
 	} 
 }
 
@@ -89,7 +90,7 @@ class UploadRecipients extends React.Component {
 						    <input type="button" onClick={this.triggerFile.bind(this)} class="btn" value="Choose csv" id="buttonCsv" disabled={!campgainName}/>
   					</div>
   					<div class="col-lg-4">
-						    <TemplatesChooserContainer selectName="csvTemplate" source={this.props.source} placeholder="Template" style={{width: '110px'}}/>
+						  <TemplatesChooserContainer selectName="csvTemplate" templates={this.props.templates} placeholder="Template" style={{width: '110px'}}/>
 						</div>
   					<div class="col-lg-2">
   						<button type="button" class="btn btn-primary btn-block" onClick={this.props.onUpload} disabled={!campgainName}>Upload</button>

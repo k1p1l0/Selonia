@@ -10,10 +10,14 @@ export default class LayoutContainer extends React.Component {
 
 		this.state = {
 			campgains: [],
+			templates: [],
+			recipients: [],
 			domain: '',
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectCampgainName'),
-			campgainTimerId: null
+			campgainTimerId: null,
+			templateTimerId: null,
+			recipientsTimerId: null
 		};
 
 		this.alertOptions = {
@@ -24,6 +28,58 @@ export default class LayoutContainer extends React.Component {
       transition: 'scale'
     };
 	}
+
+	loadRecipients(newId) {
+		var URL = (newId > 0) ? `${this.props.source}/campgains/${newId}`: `${this.props.source}/campgains/${this.state.selectedCampgainId}`
+
+		if (~URL.indexOf('null') || this.state.selectedCampgainId === null) {
+			return;
+		}
+
+    $.ajax({
+      type: 'GET', 
+			url: URL,
+
+			success: function(data) {
+				if (data.Items.length === 0) {
+					this.setState({recipients: []}, function() {
+							this.stopIntervalRecipientsLoad();
+						}.bind(this));
+				} else {
+					if (data.Items !== this.state.recipients) {
+						this.setState({recipients: data.Items}, function() {
+							this.stopIntervalRecipientsLoad();
+						}.bind(this));
+					}
+				}
+
+				$('.loader').hide();
+				$('#main-table').show();
+			}.bind(this),
+
+			error: function (xhr, ajaxOptions, thrownError) {
+        console.log(xhr.status);
+        console.log(thrownError);
+      }
+    });
+  }
+
+	loadTemplates() {
+    $.ajax({
+      type: 'GET',
+			url: `${this.props.source}/templates`,
+
+			success: function(data) {
+				if (data.Items !== this.state.templates) {
+					this.setState({
+						templates: data.Items
+					}, function() {
+						this.stopIntervalTemplateLoad();
+					}.bind(this));
+				}
+			}.bind(this)
+    });
+  }
 
 	loadCompgain() {
     $.ajax({
@@ -96,10 +152,23 @@ export default class LayoutContainer extends React.Component {
 
 	componentWillMount() {
 		this.loadCompgain();
+		this.loadTemplates();
+		this.loadRecipients();
+	}
+
+	startIntervalRecipientsLoad() {
+		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 500);
+		this.setState({recipientsTimerId});
+	}
+
+	stopIntervalRecipientsLoad() {
+		if (this.state.recipientsTimerId) {
+			clearTimeout(this.state.recipientsTimerId);
+		}
 	}
 
 	startIntervalCampgainLoad() {
-		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 2000);
+		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 500);
 		this.setState({campgainTimerId});
 
 		setTimeout(this.stopIntervalCampgainLoad.bind(this), 5000);
@@ -108,6 +177,17 @@ export default class LayoutContainer extends React.Component {
 	stopIntervalCampgainLoad() {
 		if (this.state.campgainTimerId) {
 			clearTimeout(this.state.campgainTimerId);
+		}
+	}
+
+	startIntervalTemplateLoad() {
+		let templateTimerId = setInterval(this.loadTemplates.bind(this), 500);
+		this.setState({templateTimerId});
+	}
+
+	stopIntervalTemplateLoad() {
+		if (this.state.templateTimerId) {
+			clearTimeout(this.state.templateTimerId);
 		}
 	}
 
@@ -128,6 +208,7 @@ export default class LayoutContainer extends React.Component {
 			<Layout 
 				campgains={this.state.campgains} 
 				templates={this.state.templates}
+				recipients={this.state.recipients}
 				message={this.state.message}
 				showAlert={this.state.alert}
 				getCampgainId={this.state.selectedCampgainId} 
@@ -137,6 +218,8 @@ export default class LayoutContainer extends React.Component {
 				setSelectedCampgainId={this.setSelectedCampgainId.bind(this)}
 				stopIntervalCampgainLoad={this.stopIntervalCampgainLoad.bind(this)}
 				startIntervalCampgainLoad={this.startIntervalCampgainLoad.bind(this)}
+				startIntervalTemplateLoad={this.startIntervalTemplateLoad.bind(this)}
+				startIntervalRecipientsLoad={this.startIntervalRecipientsLoad.bind(this)}
 				changeDomainEmail={this.changeDomainEmail.bind(this)}
 				setAlert={this.setAlert.bind(this)}>
 				<AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
@@ -153,6 +236,7 @@ class Layout extends React.Component {
 	    		<ListContainer 
 	    			source={this.props.source} 
 	    			templates={this.props.templates}
+	    			recipients={this.props.recipients}
 	    			changeDomainEmail={this.props.changeDomainEmail}
 	    			getCampgains={this.props.campgains} 
 	    			getTemplates={this.props.getTemplates} 
@@ -161,10 +245,13 @@ class Layout extends React.Component {
 	    			setSelectedCampgainId={this.props.setSelectedCampgainId}
 	    			stopIntervalCampgainLoad={this.props.stopIntervalCampgainLoad}
 	    			startIntervalCampgainLoad={this.props.startIntervalCampgainLoad}
+	    			startIntervalRecipientsLoad={this.props.startIntervalRecipientsLoad}
 	    			setAlert={this.props.setAlert} />
 
 	    		<Panel 
 	    			createCampgain={this.props.createCampgain}
+	    			startIntervalTemplateLoad={this.props.startIntervalTemplateLoad}
+						startIntervalRecipientsLoad={this.props.startIntervalRecipientsLoad} 
 	    			source={this.props.source} 
 	    			setAlert={this.props.setAlert} 
 	    			templates={this.props.templates} 

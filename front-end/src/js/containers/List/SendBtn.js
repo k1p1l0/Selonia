@@ -143,7 +143,7 @@ export default class SendBtn extends React.Component {
             <div class="form-group">
               <label for="inputPassword3" class="col-sm-2 control-label">Template</label>
               <div class="col-sm-10">
-                <TemplatesChooserContainer onChange={this.onChangeDeleteClassWarnings.bind(this)} selectName="globalTemplate" source={this.props.source} disabled={this.state.disabledTemplate} placeholder="Global template" />
+                <TemplatesChooserContainer onChange={this.onChangeDeleteClassWarnings.bind(this)} selectName="globalTemplate" templates={this.props.templates} disabled={this.state.disabledTemplate} placeholder="Global template" />
               </div>
             </div>
 

@@ -2,46 +2,15 @@ import React from 'react';
 
 import UploadRecipientsContainer from './UploadRecipientsContainer';
 import UploadTemplatesContainer from './UploadTemplatesContainer';
-import AddDomainContainer from './AddDomainContainer';
+import CreateCampgain from './CreateCampgain';
 
 export default class Panel extends React.Component {
-	createCampgain() {
-		let data = {
-			name: $('#inputCampgain').val(),
-			domain: $('#inputDomain option:selected').text()
-		}
-
-		$('#inputCampgain').val('');
-
-		this.props.createCampgain(data);
-	}
-
 	render() {
 		return (
 			<div class="col-lg-4">
-
-					<div class="panel panel-default">
-		  			<div class="panel-heading">Create campgain</div>
-		  				<div class="panel-body">
-		  					<div class="row">
-
-								    <div class="col-lg-4">
-								      <input type="email" class="form-control" id="inputCampgain" style={{width: '110px'}} placeholder="Name"/>
-								    </div>
-
-								    <div class="col-lg-4">
-								   		<AddDomainContainer name="inputDomain" source={this.props.source} />
-								    </div>
-
-								    <div class="col-lg-4">
-								      <button type="submit" onClick={this.createCampgain.bind(this)} class="btn btn-primary btn-block">Create</button>
-								    </div>
-		  					</div>
-		  				</div>
-						</div>
-
-					<UploadRecipientsContainer setAlert={this.props.setAlert} source={this.props.source} />
-					<UploadTemplatesContainer setAlert={this.props.setAlert} />
+				<CreateCampgain createCampgain={this.props.createCampgain} source={this.props.source} />
+				<UploadRecipientsContainer setAlert={this.props.setAlert} templates={this.props.templates} startIntervalRecipientsLoad={this.props.startIntervalRecipientsLoad} source={this.props.source} />
+				<UploadTemplatesContainer startIntervalTemplateLoad={this.props.startIntervalTemplateLoad} setAlert={this.props.setAlert} />
 			</div>
 		)
 	}
