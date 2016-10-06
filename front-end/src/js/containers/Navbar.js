@@ -1,8 +1,13 @@
 import React from 'react';
-
+import { Link } from 'react-router'
+import cls from 'classnames';
 
 export default class Navbar extends React.Component {
 	render() {
+    const { pathname } = this.props.location;
+    const indexActive = cls({'active': pathname === '/'});
+    const logsActive = cls({'active': ~pathname.indexOf('logs')});
+
 		return (
 		<nav class="navbar navbar-default">
   	<div class="container-fluid">
@@ -18,8 +23,8 @@ export default class Navbar extends React.Component {
 
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Logs</a></li>
+        <li class={indexActive}><Link to='/'>Home <span class="sr-only">(current)</span></Link></li>
+        <li class={logsActive}><Link to='logs'>Logs</Link></li>
         <li><a href="#">Templates</a></li>
       </ul>
 	    </div>

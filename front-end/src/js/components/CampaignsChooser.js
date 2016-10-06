@@ -4,6 +4,9 @@ export default class CampaignsChooser extends React.Component {
 	changeCampgain (e) {
 		let target = e.target.options;
 
+		$('.loader').show();
+	  $('#main-table').hide();
+
 		localStorage.setItem('selectCampgainName', target[target.selectedIndex].text);
 		localStorage.setItem('selectCampgainId', e.target.value);
 
@@ -30,4 +33,3 @@ export default class CampaignsChooser extends React.Component {
 		)
 	}
 }
-

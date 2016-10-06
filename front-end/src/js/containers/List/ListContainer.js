@@ -146,9 +146,6 @@ class List extends React.Component {
 
 		return (
 			<div class="col-lg-8">
-				<Navbar>
-	    	</Navbar>
-
 				<div class="panel panel-default">
 					<ListHeader 
 						setSelectedCampgainId={this.props.setSelectedCampgainId} 

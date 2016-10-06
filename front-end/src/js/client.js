@@ -1,13 +1,38 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router, Route, IndexRoute, hashHistory} from 'react-router';
 
 import LayoutContainer from './containers/Layout';
+import App from './containers/App';
 
 const API_URL = 'https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod';
 
-const app = document.getElementById('app');
+const $app = $('#app');
 
-ReactDOM.render(<LayoutContainer source={API_URL} />, app);
+class LayoutWrapper extends React.Component {
+  render() {
+    return (
+    	<LayoutContainer source={API_URL} />
+    );
+  }
+}
+
+class Logs extends React.Component {
+  render() {
+    return (
+			<h1>123</h1>
+    );
+  }
+}
+
+ReactDOM.render(
+	<Router history={hashHistory}>
+		<Route path='/' component={App}>
+			<IndexRoute component={LayoutWrapper}></IndexRoute>
+			<Route path='/logs' component={Logs} />
+		</Route>
+	</Router>,
+$app[0])
 
 String.prototype.hashCode = function() {
   var hash = 0, i, chr, len;

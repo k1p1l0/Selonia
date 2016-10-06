@@ -41,18 +41,12 @@ export default class LayoutContainer extends React.Component {
 			url: URL,
 
 			success: function(data) {
-				if (data.Items.length === 0) {
-					this.setState({recipients: []}, function() {
-							this.stopIntervalRecipientsLoad();
-						}.bind(this));
-				} else {
-					if (data.Items !== this.state.recipients) {
-						this.setState({recipients: data.Items}, function() {
-							this.stopIntervalRecipientsLoad();
-						}.bind(this));
-					}
+				if (data.Items.length !== this.state.recipients.length) {
+					this.setState({recipients: data.Items}, function() {
+						this.stopIntervalRecipientsLoad();
+					}.bind(this));
 				}
-
+				
 				$('.loader').hide();
 				$('#main-table').show();
 			}.bind(this),
@@ -70,11 +64,9 @@ export default class LayoutContainer extends React.Component {
 			url: `${this.props.source}/templates`,
 
 			success: function(data) {
-				if (data.Items !== this.state.templates) {
-					this.setState({
-						templates: data.Items
-					}, function() {
-						this.stopIntervalTemplateLoad();
+				if (data.Items.length !== this.state.templates.length) {
+					this.setState({templates: data.Items}, function() {
+					this.stopIntervalTemplateLoad();
 					}.bind(this));
 				}
 			}.bind(this)
@@ -87,17 +79,11 @@ export default class LayoutContainer extends React.Component {
 			url: `${this.props.source}/campgains`,
 
 			success: function(data) {
-				if (data.Items.length === 0) {
-					this.setState({campgains: []}, function() {
-							this.stopIntervalCampgainLoad();
-						}.bind(this));
-				} else {
-					if (data.Items !== this.state.recipients) {
-						this.setState({campgains: data.Items}, function() {
-							this.stopIntervalCampgainLoad();
-							this.changeDomainEmail();
-						}.bind(this));
-					}
+				if (data.Items.length !== this.state.campgains.length) {
+					this.setState({campgains: data.Items}, function() {
+						this.stopIntervalCampgainLoad();
+						this.changeDomainEmail();
+					}.bind(this));
 				}
 			}.bind(this)
 		});
@@ -164,18 +150,17 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	startIntervalRecipientsLoad() {
-		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 500);
+		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 1000);
 		this.setState({recipientsTimerId});
 	}
 
 	stopIntervalRecipientsLoad() {
-		if (this.state.recipientsTimerId) {
-			clearTimeout(this.state.recipientsTimerId);
-		}
+		this.state.recipientsTimerId && clearInterval(this.state.recipientsTimerId);
+  	this.setState({recipientsTimerId: false});
 	}
 
 	startIntervalCampgainLoad() {
-		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 500);
+		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 1000);
 		this.setState({campgainTimerId});
 	}
 
@@ -186,7 +171,7 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	startIntervalTemplateLoad() {
-		let templateTimerId = setInterval(this.loadTemplates.bind(this), 500);
+		let templateTimerId = setInterval(this.loadTemplates.bind(this), 1000);
 		this.setState({templateTimerId});
 	}
 
@@ -236,8 +221,7 @@ export default class LayoutContainer extends React.Component {
 class Layout extends React.Component {
   render() {
     return (
-    	<div class="container content">
-				<div class="row">
+    		<div>
 	    		<ListContainer 
 	    			source={this.props.source} 
 	    			templates={this.props.templates}
@@ -261,9 +245,9 @@ class Layout extends React.Component {
 	    			setAlert={this.props.setAlert} 
 	    			templates={this.props.templates} 
 	    			getTemplates={this.props.getTemplates}/>
-				</div>
-				{this.props.children}
-			</div>	
+
+					{this.props.children}
+			</div>
     )	
   }
 }
