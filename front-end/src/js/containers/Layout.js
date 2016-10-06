@@ -87,13 +87,20 @@ export default class LayoutContainer extends React.Component {
 			url: `${this.props.source}/campgains`,
 
 			success: function(data) {
-				this.setState({
-					campgains: data.Items
-				}, function() {
-					this.changeDomainEmail();
-				}.bind(this));
+				if (data.Items.length === 0) {
+					this.setState({campgains: []}, function() {
+							this.stopIntervalCampgainLoad();
+						}.bind(this));
+				} else {
+					if (data.Items !== this.state.recipients) {
+						this.setState({campgains: data.Items}, function() {
+							this.stopIntervalCampgainLoad();
+							this.changeDomainEmail();
+						}.bind(this));
+					}
+				}
 			}.bind(this)
-    });
+		});
   }
 
   changeDomainEmail() {
@@ -170,8 +177,6 @@ export default class LayoutContainer extends React.Component {
 	startIntervalCampgainLoad() {
 		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 500);
 		this.setState({campgainTimerId});
-
-		setTimeout(this.stopIntervalCampgainLoad.bind(this), 5000);
 	}
 
 	stopIntervalCampgainLoad() {

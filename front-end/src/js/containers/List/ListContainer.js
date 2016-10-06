@@ -90,7 +90,6 @@ export default class ListContainer extends React.Component {
 		$('.loader').show();
 		$('#main-table').hide();
 		
-		this.props.stopIntervalCampgainLoad();
 		this.props.setSelectedCampgainId(null);
 		localStorage.removeItem('selectCampgainId');
 		localStorage.removeItem('selectCampgainName');
@@ -99,8 +98,6 @@ export default class ListContainer extends React.Component {
 	}
 
 	deleteCampgain() {
-		this.cleanCampgainTemp();
-
   	$.ajax({
   		type: 'DELETE',
   		url: `${this.props.source}/campgains`,
@@ -113,7 +110,7 @@ export default class ListContainer extends React.Component {
   		success: function(data) {
   			if (!data.errorMessage) {
 					this.props.setAlert({message: 'Campgain is successfully deleted', type: 'success'});
-					this.forceUpdate();
+					this.cleanCampgainTemp();
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
