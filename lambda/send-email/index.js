@@ -70,6 +70,8 @@ function sendMail(event) {
 				  sendTo({  
 				  	to: user.email,
 				  	html: results.html,
+				  	solt: user.id,
+				  	campaign: user.campgainId,
 				  	from,
 				  	subject
 				  });
@@ -83,19 +85,52 @@ function sendMail(event) {
 	return true;
 }
 
+
 function sendTo(event) {
 	let from = event.from,
 		to = event.to,
 		subject = event.subject,
-		html = event.html;
+		campaign = event.campaign,
+		html = event.html,
+		solt = event.solt;
 
-  transporter.sendMail({from, to, subject, html}, function(err, responseStatus) {
+  transporter.sendMail({from, to, subject, html}, function(err) {
+  	let params = {
+  		from: '' + from,
+  		subject: '' + subject,
+  		mailto: '' + to,
+  		time: new Date().getTime(),
+  		campaign,
+  		solt
+  	}
+
 	  if (err) {
-	    console.error(err) //TO LOGS
+	    params.response = err.message + '(' + err.statusCode + ')';
 	  } else {
-	  	console.log(responseStatus) //TO LOGS
+	  	params.response = '200';
 	  }
+
+	  createLog(params);
 	})
+}
+
+function createLog(event) {
+	var lambda = new AWS.Lambda({apiVersion: '2015-03-31', region: 'us-east-1'});
+
+	// console.log(event);
+
+	let params = {
+		FunctionName: 'create-log',
+  	Payload: JSON.stringify(event, null, 2) // pass params
+	};
+
+	lambda.invoke(params, function(error, data) {
+		  if (error) {
+		  	console.log(error);
+		  }
+
+		  console.log(data);
+	});
 }
 
 function ChopRecipients(event) {
@@ -139,7 +174,6 @@ function init (event, context, callback) {
 		});
 	}
 };
-
 
 // init({
 // 	 "recipients": [
