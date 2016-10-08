@@ -1,31 +1,46 @@
 import React from 'react';
-
+import AlertContainer from 'react-alert';
 import cls from 'classnames';
+import moment from 'moment';
 
 export default class extends React.Component {
 	constructor() {
 		super();
 
 		this.state = {
-			logs: []
+			logs: [],
+			timeUpdate: moment().format('LTS')
 		};
+
+		this.alertOptions = {
+      offset: 0,
+      position: 'top left',
+      theme: 'light',
+      time: 10000,
+      transition: 'scale'
+    };
 	}
 
-	loadLogs() {
-		console.log(`${this.props.source}/logs`);
-
+	loadLogs(callback) {
 		$.ajax({
 			type: 'GET',
 			url: `${this.props.source}/logs`,
 
 			success: function(data) {
 				if (!this.UnMount) {
-					this.setState({logs: data});
+					this.setState({logs: data}, callback ? callback: null);
+					this.setState({timeUpdate: moment().format('LTS')});
 					$('#refreshIcon').toggleClass('gly-spin');
 				}
 			}.bind(this)
 		})
 	}
+
+	setAlert({message, type}) {
+    msg.show(message, {
+      type
+    });
+  }
 
 	componentWillMount() {
 		this.UnMount = false;
@@ -40,7 +55,29 @@ export default class extends React.Component {
 	refreshLogs() {
 		$('#refreshIcon').toggleClass('gly-spin');
 
-		this.loadLogs();
+		this.loadLogs(function() {
+			this.setAlert({
+				message: 'Logs are successfully updated',
+				type: 'success'
+			});
+		}.bind(this));
+	}
+
+	loadAll() {
+	  let $icon = $('#loadIcon');
+	  let $text = $icon.next().text();
+	  let $button = $icon.closest('.btn');
+
+		$('#loadIcon').next().text(
+        $text === ' Show all campaigns' ? ' Hide other campaigns' : ' Show all campaigns');
+
+		$button.toggleClass('active');
+	  $icon.toggleClass('glyphicon-eye-open');
+	  $icon.toggleClass('glyphicon-eye-close');
+
+		this.load = !this.load;
+
+		this.forceUpdate();
 	}
 
 	createRow(log, i, local) {
@@ -59,23 +96,6 @@ export default class extends React.Component {
 			  	<td>{log.response}</td>
 		  </tr>
      );
-	}
-
-	loadAll() {
-	  let $icon = $('#loadIcon');
-	  let $text = $icon.next().text();
-	  let $button = $icon.closest('.btn');
-
-		$('#loadIcon').next().text(
-        $text === ' Show all campaigns' ? ' Hide other campaigns' : ' Show all campaigns');
-
-		$button.toggleClass('active');
-	  $icon.toggleClass('glyphicon-eye-open');
-	  $icon.toggleClass('glyphicon-eye-close');
-
-		this.load = !this.load;
-
-		this.forceUpdate();
 	}
 
 	render() {
@@ -100,6 +120,8 @@ export default class extends React.Component {
   			<button type="button" onClick={this.loadAll.bind(this)} class="btn btn-default" style={{marginBottom: '10px', marginLeft: '0px'}}>
 			  	<i id="loadIcon" class="glyphicon glyphicon-eye-open"></i><span> Show all campaigns</span>
   			</button>
+
+  			<p style={{fontSize: '23px'}}>Last update: {this.state.timeUpdate}</p>
 			  <table class="table table-bordered">
 			  <thead>
 			  	<tr class="active">
@@ -120,6 +142,7 @@ export default class extends React.Component {
 			  }
 			  </tfoot>
 			  </table>
+			  <AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
 			</div>
 		)
 	}

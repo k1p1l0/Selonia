@@ -47,6 +47,7 @@
 
 .btn {
   margin-left: 5px;
+  outline: none!important;
 }
 
 .col-lg-8 {
@@ -124,3 +125,4 @@
     transform: rotate(359deg);
   }
 }
+
