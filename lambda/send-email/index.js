@@ -7,6 +7,7 @@ const async = require('async');
 const EmailTemplate = require('email-templates').EmailTemplate;
 const nodemailer = require('nodemailer');
 const sesTransport = require('nodemailer-ses-transport');
+const moment = require('moment');
 
 var transporter = nodemailer.createTransport(sesTransport({
     accessKeyId: 'AKIAIUMCJGSBQ5ZP6QEQ',
@@ -99,7 +100,7 @@ function sendTo(event) {
   		from: '' + from,
   		subject: '' + subject,
   		mailto: '' + to,
-  		time: new Date().getTime(),
+  		time: moment().format('MMMM Do YYYY, h:mm:ss a'),
   		campaign,
   		solt
   	}
