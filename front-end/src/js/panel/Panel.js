@@ -9,8 +9,8 @@ export default class Panel extends React.Component {
 		return (
 			<div class="col-lg-4">
 				<PanelCampgain createCampgain={this.props.createCampgain} source={this.props.source} />
-				<PanelRecipients setAlert={this.props.setAlert} templates={this.props.templates} startIntervalRecipientsLoad={this.props.startIntervalRecipientsLoad} source={this.props.source} />
-				<PanelTemplates startIntervalTemplateLoad={this.props.startIntervalTemplateLoad} setAlert={this.props.setAlert} />
+				<PanelRecipients toggleLoadIcon={this.props.toggleLoadIcon} setAlert={this.props.setAlert} templates={this.props.templates} startIntervalRecipientsLoad={this.props.startIntervalRecipientsLoad} source={this.props.source} />
+				<PanelTemplates toggleLoadIcon={this.props.toggleLoadIcon} startIntervalTemplateLoad={this.props.startIntervalTemplateLoad} setAlert={this.props.setAlert} />
 			</div>
 		)
 	}

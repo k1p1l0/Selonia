@@ -89,6 +89,18 @@ export default class LayoutContainer extends React.Component {
 		});
   }
 
+  toggleLoadIcon(target, text) {
+  	let width = $(target).width();
+
+  	if ($(target).children()[0] === undefined) {
+  		$(target).prop('disabled', true);
+  		$(target).html(`<div style="width: ${width}px" class="glyphicon glyphicon-repeat gly-spin"></div>`);
+  	} else {
+  		$(target).prop('disabled', false);
+	  	$(target).html(text);
+  	}
+  }
+
   changeDomainEmail() {
   	this.setState({domain: this.getDomainEmail()});
   }
@@ -101,7 +113,7 @@ export default class LayoutContainer extends React.Component {
     }).pop();
   }
 
-  createCampgain({name, domain}) {
+  createCampgain({name, domain, target}) {
   	if (!name.length) {
   		this.setAlert({ 
   			message: 'Please enter campaign name',
@@ -119,6 +131,8 @@ export default class LayoutContainer extends React.Component {
 
   		return;
   	}
+
+  	this.toggleLoadIcon(target, 'Create');
 
     $.ajax({
       type: 'POST',
@@ -138,6 +152,8 @@ export default class LayoutContainer extends React.Component {
 	  			message: 'Campaign is successfully added  - ' + data.name,
 	  			type: 'success'
   			});
+
+  			this.toggleLoadIcon(target, 'Create');
 
 			}.bind(this)
     });
@@ -204,6 +220,7 @@ export default class LayoutContainer extends React.Component {
 				getCampgainId={this.state.selectedCampgainId} 
 				getDomain={this.state.domain}
 				source={this.props.source} 
+				toggleLoadIcon={this.toggleLoadIcon.bind(this)}
 				createCampgain={this.createCampgain.bind(this)} 
 				setSelectedCampgainId={this.setSelectedCampgainId.bind(this)}
 				stopIntervalCampgainLoad={this.stopIntervalCampgainLoad.bind(this)}
@@ -243,6 +260,7 @@ class Layout extends React.Component {
 						startIntervalRecipientsLoad={this.props.startIntervalRecipientsLoad} 
 	    			source={this.props.source} 
 	    			setAlert={this.props.setAlert} 
+	    			toggleLoadIcon={this.props.toggleLoadIcon}
 	    			templates={this.props.templates} 
 	    			getTemplates={this.props.getTemplates}/>
 

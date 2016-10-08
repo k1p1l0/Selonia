@@ -82,7 +82,7 @@ export default class extends React.Component {
 
 	createRow(log, i, local) {
 		let clsResponse = cls({
-			'warning': log.response !== '200',
+			'danger': log.response !== '200',
 			'success': log.response == 200
 		});
 
@@ -99,9 +99,13 @@ export default class extends React.Component {
 	}
 
 	render() {
+		function sortById (a, b) {
+			return a.id - b.id
+		}
+
 		let logsCurrentCampgain = this.state.logs.filter(function(log) {
 			return localStorage.getItem('selectCampgainId') == log.campaign;
-		}.bind(this)).map(function(log, i) {
+		}.bind(this)).sort(sortById).map(function(log, i) {
     	return this.createRow(log, i, 1)
     }.bind(this));
 
@@ -136,7 +140,7 @@ export default class extends React.Component {
 			  <tbody>
 			  	{logsCurrentCampgain}
 			  </tbody>
-			  <tfoot>
+			  <tfoot class="active">
 			  {
 			  	this.load ? logsOtherCampgain: ''
 			  }

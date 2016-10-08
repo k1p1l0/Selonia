@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default class PanelTemplate extends React.Component {
-	onUpload() {
+	onUpload({target}) {
 		AWS.config.update({
 		  accessKeyId: 'AKIAJ5QNK3SH4E2TFHQQ',
 		  secretAccessKey: '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',
@@ -28,6 +28,8 @@ export default class PanelTemplate extends React.Component {
 			return;
 		}
 
+		this.props.toggleLoadIcon(target, 'Upload');
+
 	  let params = {
 	  	Bucket: 'selonia.static',
 	    Key: 'templates' + '/' + templateName.value + '/' + file.name,
@@ -47,6 +49,7 @@ export default class PanelTemplate extends React.Component {
 
 		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
 
+					This.props.toggleLoadIcon(target, 'Upload');
 		    	This.props.startIntervalTemplateLoad();
 	      	This.props.setAlert({message: 'Template ' + data.Key.split('/').splice(1,1).pop() + ' uploaded successfully!', type: 'success'});
 	    	})(this)

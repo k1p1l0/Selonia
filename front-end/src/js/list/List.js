@@ -16,7 +16,21 @@ export default class ListContainer extends React.Component {
 		this.props.startIntervalRecipientsLoad(newId);
   }
 
-  createRecipientFromClient({id, name, email, templateName}) {
+  toggleLoadIcon(target, text) {
+  	let width = $(target).width();
+
+  	if ($(target).children()[0] === undefined) {
+  		$(target).prop('disabled', true);
+  		$(target).html(`<div style="width: ${width}px" class="glyphicon glyphicon-repeat gly-spin"></div>`);
+  	} else {
+  		$(target).prop('disabled', false);
+	  	$(target).html(text);
+  	}
+  }
+
+  createRecipientFromClient({id, name, email, templateName, target}) {
+  	this.toggleLoadIcon(target, 'Add');
+
   	 $.ajax({
      	type: 'POST',
 			url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
@@ -39,11 +53,16 @@ export default class ListContainer extends React.Component {
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
+
+		  	this.toggleLoadIcon(target, 'Add');
+
 			}.bind(this)
     });
   }
 
-  deleteRecipient(id) {
+  deleteRecipient({id, target}) {
+  	this.toggleLoadIcon(target, 'Delete');
+
   	$.ajax({
   		type: 'DELETE',
   		url: `${this.props.source}/campgains/${this.props.getCampgainId}`,
@@ -59,11 +78,14 @@ export default class ListContainer extends React.Component {
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
+		  	this.toggleLoadIcon(target, 'Delete');
   		}.bind(this)
   	});
   }
 
-  deleteList() {
+  deleteList({target}) {
+  	this.toggleLoadIcon(target, 'Delete list');
+  	
   	$.ajax({
   		type: 'DELETE',
   		url: `${this.props.source}/campgains`,
@@ -80,6 +102,7 @@ export default class ListContainer extends React.Component {
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
+  			this.toggleLoadIcon(target, 'Delete list');
   		}.bind(this)
   	});
 	}
@@ -95,7 +118,9 @@ export default class ListContainer extends React.Component {
 	  this.props.startIntervalCampgainLoad();
 	}
 
-	deleteCampgain() {
+	deleteCampgain({target}) {
+		this.toggleLoadIcon(target, 'Delete campaign');
+		
   	$.ajax({
   		type: 'DELETE',
   		url: `${this.props.source}/campgains`,
@@ -112,13 +137,15 @@ export default class ListContainer extends React.Component {
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
+
+				this.toggleLoadIcon(target, 'Delete campaign');
   		}.bind(this)
   	});
 	}
 
 	render() {
 		return <List 
-			createNew={this.createRecipientFromClient.bind(this)}
+			createRecipientFromClient={this.createRecipientFromClient.bind(this)}
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			templates={this.props.templates}
 			setAlert={this.props.setAlert}
@@ -165,7 +192,7 @@ class List extends React.Component {
 						source={this.props.source} 
 						templates={this.props.templates}
 						deleteRecipient={this.props.deleteRecipient} 
-						createNewRecipient={this.props.createNew} 
+						createRecipientFromClient={this.props.createRecipientFromClient} 
 						getRecipients={this.props.getRecipients} />
 				</div>
 			</div>

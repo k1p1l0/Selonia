@@ -3,20 +3,21 @@ import React from 'react';
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 export default class ListBody extends React.Component {
-	createNewRecipient () {
+	createRecipientFromClient ({target}) {
 		let data = {
 			id: parseInt($('#nameInput').val().hashCode() + $('#emailInput').val().hashCode()),
 			name: $('#nameInput').val(),
 			email: $('#emailInput').val(),
-			templateName: $('select[name="newRecipientTemplate"] option:selected').text()
+			templateName: $('select[name="newRecipientTemplate"] option:selected').text(),
+			target
 		};
 
-		this.props.createNewRecipient(data);
+		this.props.createRecipientFromClient(data);
 		this.clear();
 	}
 
-	deleteRecipient(id) {
-		this.props.deleteRecipient(id);
+	deleteRecipient(id, {target}) {
+		this.props.deleteRecipient({id, target});
 	}
 
 	clear() {
@@ -62,7 +63,7 @@ export default class ListBody extends React.Component {
 							<TemplatesChooserContainer templates={this.props.templates} source={this.props.source} selectName="newRecipientTemplate" />
 						</td>
 						<td>
-							<button type="button" class="btn btn-success" onClick={this.createNewRecipient.bind(this)} style={{width: '95%'}}>Add</button>
+							<button id="addRecipient" type="button" class="btn btn-success" onClick={this.createRecipientFromClient.bind(this)} style={{width: '120px'}}>Add</button>
 						</td>
 					</tr>
 					</tfoot>
@@ -72,8 +73,8 @@ export default class ListBody extends React.Component {
 }
 
 class RecipientTable extends React.Component {
-	deleteRecipient (id) {
-		this.props.deleteRecipient(id);
+	deleteRecipient (id, e) {
+		this.props.deleteRecipient(id, e);
 	}
 
 	render() {

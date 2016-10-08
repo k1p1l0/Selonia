@@ -3,7 +3,7 @@ import React from 'react';
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 export default class PanelRecipients extends React.Component {
-	onUpload() {
+	onUpload({target}) {
 		AWS.config.update({
 		  accessKeyId: 'AKIAJ5QNK3SH4E2TFHQQ',
 		  secretAccessKey: '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',
@@ -36,6 +36,8 @@ export default class PanelRecipients extends React.Component {
 			return;
 		}
 
+		this.props.toggleLoadIcon(target, 'Upload');
+
 		let params = {
 	  	Bucket: 'selonia.static',
 	    Key: 'temp' + '/' + campgainId + '/' + templateName + '/' + file.name,
@@ -54,6 +56,7 @@ export default class PanelRecipients extends React.Component {
 
 		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
 
+					This.props.toggleLoadIcon(target, 'Upload');
 		    	This.props.startIntervalRecipientsLoad();
 	      	This.props.setAlert({message: 'Recipients ' + localStorage.getItem('selectCampgainName') + ' uploaded successfully!', type: 'success'});
 	    	})(this)

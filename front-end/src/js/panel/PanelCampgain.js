@@ -3,10 +3,11 @@ import React from 'react';
 import PanelDomain from './PanelDomain';
 
 export default class PanelCampgain extends React.Component {
-	createCampgain() {
+	createCampgain({target}) {
 		let data = {
 			name: $('#inputCampgain').val(),
-			domain: $('#inputDomain option:selected').text()
+			domain: $('#inputDomain option:selected').text(),
+			target
 		}
 
 		$('#inputCampgain').val('');
