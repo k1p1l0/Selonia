@@ -28,12 +28,18 @@ export default class ListBtnModal extends React.Component {
     this.setState({disabledTemplate: !this.state.disabledTemplate});
   }
 
-  sendEmails() {
+  sendEmails({target}) {
      let $templateName = $('#globalTemplate option:selected').text(),
         $checkOwnTemplate = $('#ownTemplate').prop('checked'),
         $introduceText = $('#introduceText').val(),
         $subject = $('#subject').val(),
         $email = $('#inputEmail').val();
+
+    if (!this.props.getRecipients.length) {
+      this.props.setAlert({message:'There are no recipients in the list', type:'info'});
+      
+      return;
+    }
 
     if (!$introduceText) {
       this.props.setAlert({message:'Please enter an introduce text', type:'info'});
@@ -63,6 +69,8 @@ export default class ListBtnModal extends React.Component {
       return;
     }
 
+    this.props.toggleLoadIcon(target, 'Send')
+
     this.createPostRequest({
       from: `${$introduceText} <${$email}@${this.props.getDomain}`,
       subject: $subject,
@@ -70,6 +78,7 @@ export default class ListBtnModal extends React.Component {
       template: $templateName,
       recipients: this.props.getRecipients
     }, function() {
+      this.props.toggleLoadIcon(target, 'Send')
       this.closeModal();
     }.bind(this));
   }
@@ -81,13 +90,23 @@ export default class ListBtnModal extends React.Component {
       data: JSON.stringify(event),
       contentType: "application/json",
       success: function(data) {
+        if (data === null) {
+          this.props.setAlert({message: 'Something is going wrong..', type: 'error'});
+
+          return;
+        }
+
         if (!data.errorMessage) {
           this.props.setAlert({message: 'Emails is successfully sent', type: 'success'});
           callback();
         } else {
           this.props.setAlert({message: data.errorMessage, type: 'error'});
         }
-      }.bind(this)
+
+      }.bind(this),
+      error: function(data) {
+        console.log(data);
+      }
     });
   }
 

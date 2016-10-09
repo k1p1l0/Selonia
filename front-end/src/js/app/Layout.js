@@ -243,6 +243,7 @@ class Layout extends React.Component {
 	    			source={this.props.source} 
 	    			templates={this.props.templates}
 	    			recipients={this.props.recipients}
+	    			toggleLoadIcon={this.props.toggleLoadIcon}
 	    			changeDomainEmail={this.props.changeDomainEmail}
 	    			getCampgains={this.props.campgains} 
 	    			getTemplates={this.props.getTemplates} 

@@ -3,12 +3,35 @@ import React from 'react';
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 export default class ListBody extends React.Component {
+
 	createRecipientFromClient ({target}) {
+		let $templateName = $('select[name="newRecipientTemplate"] option:selected').text();
+		let $name = $('#nameInput').val();
+		let $email = $('#emailInput').val();
+
+   	if (!$name.length) {
+      this.props.setAlert({message:'Please input the name', type:'info'});
+
+      return;
+    }   	
+
+    if (!$email.length) {
+      this.props.setAlert({message:'Please input the email', type:'info'});
+
+      return;
+    }
+
+    if (~$templateName.indexOf('Choose')) {
+      this.props.setAlert({message:'Please choose a template', type:'info'});
+
+      return;
+    }
+
 		let data = {
-			id: parseInt($('#nameInput').val().hashCode() + $('#emailInput').val().hashCode()),
-			name: $('#nameInput').val(),
-			email: $('#emailInput').val(),
-			templateName: $('select[name="newRecipientTemplate"] option:selected').text(),
+			id: parseInt($name.hashCode() + $email.hashCode()),
+			name: $name.val(),
+			email: $email.val(),
+			templateName: $templateName,
 			target
 		};
 

@@ -17,15 +17,7 @@ export default class ListContainer extends React.Component {
   }
 
   toggleLoadIcon(target, text) {
-  	let width = $(target).width();
-
-  	if ($(target).children()[0] === undefined) {
-  		$(target).prop('disabled', true);
-  		$(target).html(`<div style="width: ${width}px" class="glyphicon glyphicon-repeat gly-spin"></div>`);
-  	} else {
-  		$(target).prop('disabled', false);
-	  	$(target).html(text);
-  	}
+  	this.props.toggleLoadIcon(target, text);
   }
 
   createRecipientFromClient({id, name, email, templateName, target}) {
@@ -61,7 +53,7 @@ export default class ListContainer extends React.Component {
   }
 
   deleteRecipient({id, target}) {
-  	this.toggleLoadIcon(target, 'Delete');
+  	this.toggleLoadIcon(target, 'Delete'); 
 
   	$.ajax({
   		type: 'DELETE',
@@ -145,7 +137,6 @@ export default class ListContainer extends React.Component {
 
 	render() {
 		return <List 
-			createRecipientFromClient={this.createRecipientFromClient.bind(this)}
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			templates={this.props.templates}
 			setAlert={this.props.setAlert}
@@ -154,6 +145,8 @@ export default class ListContainer extends React.Component {
 			changeDomainEmail={this.props.changeDomainEmail}
 			getCampgains={this.props.getCampgains} 
 			getDomain={this.props.getDomain}
+			createRecipientFromClient={this.createRecipientFromClient.bind(this)}
+			toggleLoadIcon={this.toggleLoadIcon.bind(this)}
 			loadRecipients={this.loadRecipients.bind(this)}
 			deleteRecipient={this.deleteRecipient.bind(this)}
 			deleteList={this.deleteList.bind(this)}
@@ -182,6 +175,7 @@ class List extends React.Component {
 						getCampgainId={this.props.getCampgainId}
 						deleteCampgain={this.props.deleteCampgain}
 						getDomain={this.props.getDomain}
+						toggleLoadIcon={this.props.toggleLoadIcon}
 						getCampgains={this.props.getCampgains} 
 						getRecipients={this.props.getRecipients} />
 
@@ -192,6 +186,7 @@ class List extends React.Component {
 						source={this.props.source} 
 						templates={this.props.templates}
 						deleteRecipient={this.props.deleteRecipient} 
+						setAlert={this.props.setAlert}
 						createRecipientFromClient={this.props.createRecipientFromClient} 
 						getRecipients={this.props.getRecipients} />
 				</div>
