@@ -99,19 +99,22 @@ export default class extends React.Component {
 	}
 
 	render() {
-		function sortById (a, b) {
-			return a.id - b.id
+		function sortByTime (a, b) {
+			let momentA = moment(a.time, 'YYYY-MM-DD h:mm:ss a').valueOf();
+			let momentB = moment(b.time, 'YYYY-MM-DD h:mm:ss a').valueOf();
+
+			return momentB - momentA;
 		}
 
 		let logsCurrentCampgain = this.state.logs.filter(function(log) {
 			return localStorage.getItem('selectCampgainId') == log.campaign;
-		}.bind(this)).sort(sortById).map(function(log, i) {
+		}.bind(this)).sort(sortByTime).map(function(log, i) {
     	return this.createRow(log, i, 1)
     }.bind(this));
 
     let logsOtherCampgain = this.state.logs.filter(function(log) {
 			return localStorage.getItem('selectCampgainId') !== log.campaign;
-		}.bind(this)).map(function(log, i) {
+		}.bind(this)).sort(sortByTime).map(function(log, i) {
     	return this.createRow(log, i, 0)
     }.bind(this));
 
@@ -125,7 +128,7 @@ export default class extends React.Component {
 			  	<i id="loadIcon" class="glyphicon glyphicon-eye-open"></i><span> Show all campaigns</span>
   			</button>
 
-  			<p style={{fontSize: '23px'}}>Last update: {this.state.timeUpdate}</p>
+  			<p style={{fontSize: '23px'}}>Last updated: {this.state.timeUpdate}</p>
 			  <table class="table table-bordered">
 			  <thead>
 			  	<tr class="active">
@@ -133,7 +136,7 @@ export default class extends React.Component {
 			  		<th>From</th>
 			  		<th>Subject</th>
 			  		<th>Campgain</th>
-			  		<th>Time</th>
+			  		<th style={{minWidth: '120px'}}>Time</th>
 			  		<th>Response</th>
 			  	</tr>
 			  </thead>

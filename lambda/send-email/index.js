@@ -100,7 +100,7 @@ function sendTo(event) {
   		from: '' + from,
   		subject: '' + subject,
   		mailto: '' + to,
-  		time: moment().format('MMMM Do YYYY, h:mm:ss a'),
+  		time: moment().format('YYYY-MM-DD h:mm:ss a'),
   		campaign,
   		solt
   	}
