@@ -140,6 +140,7 @@ export default class ListContainer extends React.Component {
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			templates={this.props.templates}
 			setAlert={this.props.setAlert}
+			campaignWasEdited={this.props.campaignWasEdited}
 			getRecipients={this.props.recipients} 
 			getCampgainId={this.props.getCampgainId}
 			changeDomainEmail={this.props.changeDomainEmail}
@@ -167,6 +168,7 @@ class List extends React.Component {
 				<div class="panel panel-default">
 					<ListHeader 
 						setSelectedCampgainId={this.props.setSelectedCampgainId} 
+						campaignWasEdited={this.props.campaignWasEdited}
 						loadRecipients={this.props.loadRecipients}
 						setAlert={this.props.setAlert}
 						deleteList={this.props.deleteList} 

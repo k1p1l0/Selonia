@@ -79,10 +79,11 @@ export default class LayoutContainer extends React.Component {
 			url: `${this.props.source}/campgains`,
 
 			success: function(data) {
-				if (data.Items.length !== this.state.campgains.length && !this.UnMount) {
+				if (data.Items.length !== this.state.campgains.length && !this.UnMount || this.editCampaign) {
 					this.setState({campgains: data.Items}, function() {
 						this.stopIntervalCampgainLoad();
 						this.changeDomainEmail();
+						this.editCampaign = false;
 					}.bind(this));
 				}
 			}.bind(this)
@@ -111,6 +112,11 @@ export default class LayoutContainer extends React.Component {
     }.bind(this)).map(function (campgain) {
       return campgain.domain.split('.').splice(1).join('.');
     }).pop();
+  }
+
+  campaignWasEdited() {
+  	this.editCampaign = true;
+  	this.loadCompgain();
   }
 
   createCampgain({name, domain, target}) {
@@ -222,6 +228,7 @@ export default class LayoutContainer extends React.Component {
 				source={this.props.source} 
 				toggleLoadIcon={this.toggleLoadIcon.bind(this)}
 				createCampgain={this.createCampgain.bind(this)} 
+				campaignWasEdited={this.campaignWasEdited.bind(this)}
 				setSelectedCampgainId={this.setSelectedCampgainId.bind(this)}
 				stopIntervalCampgainLoad={this.stopIntervalCampgainLoad.bind(this)}
 				startIntervalCampgainLoad={this.startIntervalCampgainLoad.bind(this)}
@@ -249,6 +256,7 @@ class Layout extends React.Component {
 	    			getTemplates={this.props.getTemplates} 
 	    			getCampgainId={this.props.getCampgainId} 
 	    			getDomain={this.props.getDomain}
+	    			campaignWasEdited={this.props.campaignWasEdited}
 	    			setSelectedCampgainId={this.props.setSelectedCampgainId}
 	    			stopIntervalCampgainLoad={this.props.stopIntervalCampgainLoad}
 	    			startIntervalCampgainLoad={this.props.startIntervalCampgainLoad}

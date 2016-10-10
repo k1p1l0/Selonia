@@ -1,15 +1,2 @@
-[9/24/2016 11:27:27 PM] Andrew McGregor: Each email has the option to be linked to their own template
-[9/24/2016 11:27:45 PM] Andrew McGregor: but Global Actions overrides this, and sends to a diff template
-
-4.  Set a default Template for All Users in Campaign
-
-[9/24/2016 11:13:48 PM] Andrew McGregor: 3. We need to store each SES result
-[9/24/2016 11:14:03 PM] Andrew McGregor: the full return object, including UUID of the email
-[9/24/2016 11:14:11 PM] Andrew McGregor: and the status, bounce, etc
-
-
-Step: Download template to S3 and add to list (UN-zip it on server) (Done)
-Step: uploading by CSV (Done)
-Step: Templates for campaigns and own templates for recipients (2 options in global action)
-Step: Send to all / Send by one / Delete recipient
-Step: Logs (I need more information about this step)
+1) Edit campgain
+2) Edit recipient

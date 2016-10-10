@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PanelDomain from './PanelDomain';
+import BucketsChooser from '../components/BucketsChooser';
 
 export default class PanelCampgain extends React.Component {
 	createCampgain({target}) {
@@ -27,7 +27,7 @@ export default class PanelCampgain extends React.Component {
 					    </div>
 
 					    <div class="col-lg-4">
-					   		<PanelDomain name="inputDomain" source={this.props.source} />
+					   		<BucketsChooser id="inputDomain" source={this.props.source} />
 					    </div>
 
 					    <div class="col-lg-4">
