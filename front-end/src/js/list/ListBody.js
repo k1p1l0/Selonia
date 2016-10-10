@@ -2,6 +2,8 @@ import React from 'react';
 
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
+import ListBtnEditRecipient from './ListBtnEditRecipient';
+
 export default class ListBody extends React.Component {
 
 	createRecipientFromClient ({target}) {
@@ -56,7 +58,7 @@ export default class ListBody extends React.Component {
 
  		let recipients = this.props.getRecipients.sort(sortById).map(function(recipient, i) {
       return (
-				<RecipientTable data={recipient} key={recipient.id} deleteRecipient={this.deleteRecipient.bind(this)} i={i}/>
+				<RecipientTable data={recipient} key={recipient.id} templates={this.props.templates} deleteRecipient={this.deleteRecipient.bind(this)} i={i}/>
       );
     }.bind(this));
 
@@ -83,7 +85,7 @@ export default class ListBody extends React.Component {
 							<input type="text" class="form-control" id="emailInput" placeholder="Email input"/>
 						</td>
 						<td>
-							<TemplatesChooserContainer templates={this.props.templates} source={this.props.source} selectName="newRecipientTemplate" />
+							<TemplatesChooserContainer templates={this.props.templates} selectName="newRecipientTemplate" />
 						</td>
 						<td>
 							<button id="addRecipient" type="button" class="btn btn-success" onClick={this.createRecipientFromClient.bind(this)} style={{width: '120px'}}>Add</button>
@@ -101,17 +103,22 @@ class RecipientTable extends React.Component {
 	}
 
 	render() {
+		let { id, name, email, templateName } = this.props.data;
+		let { i } = this.props;
+
+		let buttonProps = {
+			className: "btn btn-info"
+		}
+
 		return (
 			<tr class="animation-bottom">
-				<td>{this.props.i + 1}</td>
-				<td>{this.props.data.name}</td>
-				<td>{this.props.data.email}</td>
+				<td>{i + 1}</td>
+				<td>{name}</td>
+				<td>{email}</td>
+				<td>{templateName}</td>
 				<td>
-						{this.props.data.templateName}
-				</td>
-				<td>
-					<button type="button" class="btn" disabled>Edit</button>
-					<button type="button" class="btn btn-danger" onClick={this.deleteRecipient.bind(this, this.props.data.id)}>Delete</button>
+					<ListBtnEditRecipient templates={this.props.templates} defTemplate={templateName} recipient={this.props.data} buttonProps={buttonProps}>Edit</ListBtnEditRecipient>
+					<button type="button" class="btn btn-danger" onClick={this.deleteRecipient.bind(this, id)}>Delete</button>
 				</td>
 			</tr>
 		)

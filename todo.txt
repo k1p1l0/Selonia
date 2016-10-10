@@ -1,2 +1,2 @@
-1) Edit campgain
 2) Edit recipient
+2.1) Finish default value template chooser

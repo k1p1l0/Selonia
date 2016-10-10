@@ -132,12 +132,12 @@ export default class ListBtnSendModal extends React.Component {
     return (
       <div class="btn-group">
         <button {...this.props.buttonProps} onClick={this.showModal.bind(this)}>
-          Send emails
+          {this.props.children}
         </button>
 
         <Modal show={this.state.showModal} onHide={this.closeModal.bind(this)}>
           <Modal.Header closeButton>
-            <Modal.Title>Confirm sending</Modal.Title>
+            <Modal.Title>{this.props.children}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div class="form-horizontal">

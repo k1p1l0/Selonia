@@ -12,8 +12,9 @@ export default class ListHeader extends React.Component {
 
 		var buttonProps = {
 		  defaultValue: 'def',
-		  className: 'btn btn-default',
-		  type: 'button'
+		  className: 'btn btn-info',
+		  type: 'button',
+		  style: {marginLeft: '5px'}
 		};
 
 		if (~campgainName.indexOf('Please')) {
@@ -42,11 +43,12 @@ export default class ListHeader extends React.Component {
 			  	getDomain={this.props.getDomain} 
 			  	buttonProps={buttonProps} 
 		  		setAlert={this.props.setAlert} 
+		  		toggleLoadIcon={this.props.toggleLoadIcon} 
 		  		campaignWasEdited={this.props.campaignWasEdited}
 			  	source={this.props.source}>Edit campaign</ListBtnEditCampaignModal>
 
-			  <button {...buttonProps} onClick={this.props.deleteList}>Delete list</button>
-			  <button {...buttonProps} onClick={this.props.deleteCampgain}>Delete campaign</button>
+			  <button {...buttonProps} class='pull-right btn btn-danger' onClick={this.props.deleteList}>Delete list</button>
+			  <button {...buttonProps} class='pull-right btn btn-danger' onClick={this.props.deleteCampgain}>Delete campaign</button>
 			</div>
 		)
 	}

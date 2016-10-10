@@ -10,8 +10,7 @@ export default class ListBtnCampaignModal extends React.Component {
     super(props);
 
     this.state = {
-      showModal: false,
-      disabledTemplate: false
+      showModal: false
     };
   }
 
@@ -22,11 +21,9 @@ export default class ListBtnCampaignModal extends React.Component {
 
   closeModal() {
     this.setState({showModal: false});
-    this.setState({disabledTemplate: false});
   }
 
   onEditCampaign({target}) {
-  	//icon
   	let $name = $('#inputCampName').val();
   	let $domain = $('#newDomain').val();
 
@@ -48,6 +45,8 @@ export default class ListBtnCampaignModal extends React.Component {
   		return;
   	}
 
+  	this.props.toggleLoadIcon(target, 'Save');
+
   	$.ajax({
   		type: 'PUT',
   		url: `${this.props.source}/campgains`,
@@ -65,7 +64,8 @@ export default class ListBtnCampaignModal extends React.Component {
 					message: 'Success!',
 					type: 'success'
 				});
-				
+
+		  	this.props.toggleLoadIcon(target, 'Save');
 				this.closeModal();
 			}.bind(this)
   	});
@@ -76,13 +76,13 @@ export default class ListBtnCampaignModal extends React.Component {
 
 		return (
 			<div class="btn-group">
-        <button {...this.props.buttonProps} style={{marginLeft: '5px'}} onClick={this.showModal.bind(this)}>
-          Edit campaign
+        <button {...this.props.buttonProps} onClick={this.showModal.bind(this)}>
+          {this.props.children}
         </button>
 
         <Modal show={this.state.showModal} onHide={this.closeModal.bind(this)}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit campaign</Modal.Title>
+            <Modal.Title>{this.props.children}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
 	          <div class="form-horizontal">
