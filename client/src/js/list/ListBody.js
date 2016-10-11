@@ -58,7 +58,7 @@ export default class ListBody extends React.Component {
 
  		let recipients = this.props.getRecipients.sort(sortById).map(function(recipient, i) {
       return (
-				<RecipientTable data={recipient} source={this.props.source} toggleLoadIcon={this.props.toggleLoadIcon} setAlert={this.props.setAlert} key={recipient.id} templates={this.props.templates} deleteRecipient={this.deleteRecipient.bind(this)} i={i}/>
+				<RecipientTable data={recipient} loadRecipients={this.props.loadRecipients} source={this.props.source} toggleLoadIcon={this.props.toggleLoadIcon} setAlert={this.props.setAlert} key={recipient.id} templates={this.props.templates} deleteRecipient={this.deleteRecipient.bind(this)} i={i}/>
       );
     }.bind(this));
 
@@ -117,7 +117,7 @@ class RecipientTable extends React.Component {
 				<td>{email}</td>
 				<td>{templateName}</td>
 				<td>
-					<ListBtnEditRecipient templates={this.props.templates} source={this.props.source} toggleLoadIcon={this.props.toggleLoadIcon} setAlert={this.props.setAlert} defTemplate={templateName} recipient={this.props.data} buttonProps={buttonProps}>Edit</ListBtnEditRecipient>
+					<ListBtnEditRecipient loadRecipients={this.props.loadRecipients} templates={this.props.templates} source={this.props.source} toggleLoadIcon={this.props.toggleLoadIcon} setAlert={this.props.setAlert} defTemplate={templateName} recipient={this.props.data} buttonProps={buttonProps}>Edit</ListBtnEditRecipient>
 					<button type="button" class="btn btn-danger" onClick={this.deleteRecipient.bind(this, id)}>Delete</button>
 				</td>
 			</tr>

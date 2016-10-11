@@ -41,7 +41,8 @@ export default class LayoutContainer extends React.Component {
 			url: URL,
 
 			success: function(data) {
-				if (data.Items.length !== this.state.recipients.length && !this.UnMount) {
+				//data.Items.length !== this.state.recipients.length && 
+				if (!this.UnMount) {
 					this.setState({recipients: data.Items}, function() {
 						this.stopIntervalRecipientsLoad();
 					}.bind(this));

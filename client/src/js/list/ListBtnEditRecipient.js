@@ -25,7 +25,7 @@ export default class ListBtnEditRecipient extends React.Component {
   onEditRecipient({target}) {
   	let $name = $('#inputNewRecipientName').val();
   	let $email = $('#inputNewRecipientEmail').val();
-  	let $teamplateName = $('#newTemplate').val();
+  	let $teamplateName = $('#newTemplate option:selected').text();
 
   	if ($name.length === 0) {
   		this.props.setAlert({
@@ -76,6 +76,7 @@ export default class ListBtnEditRecipient extends React.Component {
 				});
 
 		  	this.props.toggleLoadIcon(target, 'Save');
+		  	this.props.loadRecipients();
 				this.closeModal();
 			}.bind(this)
   	});

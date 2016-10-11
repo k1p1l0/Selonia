@@ -190,6 +190,7 @@ class List extends React.Component {
 						deleteRecipient={this.props.deleteRecipient} 
 						toggleLoadIcon={this.props.toggleLoadIcon}
 						setAlert={this.props.setAlert}
+						loadRecipients={this.props.loadRecipients}
 						createRecipientFromClient={this.props.createRecipientFromClient} 
 						getRecipients={this.props.getRecipients} />
 				</div>
