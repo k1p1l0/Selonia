@@ -25,7 +25,6 @@ export default class Navbar extends React.Component {
       <ul class="nav navbar-nav">
         <li class={indexActive}><Link to='/'>Home <span class="sr-only">(current)</span></Link></li>
         <li class={logsActive}><Link to='logs'>Logs</Link></li>
-        <li><a href="#">Templates</a></li>
       </ul>
 	    </div>
 	  </div>

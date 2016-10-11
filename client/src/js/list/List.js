@@ -188,6 +188,7 @@ class List extends React.Component {
 						source={this.props.source} 
 						templates={this.props.templates}
 						deleteRecipient={this.props.deleteRecipient} 
+						toggleLoadIcon={this.props.toggleLoadIcon}
 						setAlert={this.props.setAlert}
 						createRecipientFromClient={this.props.createRecipientFromClient} 
 						getRecipients={this.props.getRecipients} />

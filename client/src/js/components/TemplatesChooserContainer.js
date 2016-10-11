@@ -6,6 +6,7 @@ export default class TemplatesChooserContainer extends React.Component {
   		onChange={this.props.onChange} 
   		disabled={this.props.disabled} 
   		style={this.props.style} 
+  		defaultValue={this.props.defaultValue}
   		placeholder={this.props.placeholder} 
   		templates={this.props.templates} 
   		selectName={this.props.selectName} />
@@ -29,7 +30,6 @@ class TemplatesChooser extends React.Component {
     }.bind(this));
 
     var selectProps = {
-		  defaultValue: 'def',
 		  onChange: this.props.onChange || null,
 		  style: this.props.style
 		};
@@ -38,8 +38,8 @@ class TemplatesChooser extends React.Component {
 
 		return (
 			<select name={this.props.selectName} id={this.props.selectName} ref="template" class="form-control" {...selectProps}>
-			    <option disabled value="def">{this.props.placeholder || 'Choose template'}</option>
-			    {options}
+		    <option disabled value="def">{this.props.placeholder || 'Choose template'}</option>
+		    {options}
 			</select>
 		)
 	}
