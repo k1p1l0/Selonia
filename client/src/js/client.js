@@ -8,10 +8,10 @@ import Logs from './app/Logs';
 import Login from './app/Login';
 
 import auth from './auth';
+import config from './config.json';
 
-const API_URL = 'https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod';
-
-const $app = $('#app');
+const API_URL = config.ENDPOINT;
+const $app = $(config.ROOT_ELEMENT);
 
 class LayoutWrapper extends React.Component {
   render() {
@@ -29,11 +29,7 @@ class LogsWrapper extends React.Component {
   }
 }
 
-// class LoginWrapper extends React.Component {
-//   render() {
-//     return <Login location={this.props.location} router={this.props.router}/>
-//   }
-// }
+const LoginWrapper = withRouter(Login, { withRef: true })
 
 function requireAuth(nextState, replace) {
   if (!auth.loggedIn()) {
@@ -46,7 +42,7 @@ function requireAuth(nextState, replace) {
 
 ReactDOM.render(
 	<Router history={hashHistory}>
-    <Route path="login" component={Login} />
+    <Route path="login" component={LoginWrapper} />
 
     <Route path='/' component={App} onEnter={requireAuth}>
       <IndexRoute component={LayoutWrapper}></IndexRoute>

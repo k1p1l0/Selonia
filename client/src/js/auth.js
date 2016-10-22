@@ -1,3 +1,38 @@
+'use strict';
+
+import config from './config.json';
+
+const authUser = (email, pass, callback) => {
+ $.ajax({
+    type: 'POST',
+    url: `${config.ENDPOINT}/login`,
+    data: JSON.stringify({
+      username: email,
+      password: pass
+    }),
+
+    contentType: "application/json",
+
+    success: function(data) {
+      if (data.authenticated) {
+        callback({
+          authenticated: true,
+          token: data.token
+        });
+      } else {
+        callback({
+          authenticated: false
+        });
+      }
+    },
+    error: function() {
+      callback({
+        authenticated: false
+      });
+    }
+  });
+};
+
 module.exports = {
   login(email, pass, cb) {
     cb = arguments[arguments.length - 1]
@@ -6,9 +41,11 @@ module.exports = {
       this.onChange(true)
       return
     }
-    pretendRequest(email, pass, (res) => {
+
+    authUser(email, pass, (res) => {
       if (res.authenticated) {
         localStorage.token = res.token
+
         if (cb) cb(true)
         this.onChange(true)
       } else {
@@ -33,17 +70,4 @@ module.exports = {
   },
 
   onChange() {}
-}
-
-function pretendRequest(email, pass, cb) {
-  setTimeout(() => {
-    if (email === 'joe@example.com' && pass === 'password1') {
-      cb({
-        authenticated: true,
-        token: Math.random().toString(36).substring(7)
-      })
-    } else {
-      cb({ authenticated: false })
-    }
-  }, 0)
 }

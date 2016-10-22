@@ -1,54 +1,49 @@
 import React from 'react';
 
-import { withRouter} from 'react-router';
-
 import auth from '../auth';
 
-const Login = withRouter(
-  React.createClass({
+const Login = React.createClass({
+  getInitialState() {
+    return {
+      error: false
+    }
+  },
 
-    getInitialState() {
-      return {
-        error: false
+  handleSubmit(event) {
+    event.preventDefault()
+
+    const email = this.refs.email.value
+    const pass = this.refs.pass.value
+
+    auth.login(email, pass, (loggedIn) => {
+      if (!loggedIn)
+        return this.setState({ error: true })
+
+      const { location } = this.props
+
+      if (location.state && location.state.nextPathname) {
+        this.props.router.replace(location.state.nextPathname)
+      } else {
+        this.props.router.replace('/')
       }
-    },
+    })
+  },
 
-    handleSubmit(event) {
-      event.preventDefault()
-
-      const email = this.refs.email.value
-      const pass = this.refs.pass.value
-
-      console.log(email);
-      console.log(pass);
-
-      auth.login(email, pass, (loggedIn) => {
-        if (!loggedIn)
-          return this.setState({ error: true })
-
-        const { location } = this.props
-
-        if (location.state && location.state.nextPathname) {
-          this.props.router.replace(location.state.nextPathname)
-        } else {
-          this.props.router.replace('/')
-        }
-      })
-    },
-
-    render() {
-      return (
-        <form onSubmit={this.handleSubmit}>
-          <label><input ref="email" placeholder="email" defaultValue="joe@example.com" /></label>
-          <label><input ref="pass" placeholder="password" /></label> (hint: password1)<br />
-          <button type="submit">login</button>
-          {this.state.error && (
-            <p>Bad login information</p>
+  render() {
+    return (
+      <div class="wrapper">
+        <form onSubmit={this.handleSubmit} class="form-signin">       
+        <h2 class="form-signin-heading">Please login</h2>
+        <input type="text" ref="email" class="form-control" name="username" placeholder="Username" required="" autofocus="" />
+        <input type="password" ref="pass" class="form-control" name="password" placeholder="Password" required=""/>      
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>   
+         {this.state.error && (
+          <p>Bad login information</p>
           )}
         </form>
-      )
-    }
-  })
-)
+      </div>
+    )
+  }
+});
 
 export default Login;

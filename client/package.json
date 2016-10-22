@@ -24,7 +24,8 @@
     "webpack-dev-server": "^1.16.1"
   },
   "devDependencies": {
-    "bower": "latest"
+    "bower": "latest",
+    "json-loader": "^0.5.4"
   },
   "scripts": {
     "dev": "./node_modules/.bin/webpack-dev-server --content-base src --inline --hot",

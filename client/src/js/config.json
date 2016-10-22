@@ -1,0 +1,4 @@
+{
+	"ENDPOINT": "https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod",
+	"ROOT_ELEMENT": "#app"
+}
