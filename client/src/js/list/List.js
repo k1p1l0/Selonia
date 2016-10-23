@@ -37,8 +37,12 @@ export default class ListContainer extends React.Component {
 					campgainId: parseInt(this.props.getCampgainId)
 				}]
 			}),
-
 			contentType: "application/json",
+      crossDomain: true,
+
+      beforeSend: function (request) {
+        request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function(data) {
 				if (!data.errorMessage) {
@@ -50,7 +54,14 @@ export default class ListContainer extends React.Component {
 
 		  	this.toggleLoadIcon(target, 'Add');
 
-			}.bind(this)
+			}.bind(this),
+
+			error: function() {
+        console.log('Some trouble with token!');
+
+        auth.logout();
+        location.reload();
+      }
     });
   }
 

@@ -4,6 +4,8 @@ import { Button, Modal, Popover, OverlayTrigger } from 'react-bootstrap';
 
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
+import auth from '../auth';
+
 export default class ListBtnSendModal extends React.Component {
   constructor(props) {
     super(props);
@@ -89,6 +91,12 @@ export default class ListBtnSendModal extends React.Component {
       url: `${this.props.source}/campgains/${this.props.getCampgainId}/send`,
       data: JSON.stringify(event),
       contentType: "application/json",
+      crossDomain: true,
+
+      beforeSend: function (request) {
+        request.setRequestHeader("Authorization", auth.getToken());
+      },
+
       success: function(data) {
         if (data === null) {
           this.props.setAlert({message: 'Something is going wrong..', type: 'error'});
@@ -104,8 +112,12 @@ export default class ListBtnSendModal extends React.Component {
         }
 
       }.bind(this),
-      error: function(data) {
-        console.log(data);
+
+      error: function() {
+        console.log('Some trouble with token!');
+
+        auth.logout();
+        location.reload();
       }
     });
   }

@@ -4,6 +4,8 @@ import { Button, Modal } from 'react-bootstrap';
 
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
+import auth from '../auth';
+
 export default class ListBtnEditRecipient extends React.Component {
 	constructor(props) {
     super(props);
@@ -68,6 +70,11 @@ export default class ListBtnEditRecipient extends React.Component {
 			}),
 
 			contentType: "application/json",
+      crossDomain: true,
+
+      beforeSend: function (request) {
+        request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function() {
 				this.props.setAlert({
@@ -78,7 +85,14 @@ export default class ListBtnEditRecipient extends React.Component {
 		  	this.props.toggleLoadIcon(target, 'Save');
 		  	this.props.loadRecipients();
 				this.closeModal();
-			}.bind(this)
+			}.bind(this),
+
+      error: function() {
+        console.log('Some trouble with token!');
+
+        auth.logout();
+        location.reload();
+      }
   	});
   }
 

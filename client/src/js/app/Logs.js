@@ -3,6 +3,8 @@ import AlertContainer from 'react-alert';
 import cls from 'classnames';
 import moment from 'moment';
 
+import auth from '../auth';
+
 export default class extends React.Component {
 	constructor() {
 		super();
@@ -25,6 +27,11 @@ export default class extends React.Component {
 		$.ajax({
 			type: 'GET',
 			url: `${this.props.source}/logs`,
+			crossDomain: true,
+
+			beforeSend: function (request) {
+			  request.setRequestHeader("Authorization", auth.getToken());
+			},
 
 			success: function(data) {
 				if (!this.UnMount) {
@@ -32,7 +39,14 @@ export default class extends React.Component {
 					this.setState({timeUpdate: moment().format('LTS')});
 					$('#refreshIcon').toggleClass('gly-spin');
 				}
-			}.bind(this)
+			}.bind(this),
+
+			error: function() {
+				console.log('Some trouble with token!');
+
+				auth.logout();
+				location.reload();
+			}
 		})
 	}
 

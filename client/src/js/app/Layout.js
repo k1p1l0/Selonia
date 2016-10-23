@@ -192,6 +192,11 @@ export default class LayoutContainer extends React.Component {
 				domain
 			}),
 			contentType: "application/json",
+			crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function(data) {				
 				this.setState({
@@ -205,7 +210,14 @@ export default class LayoutContainer extends React.Component {
 
   			this.toggleLoadIcon(target, 'Create');
 
-			}.bind(this)
+			}.bind(this),
+
+			error: function() {
+				console.log('Some trouble with token!');
+
+				auth.logout();
+				location.reload();
+			}
     });
   }
 

@@ -31,8 +31,8 @@ export default class ListBody extends React.Component {
 
 		let data = {
 			id: parseInt($name.hashCode() + $email.hashCode()),
-			name: $name.val(),
-			email: $email.val(),
+			name: $name,
+			email: $email,
 			templateName: $templateName,
 			target
 		};

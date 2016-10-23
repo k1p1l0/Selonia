@@ -32,8 +32,8 @@ export default class BucketsChooser extends React.Component {
 			error: function() {
 				console.log('Some trouble with token!');
 
-				// auth.logout();
-				// location.reload();
+				auth.logout();
+				location.reload();
 			}
     });
   }

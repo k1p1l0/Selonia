@@ -4,6 +4,7 @@ import { Button, Modal } from 'react-bootstrap';
 
 import BucketsChooser from '../components/BucketsChooser';
 
+import auth from '../auth';
 
 export default class ListBtnCampaignModal extends React.Component {
   constructor(props) {
@@ -56,6 +57,12 @@ export default class ListBtnCampaignModal extends React.Component {
   			domain: $domain
   		}),
 			contentType: "application/json",
+      crossDomain: true,
+
+      beforeSend: function (request) {
+        request.setRequestHeader("Authorization", auth.getToken());
+      },
+
 			success: function() {
 				localStorage.setItem('selectCampgainName', $name);
 
@@ -67,7 +74,14 @@ export default class ListBtnCampaignModal extends React.Component {
 
 		  	this.props.toggleLoadIcon(target, 'Save');
 				this.closeModal();
-			}.bind(this)
+			}.bind(this),
+
+      error: function() {
+        console.log('Some trouble with token!');
+
+        auth.logout();
+        location.reload();
+      }
   	});
   }
 
