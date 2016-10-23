@@ -7,7 +7,7 @@ const giveToken = (event, callback) => {
 
 	let params = {
 		FunctionName: 'createToken',
-  	Payload: JSON.stringify(event, null, 2) // pass params
+  	    Payload: JSON.stringify(event, null, 2) // pass params
 	};
 
 	lambda.invoke(params, function(error, data) {
@@ -47,7 +47,7 @@ const init = (event, context, callback) => {
 			giveToken({username, password}, function(result) {
 				callback(null, {
 					authenticated: true,
-					token: result.Payload
+					token: result.Payload.match(/[^"].*[^"]/)[0]
 				});
 			});
 		} else {

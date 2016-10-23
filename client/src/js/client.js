@@ -6,6 +6,7 @@ import App from './app/App';
 import Layout from './app/Layout';
 import Logs from './app/Logs';
 import Login from './app/Login';
+import Logout from './app/Logout';
 
 import auth from './auth';
 import config from './config.json';
@@ -29,7 +30,8 @@ class LogsWrapper extends React.Component {
   }
 }
 
-const LoginWrapper = withRouter(Login, { withRef: true })
+const LoginWrapper = withRouter(Login, { withRef: true });
+const LogoutWrapper = withRouter(Logout);
 
 function requireAuth(nextState, replace) {
   if (!auth.loggedIn()) {
@@ -43,10 +45,11 @@ function requireAuth(nextState, replace) {
 ReactDOM.render(
 	<Router history={hashHistory}>
     <Route path="login" component={LoginWrapper} />
+    <Route path='logout' component={LogoutWrapper} />
 
     <Route path='/' component={App} onEnter={requireAuth}>
       <IndexRoute component={LayoutWrapper}></IndexRoute>
-      <Route path='/logs' component={LogsWrapper} />
+      <Route path='logs' component={LogsWrapper} />
     </Route>
 	</Router>,
 $app[0])
