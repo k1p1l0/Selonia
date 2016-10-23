@@ -1,5 +1,7 @@
 import React from 'react';
 
+import auth from '../auth';
+
 export default class BucketsChooser extends React.Component {
 	constructor(props) {
 		super(props);
@@ -13,6 +15,11 @@ export default class BucketsChooser extends React.Component {
     $.ajax({
       type: 'GET',
 			url: `${this.props.source}/buckets`,
+			crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function(data) {
 				if (!this.UnMount) {
@@ -20,7 +27,14 @@ export default class BucketsChooser extends React.Component {
 						buckets: data
 					});
 				}
-			}.bind(this)
+			}.bind(this),
+
+			error: function() {
+				console.log('Some trouble with token!');
+
+				// auth.logout();
+				// location.reload();
+			}
     });
   }
 

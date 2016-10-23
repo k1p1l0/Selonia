@@ -3,6 +3,8 @@ import React from 'react';
 import ListHeader from './ListHeader';
 import ListBody from './ListBody';
 
+import auth from '../auth';
+
 export default class ListContainer extends React.Component {
 	constructor(props) {
 		super(props);
@@ -62,6 +64,11 @@ export default class ListContainer extends React.Component {
   			id
   		}),
   		contentType: "application/json",
+  		crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
   		success: function(data) {
   			if (!data.errorMessage) {
@@ -71,7 +78,14 @@ export default class ListContainer extends React.Component {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
 		  	this.toggleLoadIcon(target, 'Delete');
-  		}.bind(this)
+  		}.bind(this),
+
+  		error: function() {
+				console.log('Some trouble with token!');
+
+				auth.logout();
+				location.reload();
+			}
   	});
   }
 
@@ -86,6 +100,11 @@ export default class ListContainer extends React.Component {
   			deleteCampgain: false
   		}),
   		contentType: "application/json",
+			crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
   		success: function(data) {
   			if (!data.errorMessage) {
@@ -95,7 +114,12 @@ export default class ListContainer extends React.Component {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
   			this.toggleLoadIcon(target, 'Delete list');
-  		}.bind(this)
+  		}.bind(this),
+
+  		error: function(data) {
+  			console.log(data);
+				console.log('Some trouble with token!');
+			},
   	});
 	}
 
@@ -120,7 +144,14 @@ export default class ListContainer extends React.Component {
   			id: this.props.getCampgainId,
   			deleteCampgain: true
   		}),
+
   		contentType: "application/json",
+  		crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      	request.setRequestHeader("Content-Type", "application/json");
+      },
 
   		success: function(data) {
   			if (!data.errorMessage) {
@@ -131,7 +162,14 @@ export default class ListContainer extends React.Component {
 				}
 
 				this.toggleLoadIcon(target, 'Delete campaign');
-  		}.bind(this)
+  		}.bind(this),
+
+  		error: function() {
+				console.log('Some trouble with token!');
+
+				// auth.logout();
+				// location.reload();
+			}
   	});
 	}
 

@@ -4,6 +4,8 @@ import AlertContainer from 'react-alert';
 import Panel from '../panel/Panel';
 import List from '../list/List';
 
+import auth from '../auth';
+
 export default class LayoutContainer extends React.Component {
 	constructor(props) {
 		super(props);
@@ -39,6 +41,14 @@ export default class LayoutContainer extends React.Component {
     $.ajax({
       type: 'GET', 
 			url: URL,
+			crossDomain: true,
+			headers: { 
+      	'Authorization':  auth.getToken()
+      },
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function(data) {
 				//data.Items.length !== this.state.recipients.length && 
@@ -52,10 +62,12 @@ export default class LayoutContainer extends React.Component {
 				$('#main-table').show();
 			}.bind(this),
 
-			error: function (xhr, ajaxOptions, thrownError) {
-        console.log(xhr.status);
-        console.log(thrownError);
-      }
+			error: function() {
+				console.log('Some trouble with token!');
+
+				auth.logout();
+				location.reload();
+			}
     });
   }
 
@@ -63,6 +75,14 @@ export default class LayoutContainer extends React.Component {
     $.ajax({
       type: 'GET',
 			url: `${this.props.source}/templates`,
+			crossDomain: true,
+			headers: { 
+      	'Authorization':  auth.getToken()
+      },
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function(data) {
 				if (data.Items.length !== this.state.templates.length && !this.UnMount) {
@@ -70,14 +90,30 @@ export default class LayoutContainer extends React.Component {
 					this.stopIntervalTemplateLoad();
 					}.bind(this));
 				}
-			}.bind(this)
-    });
+			}.bind(this),
+
+			error: function() {
+				console.log('Some trouble with token!');
+
+				auth.logout();
+				location.reload();
+			}
+    })
   }
 
 	loadCompgain() {
     $.ajax({
       type: 'GET',
 			url: `${this.props.source}/campgains`,
+
+			crossDomain: true,
+			headers: { 
+            'Authorization':  auth.getToken()
+      },
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
 
 			success: function(data) {
 				if (data.Items.length !== this.state.campgains.length && !this.UnMount || this.editCampaign) {
@@ -87,7 +123,14 @@ export default class LayoutContainer extends React.Component {
 						this.editCampaign = false;
 					}.bind(this));
 				}
-			}.bind(this)
+			}.bind(this),
+
+			error: function() {
+				console.log('Some trouble with token!');
+
+				auth.logout();
+				location.reload();
+			}
 		});
   }
 
