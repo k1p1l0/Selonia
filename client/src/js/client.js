@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, hashHistory, withRouter} from 'react-router';
 
 import App from './app/App';
-import Layout from './app/Layout';
+import LayoutCampaigns from './app/LayoutCampaigns';
+import LayoutGlobal from './app/LayoutGlobal';
 import Logs from './app/Logs';
 import Login from './app/Login';
 import Logout from './app/Logout';
@@ -14,10 +15,18 @@ import config from './config.json';
 const API_URL = config.ENDPOINT;
 const $app = $(config.ROOT_ELEMENT);
 
-class LayoutWrapper extends React.Component {
+class LayoutCampaignsWrapper extends React.Component {
   render() {
     return (
-    	<Layout source={API_URL} />
+    	<LayoutCampaigns source={API_URL} />
+    );
+  }
+}
+
+class LayoutGlobalWrapper extends React.Component {
+  render() {
+    return (
+      <LayoutGlobal source={API_URL} />
     );
   }
 }
@@ -48,7 +57,8 @@ ReactDOM.render(
     <Route path='logout' component={LogoutWrapper} />
 
     <Route path='/' component={App} onEnter={requireAuth}>
-      <IndexRoute component={LayoutWrapper}></IndexRoute>
+      <IndexRoute component={LayoutGlobalWrapper}></IndexRoute>
+      <Route path='campaigns' component={LayoutCampaignsWrapper} />
       <Route path='logs' component={LogsWrapper} />
     </Route>
 	</Router>,

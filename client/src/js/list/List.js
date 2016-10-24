@@ -135,7 +135,7 @@ export default class ListContainer extends React.Component {
 	}
 
 	cleanCampgainTemp() {
-		$('.loader').show();
+		// $('.loader').show();
 		$('#main-table').hide();
 		
 		this.props.setSelectedCampgainId(null);
@@ -208,7 +208,7 @@ export default class ListContainer extends React.Component {
 class List extends React.Component {
 	render() {
 		if (this.props.getCampgainId === null) {
-			$('.loader').show();
+			// $('.loader').show();
 			$('#main-table').hide();
 		}
 
@@ -230,9 +230,6 @@ class List extends React.Component {
 						getCampgains={this.props.getCampgains} 
 						getRecipients={this.props.getRecipients} />
 
-					<div class="loader">
-					</div>
-
 					<ListBody 
 						source={this.props.source} 
 						templates={this.props.templates}
@@ -247,3 +244,6 @@ class List extends React.Component {
 		)
 	}
 }
+
+					// <div class="loader">
+					// </div>

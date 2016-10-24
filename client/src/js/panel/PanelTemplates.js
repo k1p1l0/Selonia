@@ -50,7 +50,7 @@ export default class PanelTemplate extends React.Component {
 		    	$fileChooser.replaceWith($fileChooser.val('').clone(true));
 
 					This.props.toggleLoadIcon(target, 'Upload');
-		    	This.props.startIntervalTemplateLoad();
+		    	//This.props.startIntervalTemplateLoad();
 	      	This.props.setAlert({message: 'Template ' + data.Key.split('/').splice(1,1).pop() + ' uploaded successfully!', type: 'success'});
 	    	})(this)
 	    }
@@ -73,22 +73,24 @@ class UploadTemplate extends React.Component {
 	
 	render() {
 		return (
-			<div class="panel panel-default">
-			 <div class="panel-heading">Upload template</div>
-  			<div class="panel-body">
-  				<div class="row">
-  					<div class="col-lg-4">
+			<div class="col-lg-6">
+				<div class="panel panel-default">
+				 <div class="panel-heading">Upload template</div>
+	  			<div class="panel-body">
+	  				<div class="row">
+	  					<div class="col-lg-4">
   							<input type='file' onChange={this.onChange.bind(this)} id="fileTemplate" />
-						    <input type="button" onClick={this.triggerFile.bind(this)} class="btn" value="Choose file" id="buttonFile"/>
-  					</div>
-  					<div class="col-lg-4">
-						    <input type="text" class="form-control" placeholder="Input name.." style={{width: '110px'}} id="templateName"/>
-						</div>
-  					<div class="col-lg-2">
-  						<button type="button" class="btn btn-primary btn-block" onClick={this.props.onUpload}>Add</button>
-  					</div>
-  				</div>		
-  			</div>
+						    <input type="button" onClick={this.triggerFile.bind(this)} class="btn btn-warning btn-block" value="Choose file" id="buttonFile"/>
+	  					</div>
+	  					<div class="col-lg-4">
+							    <input type="text" class="form-control" placeholder="Input name.." id="templateName"/>
+							</div>
+	  					<div class="col-lg-4">
+	  						<button type="button" class="btn btn-primary btn-block" style={{'width':'90%'}} onClick={this.props.onUpload}>Add</button>
+	  					</div>
+	  				</div>		
+	  			</div>
+				</div>
 			</div>
 		)
 	}
