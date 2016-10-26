@@ -47,7 +47,7 @@ export default class ListBtnEditRecipient extends React.Component {
   		return;
   	}
 
-  	if ($teamplateName === null || ~$teamplateName.indexOf('Template')) {
+  	if ($teamplateName === null || ~$teamplateName.indexOf('Choose')) {
   		this.props.setAlert({
   			message: 'Please choose a template',
   			type: 'info'

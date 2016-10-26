@@ -63,8 +63,10 @@ export default class BucketsChooser extends React.Component {
    	var options = this.state.buckets.filter(function(value) {
      	return ~value.Name.indexOf('www');
     }).map(function(value) {
+    	let nameWithoutWWW = value.Name.split('www.').splice(1).join('');
+    	
     	return (
-				<option value={value.Name} key={value.CreationDate}>{value.Name.split('www.').splice(1).join('')}</option>
+				<option value={value.Name} key={value.CreationDate}>{nameWithoutWWW}</option>
       );
     });
 
