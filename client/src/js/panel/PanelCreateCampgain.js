@@ -6,7 +6,7 @@ export default class PanelCampgain extends React.Component {
 	createCampgain({target}) {
 		let data = {
 			name: $('#inputCampgain').val(),
-			domain: $('#inputDomain option:selected').text(),
+			domain: $('#inputDomain option:selected').val(),
 			target
 		}
 
