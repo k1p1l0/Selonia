@@ -5,6 +5,7 @@ import { Router, Route, IndexRoute, hashHistory, withRouter} from 'react-router'
 import App from './app/App';
 import LayoutCampaigns from './app/LayoutCampaigns';
 import LayoutGlobal from './app/LayoutGlobal';
+import Templates from './app/Templates';
 import Logs from './app/Logs';
 import Login from './app/Login';
 import Logout from './app/Logout';
@@ -31,6 +32,14 @@ class LayoutGlobalWrapper extends React.Component {
   }
 }
 
+class TemplatesWrapper extends React.Component {
+  render() {
+    return (
+      <Templates source={API_URL} />
+    );
+  }
+}
+
 class LogsWrapper extends React.Component {
   render() {
     return (
@@ -39,7 +48,7 @@ class LogsWrapper extends React.Component {
   }
 }
 
-const LoginWrapper = withRouter(Login, { withRef: true });
+const LoginWrapper = withRouter(Login);
 const LogoutWrapper = withRouter(Logout);
 
 function requireAuth(nextState, replace) {
@@ -59,6 +68,7 @@ ReactDOM.render(
     <Route path='/' component={App} onEnter={requireAuth}>
       <IndexRoute component={LayoutGlobalWrapper}></IndexRoute>
       <Route path='campaigns' component={LayoutCampaignsWrapper} />
+      <Route path='templates' component={TemplatesWrapper} />
       <Route path='logs' component={LogsWrapper} />
     </Route>
 	</Router>,
