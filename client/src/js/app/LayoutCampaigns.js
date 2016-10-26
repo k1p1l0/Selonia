@@ -2,9 +2,7 @@ import React from "react";
 import AlertContainer from 'react-alert';
 
 import Panel from '../panel/Panel';
-import PanelTemplates from '../panel/PanelTemplates';
 import PanelRecipients from '../panel/PanelRecipients';
-import PanelCreateCampgain from '../panel/PanelCreateCampgain';
 
 import List from '../list/List';
 

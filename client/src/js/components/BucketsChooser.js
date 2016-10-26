@@ -64,7 +64,7 @@ export default class BucketsChooser extends React.Component {
      	return ~value.Name.indexOf('www');
     }).map(function(value) {
     	return (
-				<option value={value.Name} key={value.CreationDate}>{value.Name}</option>
+				<option value={value.Name} key={value.CreationDate}>{value.Name.split('www.').splice(1).join('')}</option>
       );
     });
 
