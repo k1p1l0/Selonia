@@ -73,16 +73,32 @@ export default class ListBtnSendModal extends React.Component {
 
     this.props.toggleLoadIcon(target, 'Send')
 
-    this.createPostRequest({
-      from: `${$introduceText} <${$email}@${this.props.getDomain}`,
-      subject: $subject,
-      ownTemplate: $checkOwnTemplate,
-      template: $templateName,
-      recipients: this.props.getRecipients
-    }, function() {
-      this.props.toggleLoadIcon(target, 'Send')
-      this.closeModal();
-    }.bind(this));
+    let length = this.props.getRecipients.length;
+    let step = 25;
+    let lastStep = false;
+
+    do {
+      let chopedRecipients = this.props.getRecipients.splice(0, step);
+
+      this.createPostRequest({
+        from: `${$introduceText} <${$email}@${this.props.getDomain}`,
+        subject: $subject,
+        ownTemplate: $checkOwnTemplate,
+        template: $templateName,
+        recipients: chopedRecipients
+      }, function() {
+        if (lastStep) {
+          this.props.setAlert({message: 'Emails are successfully sent', type: 'success'});
+          this.props.toggleLoadIcon(target, 'Send');
+        }
+      }.bind(this));
+
+      length -= step;
+      if (length <= 0) {
+        lastStep = true;
+      }
+    } while(length > 0) ;
+
   }
 
   createPostRequest(event, callback) {
@@ -92,10 +108,11 @@ export default class ListBtnSendModal extends React.Component {
       data: JSON.stringify(event),
       contentType: "application/json",
       crossDomain: true,
+      timeout: 0, //Set your timeout value in milliseconds or 0 for unlimited
 
-      beforeSend: function (request) {
-        request.setRequestHeader("Authorization", auth.getToken());
-      },
+      // beforeSend: function (request) {
+      //   request.setRequestHeader("Authorization", auth.getToken());
+      // },
 
       success: function(data) {
         if (data === null) {
@@ -105,7 +122,6 @@ export default class ListBtnSendModal extends React.Component {
         }
 
         if (!data.errorMessage) {
-          this.props.setAlert({message: 'Emails is successfully sent', type: 'success'});
           callback();
         } else {
           this.props.setAlert({message: data.errorMessage, type: 'error'});
@@ -113,11 +129,12 @@ export default class ListBtnSendModal extends React.Component {
 
       }.bind(this),
 
-      error: function() {
+      error: function(data) {
         console.log('Some trouble with token!');
+        console.log(data);
 
-        auth.logout();
-        location.reload();
+        // auth.logout();
+        // location.reload();
       }
     });
   }

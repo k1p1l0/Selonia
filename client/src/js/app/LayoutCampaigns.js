@@ -53,10 +53,9 @@ export default class LayoutContainer extends React.Component {
       },
 
 			success: function(data) {
-				//data.Items.length !== this.state.recipients.length && 
-				if (!this.UnMount) {
+				if (!this.UnMount && data.Items.length !== this.state.recipients.length) {
 					this.setState({recipients: data.Items}, function() {
-						this.stopIntervalRecipientsLoad();
+							this.stopIntervalRecipientsLoad();
 					}.bind(this));
 				}
 				
@@ -67,8 +66,8 @@ export default class LayoutContainer extends React.Component {
 			error: function() {
 				console.log('Some trouble with token!');
 
-				auth.logout();
-				location.reload();
+				// auth.logout();
+				// location.reload();
 			}
     });
   }
@@ -97,8 +96,8 @@ export default class LayoutContainer extends React.Component {
 			error: function() {
 				console.log('Some trouble with token!');
 
-				auth.logout();
-				location.reload();
+				// auth.logout();
+				// location.reload();
 			}
     })
   }
@@ -130,8 +129,8 @@ export default class LayoutContainer extends React.Component {
 			error: function() {
 				console.log('Some trouble with token!');
 
-				auth.logout();
-				location.reload();
+				// auth.logout();
+				// location.reload();
 			}
 		});
   }
@@ -177,6 +176,7 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	stopIntervalRecipientsLoad() {
+		console.log('STOP!!!');
 		this.state.recipientsTimerId && clearInterval(this.state.recipientsTimerId);
 	}
 

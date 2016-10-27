@@ -122,10 +122,10 @@ function createLog(event) {
 
 	let params = {
 		FunctionName: 'create-log',
-  	Payload: JSON.stringify(event, null, 2) // pass params
+  	InvokeArgs: JSON.stringify(event, null, 2) // pass params
 	};
 
-	lambda.invoke(params, function(error, data) {
+	lambda.invokeAsync(params, function(error, data) {
 		  if (error) {
 		  	console.log(error);
 		  }

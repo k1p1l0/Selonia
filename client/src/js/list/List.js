@@ -129,7 +129,7 @@ export default class ListContainer extends React.Component {
 
   		error: function(data) {
   			console.log(data);
-				console.log('Some trouble with token!');
+				// console.log('Some trouble with token!');
 			},
   	});
 	}

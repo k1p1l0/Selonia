@@ -15,11 +15,11 @@ const authUser = (email, pass, callback) => {
 
     success: function(data) {
       if (data.authenticated) {
-        $.ajaxSetup({
-          headers: { 
-            'Authorization': data.token
-          }
-        });
+        // $.ajaxSetup({
+        //   headers: { 
+        //     'Authorization': data.token
+        //   }
+        // });
 
         callback({
           authenticated: true,

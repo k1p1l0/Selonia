@@ -21,10 +21,12 @@ export default class PanelRecipients extends React.Component {
 			return;
 		}
 
-	  if (file.type !== 'application/vnd.ms-excel') {
-      this.props.setAlert({message:'File type must be .csv '+file.type, type:'info'});
-      return;
-	  }
+		console.log(file.type);
+
+	  // if (file.type !== 'application/vnd.ms-excel' || file.type !== 'text/csv') {
+   //    this.props.setAlert({message:'File type must be .csv', type:'info'});
+   //    return;
+	  // }
 
 		if (templateName === 'Template') {
 			this.props.setAlert({message:'You must choose template', type:'info'});
@@ -48,7 +50,7 @@ export default class PanelRecipients extends React.Component {
 
 	  S3.upload(params, function(err) {
 	  	console.log('Sending to S3');
-	  	
+
 	    if (!err) {
 	    	(function(This) {
 	    		let $fileChooser = $('#fileCsv'),

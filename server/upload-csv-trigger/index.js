@@ -4,6 +4,7 @@ const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 const parse = require('csv-parse');
+const shortid = require('shortid');
 
 AWS.config.update({
   accessKeyId: 'AKIAJ5QNK3SH4E2TFHQQ',
@@ -24,39 +25,64 @@ function getCsv (params, callback) {
 }
 
 function readCsv (config, params, callback) {
+		let arrayOfUsers = [];
 		let users = [];
+		// let lengthA = [];
+
     fs.createReadStream(config.csv_file).pipe(parse())
     .on('data', function(csvrow) {
+    		// lengthA.push(i);
+
         let user = csvrow.toString().split(','),
         		hashUser = {
-        			id: parseInt(user[0].hashCode() + user[1].hashCode()),
+        			id: shortid.generate(),
         			name: user[0],
         			email: user[1],
         			campgainId: params.keyCampgainId,
         			templateName: params.keyTemplateName
         		};
-        users.push(hashUser);
+
+        if (users.length < 25) {
+        	users.push(hashUser);
+        } else {
+        	arrayOfUsers.push(users);
+
+        	users = [];
+
+        	users.push(hashUser);
+        }
     })
     .on('end',function() {
-    	callback(users);
+    	if (arrayOfUsers[arrayOfUsers.length - 1] !== users) { //push the last pack of users
+    		arrayOfUsers.push(users);
+    	}
+
+    	callback(arrayOfUsers);
     });
 }
 
-function writeUsers(event, callback) {
+function writeUsers(arrayOfUsers, callback) {
 	var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
-	console.log(event);
-	let params = {
-		FunctionName: FUNCTION_NAME,
-  	Payload: JSON.stringify(event, null, 2) // pass params
-	};
 
-	lambda.invoke(params, function(error, data) {
-		  if (error) {
-		  	console.log(error);
-		  	callback(error, null);
-		  }
+	arrayOfUsers.forEach(function (usersPack) {
+		let params = {
+			FunctionName: FUNCTION_NAME,
+	  	InvokeArgs: JSON.stringify({recipients: usersPack}, null, 2) // pass params
+		};
 
-		  callback(null, data);
+		lambda.invokeAsync(params, function(error, data) {
+			  if (error) {
+			  	// console.log(error);
+
+			  	// error.UnprocessedItems.selonia-recipients.forEach(function(item) {
+			  	// 	console.log(item);
+			  	// });
+
+			  	callback(error, null);
+			  }
+
+			  callback(null, data);
+		});
 	});
 }
 
@@ -74,20 +100,16 @@ function init (event, context, callback) {
 
 	getCsv(locals, function() {
 		readCsv({csv_file: '/tmp/file.csv'}, params, function(users) {
-			writeUsers({recipients: users}, callback);
+			writeUsers(users, callback);
 		});
 	});
 }
 
-exports.handler = init;
+// init(null, null, callMeBaby);
 
-String.prototype.hashCode = function() {
-  var hash = 0, i, chr, len;
-  if (this.length === 0) return hash;
-  for (i = 0, len = this.length; i < len; i++) {
-    chr   = this.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
+// function callMeBaby (a, b) {
+// 	// console.log(a);
+// 	console.log(b);
+// }
+
+exports.handler = init;

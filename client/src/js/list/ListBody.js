@@ -3,6 +3,7 @@ import React from 'react';
 import TemplatesChooserContainer from '../components/TemplatesChooserContainer';
 
 import ListBtnEditRecipient from './ListBtnEditRecipient';
+import shortid from 'shortid';
 
 export default class ListBody extends React.Component {
 
@@ -30,7 +31,7 @@ export default class ListBody extends React.Component {
     }
 
 		let data = {
-			id: parseInt($name.hashCode() + $email.hashCode()),
+			id: shortid.generate(),
 			name: $name,
 			email: $email,
 			templateName: $templateName,
