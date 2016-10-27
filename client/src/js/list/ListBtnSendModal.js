@@ -12,17 +12,23 @@ export default class ListBtnSendModal extends React.Component {
 
     this.state = {
       showModal: false,
-      disabledTemplate: false
+      disabledTemplate: false,
+      isStarted: false,
+      step: 25,
+      howMatch: 0,
+      successCounter: 0
     };
   }
 
   showModal() {
     this.setState({showModal: true});
-
+    this.setState({howMatch: Math.ceil(this.props.getRecipients.length / 25)});
   }
 
   closeModal() {
     this.setState({showModal: false});
+    this.setState({howMatch: 0});
+    this.setState({successCounter: 0});
     this.setState({disabledTemplate: false});
   }
 
@@ -72,36 +78,29 @@ export default class ListBtnSendModal extends React.Component {
     }
 
     this.props.toggleLoadIcon(target, 'Send')
+    this.setState({'isStarted': true});
 
     let length = this.props.getRecipients.length;
-    let step = 25;
-    let lastStep = false;
+    let step = this.state.step;
 
     do {
       let chopedRecipients = this.props.getRecipients.splice(0, step);
+
+      length -= step;
 
       this.createPostRequest({
         from: `${$introduceText} <${$email}@${this.props.getDomain}`,
         subject: $subject,
         ownTemplate: $checkOwnTemplate,
         template: $templateName,
-        recipients: chopedRecipients
-      }, function() {
-        if (lastStep) {
-          this.props.setAlert({message: 'Emails are successfully sent', type: 'success'});
-          this.props.toggleLoadIcon(target, 'Send');
-        }
-      }.bind(this));
-
-      length -= step;
-      if (length <= 0) {
-        lastStep = true;
-      }
-    } while(length > 0) ;
-
+        recipients: chopedRecipients,
+        target
+      });
+     
+    } while(length > 0);
   }
 
-  createPostRequest(event, callback) {
+  createPostRequest(event) {
     $.ajax({
       type: 'POST',
       url: `${this.props.source}/campgains/${this.props.getCampgainId}/send`,
@@ -110,9 +109,9 @@ export default class ListBtnSendModal extends React.Component {
       crossDomain: true,
       timeout: 0, //Set your timeout value in milliseconds or 0 for unlimited
 
-      // beforeSend: function (request) {
-      //   request.setRequestHeader("Authorization", auth.getToken());
-      // },
+      beforeSend: function (request) {
+        request.setRequestHeader("Authorization", auth.getToken());
+      },
 
       success: function(data) {
         if (data === null) {
@@ -122,7 +121,12 @@ export default class ListBtnSendModal extends React.Component {
         }
 
         if (!data.errorMessage) {
-          callback();
+          this.setState({'successCounter': this.state.successCounter+=1});
+
+          if (this.state.successCounter === this.state.howMatch) {
+            this.props.setAlert({message: 'Emails are successfully send', type: 'success'});
+            this.props.toggleLoadIcon(event.target, 'Send');
+          }
         } else {
           this.props.setAlert({message: data.errorMessage, type: 'error'});
         }
@@ -207,6 +211,15 @@ export default class ListBtnSendModal extends React.Component {
           </div>
           </Modal.Body>
           <Modal.Footer>
+              { this.state.isStarted && (
+                <div style={{'float':'left', 'textAlign':'left'}}>
+                  <div>Will be send <span class="label label-info">{this.state.howMatch}</span> requests.</div>
+                  <div style={{'marginTop': '20px'}}>Successfully send: <span class="label label-success">{this.state.successCounter}</span></div>
+                  <div style={{'marginTop': '20px'}}>In one request <span class="label label-info">{this.state.step}</span> or less emails. More information you can get in the logs section</div>
+                  <div class="text-danger">{ this.state.howMatch === this.state.successCounter ? ('Thank you! Now you can close this window'): ('Please don\'t close current window') }</div>
+                </div>
+              )}
+
               <Button onClick={this.sendEmails.bind(this)} class="btn btn-success">Send</Button>
               <Button onClick={this.closeModal.bind(this)} class="btn btn-danger">Close</Button>
           </Modal.Footer>

@@ -22,11 +22,16 @@ export default class ListHeader extends React.Component {
 			buttonProps.style = {display: 'none'};
 		}
 		
+		console.log(this.props.totalAmoutRecipients);
+
 		return (
 			<div class="panel-heading">
 				<CampaignsChooser values={this.props.getCampgains} name="campaign" text="campaign" loadRecipients={this.props.loadRecipients} setSelectedCampgainId={this.props.setSelectedCampgainId}/>
 
-				<h2> {campgainName} <small>{~campgainName.indexOf('Please') ? '': 'Chosen campaign'}</small></h2>	
+				<h2>
+					<small style={{float: 'right', display: 'block'}}>{~campgainName.indexOf('Please') ? '': 'Count: ' + this.props.totalAmoutRecipients}</small>
+					{campgainName} 
+				</h2>	
 		  	
 		  	<ListBtnSendModal 
 		  		buttonProps={buttonProps} 

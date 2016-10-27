@@ -16,6 +16,7 @@ export default class LayoutContainer extends React.Component {
 			campgains: [],
 			templates: [],
 			recipients: [],
+			totalAmoutRecipients: 0,
 			domain: '',
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectCampgainName'),
@@ -53,9 +54,12 @@ export default class LayoutContainer extends React.Component {
       },
 
 			success: function(data) {
-				if (!this.UnMount && data.Items.length !== this.state.recipients.length) {
+				if (!this.UnMount) {
 					this.setState({recipients: data.Items}, function() {
+						if (data.Items.length > 0) {
+							this.setState({totalAmoutRecipients: data.count});
 							this.stopIntervalRecipientsLoad();
+						}
 					}.bind(this));
 				}
 				
@@ -221,6 +225,7 @@ export default class LayoutContainer extends React.Component {
 				campgains={this.state.campgains} 
 				templates={this.state.templates}
 				recipients={this.state.recipients}
+				totalAmoutRecipients={this.state.totalAmoutRecipients}
 				message={this.state.message}
 				showAlert={this.state.alert}
 				getCampgainId={this.state.selectedCampgainId} 
@@ -249,6 +254,7 @@ class Layout extends React.Component {
 	    			source={this.props.source} 
 	    			templates={this.props.templates}
 	    			recipients={this.props.recipients}
+	    			totalAmoutRecipients={this.props.totalAmoutRecipients}
 	    			toggleLoadIcon={this.props.toggleLoadIcon}
 	    			changeDomainEmail={this.props.changeDomainEmail}
 	    			getCampgains={this.props.campgains} 

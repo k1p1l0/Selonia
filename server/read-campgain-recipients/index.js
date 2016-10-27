@@ -21,7 +21,10 @@ function init (event, context, callback) {
         if (err) {
            callback(err, null);
         } else {
-           callback(null, data);
+          let limitedRecipients = data.Items.splice(0, 300);
+          let count = data.Count;
+           
+           callback(null, {Items: limitedRecipients, count});
         }
     });
 }

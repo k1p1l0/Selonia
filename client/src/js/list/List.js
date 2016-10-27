@@ -191,6 +191,7 @@ export default class ListContainer extends React.Component {
 			setAlert={this.props.setAlert}
 			campaignWasEdited={this.props.campaignWasEdited}
 			getRecipients={this.props.recipients} 
+			totalAmoutRecipients={this.props.totalAmoutRecipients}
 			getCampgainId={this.props.getCampgainId}
 			changeDomainEmail={this.props.changeDomainEmail}
 			getCampgains={this.props.getCampgains} 
@@ -217,6 +218,7 @@ class List extends React.Component {
 				<div class="panel panel-default">
 					<ListHeader 
 						setSelectedCampgainId={this.props.setSelectedCampgainId} 
+						totalAmoutRecipients={this.props.totalAmoutRecipients}
 						campaignWasEdited={this.props.campaignWasEdited}
 						loadRecipients={this.props.loadRecipients}
 						setAlert={this.props.setAlert}
