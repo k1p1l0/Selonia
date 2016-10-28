@@ -32,45 +32,45 @@ function init (event, context, callback) {
         if (err) {
            callback(err, null);
         } else {
-        	async.each(data.Items, function (recipient) {
-        		deleteRecipient(recipient);
-        	});
+          async.each(data.Items, function (recipient) {
+            deleteRecipient(recipient);
+          });
 
-        	if (event.deleteCampgain) {
-        		deleteList(campgainId);
-        	}
+          if (event.deleteCampgain) {
+            deleteList(campgainId);
+          }
 
-        	callback(null, 'done');
+          callback(null, 'done');
         }
     });
 }
 
 function deleteRecipient (recipient) {
-	const lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+  const lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
 
-	let params = {
-		FunctionName: FUNCTION_NAME,
-  	Payload: JSON.stringify({id: recipient.id}, null, 2) // pass params
-	};
+  let params = {
+    FunctionName: FUNCTION_NAME,
+        InvokeArgs: JSON.stringify({id: recipient.id}, null, 2) // pass params
+  };
 
-	lambda.invoke(params, function(error, data) {
-		  if (error) {
-		  	console.log(error);
-		  } else {
-		  	console.log(data);
-		  }
-	});
+  lambda.invokeAsync(params, function(error, data) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(data);
+      }
+  });
 }
 
 function deleteList (id) {
-	const TableName = 'selonia-campaigns';
+  const TableName = 'selonia-campaigns';
 
-	var params = {
+  var params = {
         TableName,
         Key: {
           id
         }
-    	};
+      };
     
   docClient.delete(params, function(err, data) {
       if (err) {
