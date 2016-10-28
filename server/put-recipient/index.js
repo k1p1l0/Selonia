@@ -8,11 +8,11 @@ const TableName = 'selonia-recipients';
 function init (event, context, callback) {	
 	let params = {
 		Item: {
-			id: parseInt(event.id),
+			id: event.id,
 			name: event.name,
 			email: event.email,
 			templateName: event.templateName,
-			campgainId: event.campgainId
+			campgainId: parseInt(event.campgainId)
 		},
 
 		TableName
