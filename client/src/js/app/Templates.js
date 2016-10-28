@@ -12,10 +12,11 @@ export default class Templates extends React.Component {
 		super(props);
 
 		this.state = {
-			templates: []
+			templates: [],
+			templatesTimerId: 0
 		};
 
-		this.loadTemplates();
+		this.startIntervalLoadTemplates();
 
 		this.alertOptions = {
       offset: 0,
@@ -76,7 +77,7 @@ export default class Templates extends React.Component {
       },
 
   		success: function(data) {
-  			
+
   			if (!data.errorMessage) {
 					this.setAlert({message: 'Template is successfully deleted ', type: 'success'});
 					this.loadTemplates();
@@ -101,6 +102,18 @@ export default class Templates extends React.Component {
 
 	componentWillUnmount() {
 		this.UnMount = true;
+		this.stopIntervalTemplateLoad();
+	}
+
+	startIntervalLoadTemplates() {
+		// if (this.state.recipientsTimerId >= 0) {
+			let templatesTimerId = setInterval(this.loadTemplates.bind(this), 3000);
+			this.setState({templatesTimerId});
+		// }
+	}
+
+	stopIntervalTemplateLoad() {
+		this.state.templatesTimerId && clearInterval(this.state.templatesTimerId);
 	}
 
 	render() {

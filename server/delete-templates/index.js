@@ -32,7 +32,7 @@ function init (event, context, callback) {
     var params = {
         TableName,
         Key: {
-            id: event.id,
+            name: event.name,
         }
     };
     

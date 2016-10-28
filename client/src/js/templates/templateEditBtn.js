@@ -15,14 +15,13 @@ export default class TemplateEditBtn extends React.Component {
 
   showModal() {
     this.setState({showModal: true});
-
   }
 
   closeModal() {
     this.setState({showModal: false});
   }
 
-  onEditRecipient(id) {
+  onEditRecipient(id, name) {
   	let $name = $('#inputNewRecipientName').val();
 
   	if ($name.length === 0) {
@@ -40,6 +39,7 @@ export default class TemplateEditBtn extends React.Component {
 			data: JSON.stringify({
 				id: id,
 				name: $name,
+        oldname: name
 			}),
 
 			contentType: "application/json",
@@ -94,7 +94,7 @@ export default class TemplateEditBtn extends React.Component {
 	          </div>
           </Modal.Body>
           <Modal.Footer>
-              <Button onClick={this.onEditRecipient.bind(this, id)} class="btn btn-success">Edit</Button>
+              <Button onClick={this.onEditRecipient.bind(this, id, name)} class="btn btn-success">Edit</Button>
               <Button onClick={this.closeModal.bind(this)} class="btn btn-danger">Close</Button>
           </Modal.Footer>
         </Modal>
