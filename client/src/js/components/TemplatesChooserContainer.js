@@ -22,6 +22,14 @@ class TemplatesChooser extends React.Component {
 	  }
 	}
 
+	shouldComponentUpdate(nextProps){
+	    if (nextProps.templates === this.props.templates) {
+	    	return false;
+	    }
+
+	    return true;
+	}
+
 	render() {
 		var options = this.props.templates.map(function(value) {
       return (

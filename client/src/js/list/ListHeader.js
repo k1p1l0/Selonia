@@ -22,8 +22,6 @@ export default class ListHeader extends React.Component {
 			buttonProps.style = {display: 'none'};
 		}
 		
-		console.log(this.props.totalAmoutRecipients);
-
 		return (
 			<div class="panel-heading">
 				<CampaignsChooser values={this.props.getCampgains} name="campaign" text="campaign" loadRecipients={this.props.loadRecipients} setSelectedCampgainId={this.props.setSelectedCampgainId}/>

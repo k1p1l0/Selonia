@@ -102,13 +102,74 @@ export default class ListContainer extends React.Component {
 
   deleteList({target}) {
   	this.toggleLoadIcon(target, 'Delete list');
-  	
-  	$.ajax({
+
+  	let length = this.props.recipients.length;
+    let step = 1;
+
+    if (length <= 5) {
+	    do {
+	      let chopedRecipient = this.props.recipients.splice(0, step);
+
+	      length -= step;
+
+				this.deleteListByOneRequest(chopedRecipient[0].id)
+	     
+	    } while(length > 0);
+
+	    if (length === 0) {
+				this.props.setAlert({message: 'List is successfully deleted', type: 'success'});
+				this.loadRecipients();
+				this.toggleLoadIcon(target, 'Delete list');
+	    }
+  	} else {
+  		this.deleteAllListRequest(target)
+  	}
+	}
+
+	deleteAllListRequest(target) {
+		$.ajax({
   		type: 'DELETE',
   		url: `${this.props.source}/campgains`,
   		data: JSON.stringify({
   			id: this.props.getCampgainId,
   			deleteCampgain: false
+  		}),
+  		timeout: 36000,
+  		contentType: "application/json",
+			crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
+
+  		success: function(data) {
+  			if (!data.errorMessage) {
+					this.props.setAlert({message: 'Proccess is successfully started on the background (Please check the campaign after ~1-2 mins)', type: 'success'});
+					this.loadRecipients();
+				} else {
+					this.props.setAlert({message: data.errorMessage, type: 'error'});
+				}
+
+  			this.toggleLoadIcon(target, 'Delete list');
+  		}.bind(this),
+
+  		error: function(data, secondArg) {
+  			if (secondArg === 'timeout') {
+  				this.props.setAlert({message: 'Proccess was started but was timeouted by client (Please wait)', type: 'info'});
+  			}
+  			this.toggleLoadIcon(target, 'Delete list');
+
+				// console.log('Some trouble with token!');
+			},
+  	});
+	}
+
+	deleteListByOneRequest(id) {
+		$.ajax({
+  		type: 'DELETE',
+  		url: `${this.props.source}/campgains/${id}`,
+  		data: JSON.stringify({
+  			id
   		}),
   		contentType: "application/json",
 			crossDomain: true,
@@ -119,12 +180,12 @@ export default class ListContainer extends React.Component {
 
   		success: function(data) {
   			if (!data.errorMessage) {
-					this.props.setAlert({message: 'List is successfully deleted', type: 'success'});
-					this.loadRecipients();
+					// this.props.setAlert({message: 'List is successfully deleted', type: 'success'});
+					// this.loadRecipients();
 				} else {
 					this.props.setAlert({message: data.errorMessage, type: 'error'});
 				}
-  			this.toggleLoadIcon(target, 'Delete list');
+  			// this.toggleLoadIcon(target, 'Delete list');
   		}.bind(this),
 
   		error: function(data) {
@@ -146,6 +207,12 @@ export default class ListContainer extends React.Component {
 	}
 
 	deleteCampgain({target}) {
+		if (this.props.recipients.length > 0) {
+			this.props.setAlert({message: 'Please first delete list with recipients', type: 'info'});
+
+			return;
+		}
+
 		this.toggleLoadIcon(target, 'Delete campaign');
 		
   	$.ajax({

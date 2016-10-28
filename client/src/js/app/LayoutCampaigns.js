@@ -56,10 +56,12 @@ export default class LayoutContainer extends React.Component {
 			success: function(data) {
 				if (!this.UnMount) {
 					this.setState({recipients: data.Items}, function() {
-						if (data.Items.length > 0) {
+						// if (data.Items.length > 0) {
 							this.setState({totalAmoutRecipients: data.count});
-							this.stopIntervalRecipientsLoad();
-						}
+						// 	this.stopIntervalRecipientsLoad();
+						// } else {
+						// 	this.setState({totalAmoutRecipients: 0});
+						// }
 					}.bind(this));
 				}
 				
@@ -130,11 +132,13 @@ export default class LayoutContainer extends React.Component {
 				}
 			}.bind(this),
 
-			error: function() {
+			error: function(data, err) {
 				console.log('Some trouble with token!');
+				console.log(data);
+				console.log(err);
 
-				// auth.logout();
-				// location.reload();
+				auth.logout();
+				location.reload();
 			}
 		});
   }
@@ -172,15 +176,15 @@ export default class LayoutContainer extends React.Component {
 		this.UnMount = false;
 		this.loadCompgain();
 		this.loadTemplates();
-		this.loadRecipients();
+		this.startIntervalRecipientsLoad();
 	}
 
 	componentWillUnmount() {
+		this.setState({totalAmoutRecipients: 0});
 		this.UnMount = true;
 	}
 
 	stopIntervalRecipientsLoad() {
-		console.log('STOP!!!');
 		this.state.recipientsTimerId && clearInterval(this.state.recipientsTimerId);
 	}
 
@@ -193,17 +197,17 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	startIntervalRecipientsLoad() {
-		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 1000);
+		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 2000);
 		this.setState({recipientsTimerId});
 	}
 
 	startIntervalCampgainLoad() {
-		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 1000);
+		let campgainTimerId = setInterval(this.loadCompgain.bind(this), 2000);
 		this.setState({campgainTimerId});
 	}
 
 	startIntervalTemplateLoad() {
-		let templateTimerId = setInterval(this.loadTemplates.bind(this), 1000);
+		let templateTimerId = setInterval(this.loadTemplates.bind(this), 3000);
 		this.setState({templateTimerId});
 	}
 

@@ -14,7 +14,7 @@ export default class ListBtnSendModal extends React.Component {
       showModal: false,
       disabledTemplate: false,
       isStarted: false,
-      step: 25,
+      step: 5,
       howMatch: 0,
       successCounter: 0
     };
@@ -22,7 +22,7 @@ export default class ListBtnSendModal extends React.Component {
 
   showModal() {
     this.setState({showModal: true});
-    this.setState({howMatch: Math.ceil(this.props.getRecipients.length / 25)});
+    this.setState({howMatch: Math.ceil(this.props.getRecipients.length / this.state.step)});
   }
 
   closeModal() {
@@ -214,7 +214,7 @@ export default class ListBtnSendModal extends React.Component {
               { this.state.isStarted && (
                 <div style={{'float':'left', 'textAlign':'left'}}>
                   <div>Will be send <span class="label label-info">{this.state.howMatch}</span> requests.</div>
-                  <div style={{'marginTop': '20px'}}>Successfully send: <span class="label label-success">{this.state.successCounter}</span></div>
+                  <div style={{'marginTop': '20px'}}>Successfully send: <span class="label label-success">{this.state.successCounter}</span> requests</div>
                   <div style={{'marginTop': '20px'}}>In one request <span class="label label-info">{this.state.step}</span> or less emails. More information you can get in the logs section</div>
                   <div class="text-danger">{ this.state.howMatch === this.state.successCounter ? ('Thank you! Now you can close this window'): ('Please don\'t close current window') }</div>
                 </div>
