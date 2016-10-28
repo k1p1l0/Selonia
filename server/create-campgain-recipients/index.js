@@ -14,11 +14,44 @@ function init (event, context, callback) {
 }
 
 function sendItems(params, cb) {
+	// console.log(params);
+
+	// var params = {
+	//   TableName
+	// };
+
+	// console.log('DESCRIBE TABLE');
+	// doClient.describeTable(params, function(err, data) {
+	//   if (err) {
+	//   	console.log(err, err.stack); // an error occurred
+	//   } 
+	//   else {
+	//   	console.log(data); 
+	//   }              // successful response
+	// });
+
   doClient.batchWrite(params, function(err, data) {
 	  if (err) {
+			console.log('ERROR IN batchWrite: ', err);
+
+			if (~err.indexOf('ProvisionedThroughputExceededException')) {
+				setTimeout(function() {
+					console.log('try to loop it');
+					
+					sendItems(params, cb);
+				}, 5000);
+			}
+
 	  	cb(err, null);
 	  }
 	  else {
+			if (data.UnprocessedItems.length > 0) {
+				console.log('Data Error: ', data);
+				// setTimeout(function() {
+				// 	sendItems(prepareRequest(data.UnprocessedItems), cb);
+				// }, 5000);
+			}
+
 	 		cb(null, data);
 	  }
 	});
@@ -46,7 +79,7 @@ function makeItems (recipients) {
 	});
 }
 
-function prepareRequest (items) {
+function prepareRequest (items) { 	
 	return {
     'RequestItems': {
       [TableName]: items

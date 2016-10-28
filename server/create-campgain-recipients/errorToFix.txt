@@ -1,0 +1,4 @@
+The level of configured provisioned throughput for one or more global secondary indexes of the table was exceeded. 
+Consider increasing your provisioning level for the under-provisioned global secondary indexes with the UpdateTable API",
+   
+http://stackoverflow.com/questions/31468379/how-to-slove-throuput-error-for-dynamodb

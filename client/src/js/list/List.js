@@ -134,7 +134,7 @@ export default class ListContainer extends React.Component {
   			id: this.props.getCampgainId,
   			deleteCampgain: false
   		}),
-  		timeout: 36000,
+  		timeout: 9500,
   		contentType: "application/json",
 			crossDomain: true,
 
@@ -157,10 +157,16 @@ export default class ListContainer extends React.Component {
   			if (secondArg === 'timeout') {
   				this.props.setAlert({message: 'Proccess was started but was timeouted by client (Please wait)', type: 'info'});
   			}
+
+  			if (secondArg === 'error') {
+  				this.props.setAlert({message: 'Proccess was started but was timeouted by server (Please wait)', type: 'info'});
+  			}
+  			
+				this.loadRecipients();
   			this.toggleLoadIcon(target, 'Delete list');
 
 				// console.log('Some trouble with token!');
-			},
+			}.bind(this),
   	});
 	}
 

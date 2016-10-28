@@ -21,6 +21,11 @@ export default class ListBtnSendModal extends React.Component {
   }
 
   showModal() {
+    if (this.props.getRecipients.length === 0) {
+      this.props.setAlert({message:'Please wait until recipients will loaded. Thank you!', type:'info'});
+
+      return;
+    }
     this.setState({showModal: true});
     this.setState({howMatch: Math.ceil(this.props.getRecipients.length / this.state.step)});
   }
@@ -28,6 +33,7 @@ export default class ListBtnSendModal extends React.Component {
   closeModal() {
     this.setState({showModal: false});
     this.setState({howMatch: 0});
+    this.setState({isStarted: false});
     this.setState({successCounter: 0});
     this.setState({disabledTemplate: false});
   }
@@ -162,6 +168,8 @@ export default class ListBtnSendModal extends React.Component {
       </Popover>
     );
 
+    let formulaPercent = Math.ceil((this.state.successCounter * 100) / this.state.howMatch);
+
     return (
       <div class="btn-group">
         <button {...this.props.buttonProps} onClick={this.showModal.bind(this)}>
@@ -212,11 +220,22 @@ export default class ListBtnSendModal extends React.Component {
           </Modal.Body>
           <Modal.Footer>
               { this.state.isStarted && (
+
                 <div style={{'float':'left', 'textAlign':'left'}}>
+                  { this.state.howMatch === this.state.successCounter ? (<div class="text-success">Thank you! Now you can close current window</div>): (<div class="text-info">Please don't close current window</div>) }
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow={this.state.successCounter} aria-valuemin="0" aria-valuemax={this.state.howMatch} style={{minWidth: '2em', width: `${formulaPercent}%`}}>
+                      {formulaPercent}%
+                    </div>
+                  </div>
+
+                  <div>In one request will be <span class="label label-info">{this.state.step}</span> or less emails. </div>
                   <div>Will be send <span class="label label-info">{this.state.howMatch}</span> requests.</div>
-                  <div style={{'marginTop': '20px'}}>Successfully send: <span class="label label-success">{this.state.successCounter}</span> requests</div>
-                  <div style={{'marginTop': '20px'}}>In one request <span class="label label-info">{this.state.step}</span> or less emails. More information you can get in the logs section</div>
-                  <div class="text-danger">{ this.state.howMatch === this.state.successCounter ? ('Thank you! Now you can close this window'): ('Please don\'t close current window') }</div>
+                  <div>Successfully send to lambda <span class="label label-success">{this.state.successCounter}</span> requests</div>
+
+
+                  <div style={{marginTop: '20px'}} class="text-info">More information you can get in the logs section</div>
+
                 </div>
               )}
 

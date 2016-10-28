@@ -1,6 +1,11 @@
 import React from 'react';
+import AlertContainer from 'react-alert';
 
 import auth from '../auth';
+
+import config from '../config.json';
+
+import TemplateEditBtn from '../templates/TemplateEditBtn';
 
 export default class Templates extends React.Component {
 	constructor(props) {
@@ -11,7 +16,21 @@ export default class Templates extends React.Component {
 		};
 
 		this.loadTemplates();
+
+		this.alertOptions = {
+      offset: 0,
+      position: 'top left',
+      theme: 'light',
+      time: 10000,
+      transition: 'scale'
+    };
 	}
+
+	setAlert({message, type}) {
+    msg.show(message, {
+      type
+    });
+  }
 
 	loadTemplates() {
     $.ajax({
@@ -41,6 +60,41 @@ export default class Templates extends React.Component {
     })
   }
 
+  deleteTemplate({id, name}) {
+  	$.ajax({
+  		type: 'DELETE',
+  		url: `${this.props.source}/templates`,
+  		data: JSON.stringify({
+  			id,
+  			name
+  		}),
+  		contentType: "application/json",
+  		crossDomain: true,
+
+			beforeSend: function (request) {
+      	request.setRequestHeader("Authorization", auth.getToken());
+      },
+
+  		success: function(data) {
+  			
+  			if (!data.errorMessage) {
+					this.setAlert({message: 'Template is successfully deleted ', type: 'success'});
+					this.loadTemplates();
+				} else {
+					this.setAlert({message: data.errorMessage, type: 'error'});
+				}
+
+  		}.bind(this),
+
+  		error: function() {
+				console.log('Some trouble with token!');
+
+				// auth.logout();
+				// location.reload();
+			}
+  	});
+  }
+
   componentWillMount() {
 		this.UnMount = false;
 	}  
@@ -54,9 +108,9 @@ export default class Templates extends React.Component {
       return (
 				<tr key={i}>
 					<td>{value.name}</td>
-					<td><a href="#">Download</a></td>
-					<td><button class="btn btn-primary">Edit</button></td>
-					<td><button class="btn btn-danger">Delete</button></td>
+					<td><a href={`${config.STATIC_URL}/templates/${value.name}/html.ejs`}>Link</a></td>
+					<td><TemplateEditBtn setAlert={this.setAlert.bind(this)} source={this.props.source} loadTemplates={this.loadTemplates.bind(this)} data={value}>Edit</TemplateEditBtn></td>
+					<td><button onClick={this.deleteTemplate.bind(this, value)} class="btn btn-danger">Delete</button></td>
 				</tr>
       );
     }.bind(this));
@@ -67,7 +121,7 @@ export default class Templates extends React.Component {
 					<thead>
 						<tr>
 							<th>Name</th>
-							<th>Link</th>
+							<th>Download</th>
 							<th>Edit</th>
 							<th>Delete</th>
 						</tr>
@@ -76,6 +130,7 @@ export default class Templates extends React.Component {
 						{templatesRows}
 					</tbody>
 				</table>
+				<AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
 			</div>
 		)
 	}

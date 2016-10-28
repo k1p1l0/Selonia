@@ -1,4 +1,5 @@
 {
 	"ENDPOINT": "https://3j5zptrz4m.execute-api.us-east-1.amazonaws.com/prod",
+	"STATIC_URL": "http://selonia.static.s3-website-us-east-1.amazonaws.com",
 	"ROOT_ELEMENT": "#app"
 }

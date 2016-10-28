@@ -20,9 +20,9 @@ export default class LayoutContainer extends React.Component {
 			domain: '',
 			selectedCampgainId: localStorage.getItem('selectCampgainId'),
 			selectedCampgainName: localStorage.getItem('selectCampgainName'),
-			campgainTimerId: null,
-			templateTimerId: null,
-			recipientsTimerId: null
+			campgainTimerId: 0,
+			templateTimerId: 0,
+			recipientsTimerId: 0
 		};
 
 		this.alertOptions = {
@@ -54,7 +54,9 @@ export default class LayoutContainer extends React.Component {
       },
 
 			success: function(data) {
-				if (!this.UnMount) {
+				this.setState({totalAmoutRecipients: data.count});
+				
+				if (data.Items.length !== this.state.recipients.length && !this.UnMount || this.editCampaign) {
 					this.setState({recipients: data.Items}, function() {
 						// if (data.Items.length > 0) {
 							this.setState({totalAmoutRecipients: data.count});
@@ -176,7 +178,7 @@ export default class LayoutContainer extends React.Component {
 		this.UnMount = false;
 		this.loadCompgain();
 		this.loadTemplates();
-		this.startIntervalRecipientsLoad();
+		this.loadRecipients();
 	}
 
 	componentWillUnmount() {
@@ -197,8 +199,10 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	startIntervalRecipientsLoad() {
-		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 2000);
-		this.setState({recipientsTimerId});
+		// if (this.state.recipientsTimerId >= 0) {
+			let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 3000);
+			this.setState({recipientsTimerId});
+		// }
 	}
 
 	startIntervalCampgainLoad() {
@@ -207,8 +211,10 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	startIntervalTemplateLoad() {
-		let templateTimerId = setInterval(this.loadTemplates.bind(this), 3000);
-		this.setState({templateTimerId});
+		// if (this.state.templateTimerId > 0) { 
+			let templateTimerId = setInterval(this.loadTemplates.bind(this), 3000);
+			this.setState({templateTimerId});
+		// }
 	}
 
 	setSelectedCampgainId(id) {

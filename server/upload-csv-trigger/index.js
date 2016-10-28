@@ -5,6 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const parse = require('csv-parse');
 const shortid = require('shortid');
+const async = require('async');
+
+const STEP = 25; // DynamoDB: Member must have length less than or equal to 25
 
 AWS.config.update({
   accessKeyId: 'AKIAJ5QNK3SH4E2TFHQQ',
@@ -42,7 +45,7 @@ function readCsv (config, params, callback) {
         			templateName: params.keyTemplateName
         		};
 
-        if (users.length < 25) {
+        if (users.length < STEP) {
         	users.push(hashUser);
         } else {
         	arrayOfUsers.push(users);
@@ -64,7 +67,11 @@ function readCsv (config, params, callback) {
 function writeUsers(arrayOfUsers, callback) {
 	var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
 
-	arrayOfUsers.forEach(function (usersPack) {
+	async.each(arrayOfUsers, function(usersPack) {
+		console.log('length');
+		
+		console.log(usersPack.length);
+
 		let params = {
 			FunctionName: FUNCTION_NAME,
 	  	InvokeArgs: JSON.stringify({recipients: usersPack}, null, 2) // pass params
@@ -72,15 +79,13 @@ function writeUsers(arrayOfUsers, callback) {
 
 		lambda.invokeAsync(params, function(error, data) {
 			  if (error) {
-			  	// console.log(error);
-
-			  	// error.UnprocessedItems.selonia-recipients.forEach(function(item) {
-			  	// 	console.log(item);
-			  	// });
-
+			  	console.log('HERE IS ERROR');
+			  	console.log(error);
 			  	callback(error, null);
 			  }
 
+			  console.log('HERE IS DATA');
+			  console.log(data);
 			  callback(null, data);
 		});
 	});

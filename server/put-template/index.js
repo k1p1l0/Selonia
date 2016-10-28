@@ -1,28 +1,25 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const shortid = require('shortid');
-
 const doClient = new AWS.DynamoDB.DocumentClient({region: 'us-east-1'});
 
 const TableName = 'selonia-templates';
 
 function init (event, context, callback) {	
-	let name = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(1, 1));
 	let params = {
 		Item: {
-			id: shortid.generate(),
-			name
+			id: event.id,
+			name: event.name,
 		},
 
 		TableName
 	};
 
-	doClient.put(params, (err, data) => {
+	doClient.put(params, (err) => {
 		if (err) {
 			callback(err, null);
 		} else {
-			callback(null, data);
+			callback(null, params.Item);
 		}
 	});
 }

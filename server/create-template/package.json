@@ -1,16 +1,14 @@
 {
-  "name": "upload-csv-trigger",
+  "name": "create-template",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dependencies": {
-    "async": "^2.1.2",
-    "shortid": "^2.2.6"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "shortid": "^2.2.6"
+  }
 }

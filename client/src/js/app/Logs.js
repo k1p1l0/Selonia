@@ -143,8 +143,8 @@ export default class extends React.Component {
   			<button type="button" onClick={this.loadAll.bind(this)} class="btn btn-default" style={{marginBottom: '10px', marginLeft: '0px'}}>
 			  	<i id="loadIcon" class="glyphicon glyphicon-eye-open"></i><span> Show all campaigns</span>
   			</button>
-
   			<p style={{fontSize: '23px'}}>Last updated: {this.state.timeUpdate}</p>
+ 				<p class="text-info">INFO: It won't show emails that were blocked by SES</p>
 			  <table class="table table-bordered">
 			  <thead>
 			  	<tr class="active">
