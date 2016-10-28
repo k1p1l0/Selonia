@@ -47,7 +47,7 @@ export default class Templates extends React.Component {
       },
 
 			success: function(data) {
-				if (data.Items.length !== this.state.templates.length && !this.UnMount) {
+				if (!this.UnMount) {
 					this.setState({templates: data.Items})
 				}
 			}.bind(this),

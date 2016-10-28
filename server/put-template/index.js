@@ -26,7 +26,7 @@ const copyTheObject = (NewName, OldName, callback) => {
 	});
 };
 
-const deleteFromS3 = (name, cb) => {
+const deleteFromS3 = (name, id, cb) => {
     let params = {
       Bucket,
       Delete: { /* required */
@@ -42,8 +42,25 @@ const deleteFromS3 = (name, cb) => {
     };
 
     s3.deleteObjects(params, function(err, data) {
-      if (err) cb(err, err.stack); // an error occurred
-      else     cb(null, data);           // successful response
+      if (err) {
+				cb(err, err.stack); // an error occurred
+			}
+      else {
+    		let params = {
+	        TableName,
+	        Key: {
+	          name
+	        }
+  			};
+    
+		    doClient.delete(params, function(err) {
+		        if (err) {
+		           cb(err, null);
+		        } else {
+		           cb(null, name);
+		        }
+		    });
+      }
     });
 };
 
@@ -62,19 +79,19 @@ function init (event, context, callback) {
 			callback(err, null);
 		} else {
 			copyTheObject(event.name, event.oldname, function(name) {
-				deleteFromS3(name, callback);
+				deleteFromS3(name, event.id, callback);
 			});
 		}
 	});
 }
 
-init({
-    "id": "SyOTdB-le",
-    "name": "kiska",
-    "oldname": "Testname"
-}, null, function(a, b) {
-	console.log(a);
-	console.log(b);
-})
+// init({
+//     "id": "SyOTdB-le",
+//     "name": "kiska",
+//     "oldname": "Testname"
+// }, null, function(a, b) {
+// 	console.log(a);
+// 	console.log(b);
+// })
 
 exports.handler = init;
