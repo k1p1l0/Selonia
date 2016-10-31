@@ -181,8 +181,11 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	componentWillUnmount() {
-		this.setState({totalAmoutRecipients: 0});
 		this.UnMount = true;
+		this.setState({totalAmoutRecipients: 0});
+		this.stopIntervalRecipientsLoad();
+		this.stopIntervalCampgainLoad();
+		this.stopIntervalTemplateLoad();
 	}
 
 	stopIntervalRecipientsLoad() {
@@ -198,9 +201,12 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	startIntervalRecipientsLoad() {
-		// if (this.state.recipientsTimerId >= 0) {
-			let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 3000);
-			this.setState({recipientsTimerId});
+		this.UnMount = true;
+		this.stopIntervalRecipientsLoad();
+
+		this.UnMount = false;
+		let recipientsTimerId = setInterval(this.loadRecipients.bind(this), 3000);
+		this.setState({recipientsTimerId});
 		// }
 	}
 
@@ -219,6 +225,7 @@ export default class LayoutContainer extends React.Component {
 	setSelectedCampgainId(id) {
 		this.setState({selectedCampgainId: id}, function() {
 			this.changeDomainEmail();
+			this.loadRecipients();
 		}.bind(this));
 	}
 
@@ -241,6 +248,7 @@ export default class LayoutContainer extends React.Component {
 				getDomain={this.state.domain}
 				source={this.props.source} 
 				toggleLoadIcon={this.toggleLoadIcon.bind(this)}
+				loadRecipients={this.loadRecipients.bind(this)}
 				campaignWasEdited={this.campaignWasEdited.bind(this)}
 				setSelectedCampgainId={this.setSelectedCampgainId.bind(this)}
 				stopIntervalCampgainLoad={this.stopIntervalCampgainLoad.bind(this)}
@@ -263,6 +271,7 @@ class Layout extends React.Component {
 	    			source={this.props.source} 
 	    			templates={this.props.templates}
 	    			recipients={this.props.recipients}
+	    			loadRecipients={this.props.loadRecipients}
 	    			totalAmoutRecipients={this.props.totalAmoutRecipients}
 	    			toggleLoadIcon={this.props.toggleLoadIcon}
 	    			changeDomainEmail={this.props.changeDomainEmail}

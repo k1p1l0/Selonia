@@ -11,7 +11,7 @@ export default class CampaignsChooser extends React.Component {
 		localStorage.setItem('selectCampgainId', e.target.value);
 
 		this.props.setSelectedCampgainId(e.target.value);
-		this.props.loadRecipients();
+		// this.props.loadRecipients(0);
 	}
 
 	getCampgainSelected () {

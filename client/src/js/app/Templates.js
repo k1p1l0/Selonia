@@ -16,7 +16,7 @@ export default class Templates extends React.Component {
 			templatesTimerId: 0
 		};
 
-		this.startIntervalLoadTemplates();
+		this.loadTemplates();
 
 		this.alertOptions = {
       offset: 0,
@@ -98,6 +98,7 @@ export default class Templates extends React.Component {
 
   componentWillMount() {
 		this.UnMount = false;
+		this.startIntervalLoadTemplates();
 	}  
 
 	componentWillUnmount() {

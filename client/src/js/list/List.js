@@ -14,8 +14,8 @@ export default class ListContainer extends React.Component {
 		};
 	}
 
-	loadRecipients(newId) {
-		this.props.startIntervalRecipientsLoad(newId);
+	loadRecipients() {
+		this.props.startIntervalRecipientsLoad();
   }
 
   toggleLoadIcon(target, text) {
@@ -262,6 +262,7 @@ export default class ListContainer extends React.Component {
 			setSelectedCampgainId={this.props.setSelectedCampgainId}
 			templates={this.props.templates}
 			setAlert={this.props.setAlert}
+			loadRecipientsDirect={this.props.loadRecipients}
 			campaignWasEdited={this.props.campaignWasEdited}
 			getRecipients={this.props.recipients} 
 			totalAmoutRecipients={this.props.totalAmoutRecipients}
@@ -294,6 +295,7 @@ class List extends React.Component {
 						totalAmoutRecipients={this.props.totalAmoutRecipients}
 						campaignWasEdited={this.props.campaignWasEdited}
 						loadRecipients={this.props.loadRecipients}
+						loadRecipientsDirect={this.props.loadRecipientsDirect}
 						setAlert={this.props.setAlert}
 						deleteList={this.props.deleteList} 
 						templates={this.props.templates}

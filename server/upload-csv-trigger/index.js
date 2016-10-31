@@ -7,7 +7,7 @@ const parse = require('csv-parse');
 const shortid = require('shortid');
 const async = require('async');
 
-const STEP = 25; // DynamoDB: Member must have length less than or equal to 25
+const STEP = 5; // DynamoDB: Member must have length less than or equal to 25
 
 AWS.config.update({
   accessKeyId: 'AKIAJ5QNK3SH4E2TFHQQ',

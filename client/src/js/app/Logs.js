@@ -35,8 +35,6 @@ export default class extends React.Component {
 
 			success: function(data) {
 				if (!this.UnMount) {
-					console.log(data);
-					
 					this.setState({logs: data}, callback ? callback: null);
 					this.setState({timeUpdate: moment().format('LTS')});
 					$('#refreshIcon').toggleClass('gly-spin');

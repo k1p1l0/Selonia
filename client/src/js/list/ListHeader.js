@@ -24,7 +24,7 @@ export default class ListHeader extends React.Component {
 		
 		return (
 			<div class="panel-heading">
-				<CampaignsChooser values={this.props.getCampgains} name="campaign" text="campaign" loadRecipients={this.props.loadRecipients} setSelectedCampgainId={this.props.setSelectedCampgainId}/>
+				<CampaignsChooser values={this.props.getCampgains} name="campaign" text="campaign" loadRecipientsDirect={this.props.loadRecipientsDirect} setSelectedCampgainId={this.props.setSelectedCampgainId}/>
 
 				<h2>
 					<small style={{float: 'right', display: 'block'}}>{~campgainName.indexOf('Please') ? '': 'Count: ' + this.props.totalAmoutRecipients}</small>
