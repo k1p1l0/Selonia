@@ -11,13 +11,13 @@ function init (event, context, callback) {
 			id: event.id,
 			name: event.name,
 			email: event.email,
-			templateName: event.templateName,
+			templateId: event.templateId,
 			campgainId: parseInt(event.campgainId)
 		},
 
 		TableName
 	};
-
+	
 	doClient.put(params, (err) => {
 		if (err) {
 			callback(err, null);

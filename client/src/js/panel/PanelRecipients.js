@@ -13,7 +13,7 @@ export default class PanelRecipients extends React.Component {
 		let S3 = new AWS.S3();
 		let fileChooser = document.getElementById('fileCsv');
 		let file = fileChooser.files[0];
-		let templateName = $('select[name="csvTemplate"] option:selected').text();
+		let templateId = $('select[name="csvTemplate"] option:selected').val();
 		let campgainId = localStorage.getItem('selectCampgainId');
 
 		if (!file) {
@@ -21,14 +21,7 @@ export default class PanelRecipients extends React.Component {
 			return;
 		}
 
-		console.log(file.type);
-
-	  // if (file.type !== 'application/vnd.ms-excel' || file.type !== 'text/csv') {
-   //    this.props.setAlert({message:'File type must be .csv', type:'info'});
-   //    return;
-	  // }
-
-		if (templateName === 'Template') {
+		if (templateId === 'def' || templateId === null) {
 			this.props.setAlert({message:'You must choose template', type:'info'});
 			return;
 		}
@@ -42,15 +35,13 @@ export default class PanelRecipients extends React.Component {
 
 		let params = {
 	  	Bucket: 'selonia.static',
-	    Key: 'temp' + '/' + campgainId + '/' + templateName + '/' + file.name,
+	    Key: 'temp' + '/' + campgainId + '/' + templateId + '/' + file.name,
 	    ContentType: file.type,
 	    Body: file,
 	    ACL: 'public-read'
 	  };
 
 	  S3.upload(params, function(err) {
-	  	console.log('Sending to S3');
-
 	    if (!err) {
 	    	(function(This) {
 	    		let $fileChooser = $('#fileCsv'),
@@ -62,7 +53,7 @@ export default class PanelRecipients extends React.Component {
 
 					This.props.toggleLoadIcon(target, 'Upload');
 		    	This.props.startIntervalRecipientsLoad();
-	      	This.props.setAlert({message: 'Recipients ' + localStorage.getItem('selectCampgainName') + ' uploaded successfully!', type: 'success'});
+	      	This.props.setAlert({message: 'Recipients are uploaded successfully!', type: 'success'});
 	    	})(this)
 	    } else {
 	    	console.log(err);

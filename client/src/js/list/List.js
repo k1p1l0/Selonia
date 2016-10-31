@@ -22,7 +22,7 @@ export default class ListContainer extends React.Component {
   	this.props.toggleLoadIcon(target, text);
   }
 
-  createRecipientFromClient({id, name, email, templateName, target}) {
+  createRecipientFromClient({id, name, email, templateId, target}) {
   	this.toggleLoadIcon(target, 'Add');
 
   	 $.ajax({
@@ -33,7 +33,7 @@ export default class ListContainer extends React.Component {
 					id,
 					name,
 					email,
-					templateName,
+					templateId,
 					campgainId: parseInt(this.props.getCampgainId)
 				}]
 			}),
@@ -319,6 +319,3 @@ class List extends React.Component {
 		)
 	}
 }
-
-					// <div class="loader">
-					// </div>

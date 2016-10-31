@@ -42,7 +42,7 @@ function readCsv (config, params, callback) {
         			name: user[0],
         			email: user[1],
         			campgainId: params.keyCampgainId,
-        			templateName: params.keyTemplateName
+        			templateId: params.keyTemplateId
         		};
 
         if (users.length < STEP) {
@@ -94,13 +94,13 @@ function writeUsers(arrayOfUsers, callback) {
 function init (event, context, callback) {	
 	let params = {
 			keyCampgainId: parseInt(decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(1, 1))),
-			keyTemplateName: decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(2, 2).shift()),
+			keyTemplateId: decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(2, 2).shift()),
 			keyfileName: decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " ").split('/').splice(3, 3))
 		};
 
 	let locals = {
 		Bucket: 'selonia.static',
-    Key: `temp/${params.keyCampgainId}/${params.keyTemplateName}/${params.keyfileName}`
+    Key: `temp/${params.keyCampgainId}/${params.keyTemplateId}/${params.keyfileName}`
 	};
 
 	getCsv(locals, function() {

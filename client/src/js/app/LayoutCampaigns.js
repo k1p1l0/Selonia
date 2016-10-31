@@ -54,9 +54,8 @@ export default class LayoutContainer extends React.Component {
       },
 
 			success: function(data) {
+				if (!this.UnMount || this.editCampaign) {
 				this.setState({totalAmoutRecipients: data.count});
-				
-				if (data.Items.length !== this.state.recipients.length && !this.UnMount || this.editCampaign) {
 					this.setState({recipients: data.Items}, function() {
 						// if (data.Items.length > 0) {
 							this.setState({totalAmoutRecipients: data.count});
@@ -176,8 +175,8 @@ export default class LayoutContainer extends React.Component {
 
 	componentWillMount() {
 		this.UnMount = false;
-		this.loadCompgain();
 		this.loadTemplates();
+		this.loadCompgain();
 		this.loadRecipients();
 	}
 

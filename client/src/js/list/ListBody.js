@@ -8,7 +8,7 @@ import shortid from 'shortid';
 export default class ListBody extends React.Component {
 
 	createRecipientFromClient ({target}) {
-		let $templateName = $('select[name="newRecipientTemplate"] option:selected').text();
+		let $templateId = $('select[name="newRecipientTemplate"] option:selected').val();
 		let $name = $('#nameInput').val();
 		let $email = $('#emailInput').val();
 
@@ -24,7 +24,7 @@ export default class ListBody extends React.Component {
       return;
     }
 
-    if (~$templateName.indexOf('Choose')) {
+    if (~$templateId.indexOf('def')) {
       this.props.setAlert({message:'Please choose a template', type:'info'});
 
       return;
@@ -34,10 +34,11 @@ export default class ListBody extends React.Component {
 			id: shortid.generate(),
 			name: $name,
 			email: $email,
-			templateName: $templateName,
+			templateId: $templateId,
 			target
 		};
 
+		// console.log(data);
 		this.props.createRecipientFromClient(data);
 		this.clear();
 	}
@@ -52,7 +53,7 @@ export default class ListBody extends React.Component {
 		$('select[name="newRecipientTemplate"]').val('def');
 	}
 
-	render() {
+	render() {		
 		function sortById (a, b) {
 			return a.id - b.id;
 		}
@@ -104,11 +105,22 @@ class RecipientTable extends React.Component {
 	}
 
 	render() {
-		let { id, name, email, templateName } = this.props.data;
+		let { id, name, email, templateId } = this.props.data;
 		let { i } = this.props;
 
 		let buttonProps = {
 			className: "btn btn-info"
+		}
+
+		//We need to generate template name from ID and connect it with our current templates that we load before from server
+		let templateName = this.props.templates.filter(function(template) {
+			return template.id === templateId
+		});
+
+		if (templateName.length === 0) {
+			templateName = 'No template';
+		} else {
+			templateName = templateName[0].name
 		}
 
 		return (
@@ -125,14 +137,3 @@ class RecipientTable extends React.Component {
 		)
 	}
 }
-
-String.prototype.hashCode = function() {
-  var hash = 0, i, chr, len;
-  if (this.length === 0) return hash;
-  for (i = 0, len = this.length; i < len; i++) {
-    chr   = this.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};

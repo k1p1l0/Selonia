@@ -27,7 +27,7 @@ export default class ListBtnEditRecipient extends React.Component {
   onEditRecipient({target}) {
   	let $name = $('#inputNewRecipientName').val();
   	let $email = $('#inputNewRecipientEmail').val();
-  	let $teamplateName = $('#newTemplate option:selected').text();
+  	let $templateId = $('#newTemplate option:selected').val();
 
   	if ($name.length === 0) {
   		this.props.setAlert({
@@ -47,7 +47,7 @@ export default class ListBtnEditRecipient extends React.Component {
   		return;
   	}
 
-  	if ($teamplateName === null || ~$teamplateName.indexOf('Choose')) {
+  	if ($templateId === 'def' || $templateId === null) {
   		this.props.setAlert({
   			message: 'Please choose a template',
   			type: 'info'
@@ -57,7 +57,7 @@ export default class ListBtnEditRecipient extends React.Component {
   	}
 
   	this.props.toggleLoadIcon(target, 'Save');
-
+    
   	$.ajax({
   		type: 'PUT',
 			url: `${this.props.source}/campgains/${localStorage.getItem('selectCampgainId')}`,
@@ -65,7 +65,7 @@ export default class ListBtnEditRecipient extends React.Component {
 				id: this.props.recipient.id,
 				name: $name,
 				email: $email,
-				templateName: $teamplateName,
+				templateId: $templateId,
 				campgainId: parseInt(localStorage.getItem('selectCampgainId'))
 			}),
 
@@ -97,8 +97,9 @@ export default class ListBtnEditRecipient extends React.Component {
   }
 
 	render() {
-		let { name, email, templateName } = this.props.recipient;
-
+		let { name, email } = this.props.recipient;
+    let templateName = this.props.defTemplate;
+        
 		return (
       <div class="btn-group">
         <Button {...this.props.buttonProps} onClick={this.showModal.bind(this)}>
