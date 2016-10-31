@@ -43,7 +43,7 @@ export default class ListBtnSendModal extends React.Component {
   }
 
   sendEmails({target}) {
-     let $templateName = $('#globalTemplate option:selected').text(),
+     let $templateId = $('#globalTemplate option:selected').val(),
         $checkOwnTemplate = $('#ownTemplate').prop('checked'),
         $introduceText = $('#introduceText').val(),
         $subject = $('#subject').val(),
@@ -76,7 +76,7 @@ export default class ListBtnSendModal extends React.Component {
       return;
     }
 
-    if (~$templateName.indexOf('Global') && !$checkOwnTemplate) {
+    if ($templateId === 'def' && !$checkOwnTemplate) {
       this.props.setAlert({message:'Please choose a template', type:'info'});
 
       $('#globalTemplate').closest( ".form-group" ).addClass('has-warning');
@@ -98,7 +98,7 @@ export default class ListBtnSendModal extends React.Component {
         from: `${$introduceText} <${$email}@${this.props.getDomain}`,
         subject: $subject,
         ownTemplate: $checkOwnTemplate,
-        template: $templateName,
+        templateId: $templateId,
         recipients: chopedRecipients,
         target
       });

@@ -49,7 +49,7 @@ function sendMail(event) {
 	let recipients = event.recipients,
 		subject = event.subject,
 		from = event.from,
-		template = event.template,
+		template = event.templateName,
 		callback = event.callback;
 
 	let locals = {
@@ -118,8 +118,6 @@ function sendTo(event) {
 function createLog(event) {
 	var lambda = new AWS.Lambda({apiVersion: '2015-03-31', region: 'us-east-1'});
 
-	// console.log(event);
-
 	let params = {
 		FunctionName: 'create-log',
   	InvokeArgs: JSON.stringify(event, null, 2) // pass params
@@ -139,39 +137,62 @@ function ChopRecipients(event) {
 			templates = {};
 
 	recipients.map(function(recipient) {
-		if (!templates[recipient.templateName]) {
-			templates[recipient.templateName] = [];
+		if (!templates[recipient.templateId]) {
+			templates[recipient.templateId] = [];
 		}
 
-		templates[recipient.templateName].push(recipient);
+		templates[recipient.templateId].push(recipient);
 	});
 
 	return templates;
 }
 
+function getTemplateNameById (id, cb) {
+	let lambda = new AWS.Lambda({apiVersion: '2015-03-31', region: 'us-east-1'});
+
+	let params = {
+		FunctionName: 'read-template-by-id',
+  	Payload: JSON.stringify({"id": id}, null, 2) // pass params
+	};
+
+	lambda.invoke(params, function(error, data) {
+		  if (error) {
+		  	console.log('error', error);
+		  }
+
+		  cb(data.Payload.match(/[^"].*[^"]/)[0]);
+	});
+}
+
 function init (event, context, callback) {
-	let chopedRecipients, templatesName, 
+	let chopedRecipients, templatesId, 
 			recipients = event.recipients,
 			subject = event.subject,
 			from = event.from,
-			template = event.template;
+			templateId = event.templateId;
 
 	if (!event.ownTemplate) {
-		sendMail({recipients, subject, from, template, callback});
+		getTemplateNameById(templateId, function(templateName) {
+			sendMail({recipients, subject, from, templateName, callback});
+		});
 	}
 
 	if (event.ownTemplate) {
 		chopedRecipients = ChopRecipients({ recipients });
-		templatesName = Object.keys(chopedRecipients);
+		templatesId = Object.keys(chopedRecipients);
 
-		templatesName.map(function(template) {
-			sendMail({
-				recipients: chopedRecipients[template], 
-				subject,
-				from,
-				template, 
-				callback
-			});
+		templatesId.map(function(templateId) {
+				getTemplateNameById(templateId, function(templateName) {
+
+					sendMail({
+						recipients: chopedRecipients[templateId], 
+						subject,
+						from,
+						templateName, 
+						callback
+					});
+
+				}); // end getTemplateNameById
 		});
 	}
 };
@@ -183,23 +204,35 @@ function init (event, context, callback) {
 //       "name": "Kirill",
 //       "email": "s0ht@mail.ru",
 //       "campgainId": 123,
-//       "templateName": "origin"
+//       "templateId": "H1HKe8Zlx"
 //     },
 //     {
 //       "id": 36,
 //       "name": "Kirill2",
 //       "email": "s0ht@mail.ru",
 //       "campgainId": 123,
-//       "templateName": "WC2017"
+//       "templateId": "BkTLtj4eg"
+//     },
+//     {
+//       "id": 38,
+//       "name": "Kirill2",
+//       "email": "s0ht@mail.ru",
+//       "campgainId": 123,
+//       "templateId": "BkTLtj4eg"
 //     }
 //   ],
 //   "subject": "HELLO!!",
 //   "ownTemplate": true,
-//   "template": "WC2017",
+//   "templateId": "BkTLtj4eg",
 //   "from": `Hello from UI <mddb.net@txm.net>`
 // }, null, function(a, b) {
 //   	console.log(a);
 //   	console.log(b);
 // });
+
+	// getTemplateNameById(templateId, function(templateName) {
+	// 	console.log(templateName);
+	// 	// sendMail({recipients, subject, from, templateName, callback});
+	// });
 
 exports.handler = init;
