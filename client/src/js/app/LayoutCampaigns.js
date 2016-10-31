@@ -181,6 +181,8 @@ export default class LayoutContainer extends React.Component {
 	}
 
 	componentWillUnmount() {
+		console.log('Unmount');
+		
 		this.UnMount = true;
 		this.setState({totalAmoutRecipients: 0});
 		this.stopIntervalRecipientsLoad();

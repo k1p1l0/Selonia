@@ -26,8 +26,10 @@ export default class ListBtnSendModal extends React.Component {
 
       return;
     }
+    let length = this.props.getRecipients.length;
+
     this.setState({showModal: true});
-    this.setState({howMatch: Math.ceil(this.props.getRecipients.length / this.state.step)});
+    this.setState({howMatch: Math.ceil(length / this.state.step)});
   }
 
   closeModal() {
@@ -49,61 +51,73 @@ export default class ListBtnSendModal extends React.Component {
         $subject = $('#subject').val(),
         $email = $('#inputEmail').val();
 
-    if (!this.props.getRecipients.length) {
-      this.props.setAlert({message:'There are no recipients in the list', type:'info'});
-      
-      return;
-    }
+    this.setState({howMatch: 0});
+    this.setState({isStarted: false});
+    this.setState({disabledTemplate: false});
 
-    if (!$introduceText) {
-      this.props.setAlert({message:'Please enter an introduce text', type:'info'});
+    this.setState({successCounter: 0}, function() {
+      if (!this.props.getRecipients.length) {
 
-      $("#introduceText").closest( ".form-group" ).addClass('has-warning');
-      return;
-    }
+        this.props.setAlert({message:'There are no recipients in the list', type:'info'});
+        
+        return;
+      }
 
-    if (!$email) {
-      this.props.setAlert({message:'Please enter an email', type:'info'});
+      if (!$introduceText) {
+        this.props.setAlert({message:'Please enter an introduce text', type:'info'});
 
-      $("#inputEmail").closest( ".form-group" ).addClass('has-warning');
-      return;
-    }
+        $("#introduceText").closest( ".form-group" ).addClass('has-warning');
+        return;
+      }
 
-    if (!$subject) {
-      this.props.setAlert({message:'Please enter a subject', type:'info'});
+      if (!$email) {
+        this.props.setAlert({message:'Please enter an email', type:'info'});
 
-      $("#subject").closest( ".form-group" ).addClass('has-warning');
-      return;
-    }
+        $("#inputEmail").closest( ".form-group" ).addClass('has-warning');
+        return;
+      }
 
-    if ($templateId === 'def' && !$checkOwnTemplate) {
-      this.props.setAlert({message:'Please choose a template', type:'info'});
+      if (!$subject) {
+        this.props.setAlert({message:'Please enter a subject', type:'info'});
 
-      $('#globalTemplate').closest( ".form-group" ).addClass('has-warning');
-      return;
-    }
+        $("#subject").closest( ".form-group" ).addClass('has-warning');
+        return;
+      }
 
-    this.props.toggleLoadIcon(target, 'Send')
-    this.setState({'isStarted': true});
+      if ($templateId === 'def' && !$checkOwnTemplate) {
+        this.props.setAlert({message:'Please choose a template', type:'info'});
 
-    let length = this.props.getRecipients.length;
-    let step = this.state.step;
+        $('#globalTemplate').closest( ".form-group" ).addClass('has-warning');
+        return;
+      }
 
-    do {
-      let chopedRecipients = this.props.getRecipients.splice(0, step);
+      this.props.toggleLoadIcon(target, 'Send')
 
-      length -= step;
+      this.setState({'isStarted': true});
 
-      this.createPostRequest({
-        from: `${$introduceText} <${$email}@${this.props.getDomain}`,
-        subject: $subject,
-        ownTemplate: $checkOwnTemplate,
-        templateId: $templateId,
-        recipients: chopedRecipients,
-        target
-      });
-     
-    } while(length > 0);
+      let length = this.props.getRecipients.length;
+      let step = this.state.step;
+      let recipientsCopy = Object.assign([], this.props.getRecipients);
+
+      this.setState({howMatch: Math.ceil(length / this.state.step)});
+
+      do {
+        let chopedRecipients = recipientsCopy.splice(0, step);
+
+        length -= step;
+
+        this.createPostRequest({
+          from: `${$introduceText} <${$email}@${this.props.getDomain}`,
+          subject: $subject,
+          ownTemplate: $checkOwnTemplate,
+          templateId: $templateId,
+          recipients: chopedRecipients,
+          target
+        });
+       
+      } while(length > 0);
+    }.bind(this));
+  
   }
 
   createPostRequest(event) {
@@ -167,6 +181,7 @@ export default class ListBtnSendModal extends React.Component {
         Please input the main topic of the email
       </Popover>
     );
+
 
     let formulaPercent = Math.ceil((this.state.successCounter * 100) / this.state.howMatch);
 
