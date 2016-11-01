@@ -66,11 +66,11 @@ export default class LayoutGlobal extends React.Component {
 			}.bind(this),
 
 			error: function() {
-				console.log('Some trouble with token!');
-
-				auth.logout();
-				location.reload();
-			}
+        this.setAlert({
+          message: 'Something bad with connection....try again or relogin',
+          type: 'info'
+        });
+			}.bind(this)
     });
   }
 

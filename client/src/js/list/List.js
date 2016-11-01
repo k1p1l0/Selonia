@@ -59,9 +59,11 @@ export default class ListContainer extends React.Component {
 			error: function() {
         console.log('Some trouble with token!');
 
-        auth.logout();
-        location.reload();
-      }
+				this.props.setAlert({
+          message: 'Something bad with connection....try again or relogin',
+          type: 'info'
+        });
+			}.bind(this)
     });
   }
 
@@ -92,11 +94,14 @@ export default class ListContainer extends React.Component {
   		}.bind(this),
 
   		error: function() {
-				console.log('Some trouble with token!');
+				this.props.setAlert({
+          message: 'Something bad with connection....try again or relogin',
+          type: 'info'
+        });
 
-				auth.logout();
-				location.reload();
-			}
+       this.toggleLoadIcon(target, 'Delete');
+
+			}.bind(this)
   	});
   }
 

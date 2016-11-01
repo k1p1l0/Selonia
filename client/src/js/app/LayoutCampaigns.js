@@ -71,11 +71,13 @@ export default class LayoutContainer extends React.Component {
 			}.bind(this),
 
 			error: function() {
-				console.log('Some trouble with token!');
-
+				this.setAlert({
+          message: 'Bad connection....try again or relogin',
+					type: 'info'
+				});
 				// auth.logout();
 				// location.reload();
-			}
+			}.bind(this)
     });
   }
 
@@ -101,11 +103,13 @@ export default class LayoutContainer extends React.Component {
 			}.bind(this),
 
 			error: function() {
-				console.log('Some trouble with token!');
-
+				this.setAlert({
+          message: 'Bad connection....try again or relogin',
+					type: 'info'
+				});
 				// auth.logout();
 				// location.reload();
-			}
+			}.bind(this)
     })
   }
 
@@ -133,14 +137,14 @@ export default class LayoutContainer extends React.Component {
 				}
 			}.bind(this),
 
-			error: function(data, err) {
-				console.log('Some trouble with token!');
-				console.log(data);
-				console.log(err);
-
-				auth.logout();
-				location.reload();
-			}
+			error: function(data) {
+				this.setAlert({
+          message: 'Bad connection....try again or relogin',
+					type: 'info'
+				});
+				// auth.logout();
+				// location.reload();
+			}.bind(this)
 		});
   }
 
@@ -180,14 +184,12 @@ export default class LayoutContainer extends React.Component {
 		this.loadRecipients();
 	}
 
-	componentWillUnmount() {
-		console.log('Unmount');
-		
+	componentWillUnmount() {		
 		this.UnMount = true;
-		this.setState({totalAmoutRecipients: 0});
 		this.stopIntervalRecipientsLoad();
 		this.stopIntervalCampgainLoad();
 		this.stopIntervalTemplateLoad();
+		this.setState({totalAmoutRecipients: 0});
 	}
 
 	stopIntervalRecipientsLoad() {

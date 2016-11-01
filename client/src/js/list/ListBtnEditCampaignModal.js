@@ -77,11 +77,11 @@ export default class ListBtnCampaignModal extends React.Component {
 			}.bind(this),
 
       error: function() {
-        console.log('Some trouble with token!');
-
-        auth.logout();
-        location.reload();
-      }
+        this.props.setAlert({
+          message: 'Bad connection....try again or relogin',
+          type: 'info'
+        });
+      }.bind(this)
   	});
   }
 

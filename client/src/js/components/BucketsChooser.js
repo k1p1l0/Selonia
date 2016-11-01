@@ -1,3 +1,5 @@
+import AlertContainer from 'react-alert';
+
 import React from 'react';
 
 import auth from '../auth';
@@ -9,6 +11,14 @@ export default class BucketsChooser extends React.Component {
 		this.state = {
 			buckets: []
 		};
+
+		this.alertOptions = {
+      offset: 0,
+      position: 'top left',
+      theme: 'light',
+      time: 10000,
+      transition: 'scale'
+    };
 	}
 
 	loadBuckets() {
@@ -32,9 +42,17 @@ export default class BucketsChooser extends React.Component {
 			error: function() {
 				console.log('Some trouble with token!');
 
-				auth.logout();
-				location.reload();
-			}
+        this.setAlert({
+          message: 'Something bad with connection....try again or relogin',
+          type: 'info'
+        });
+			}.bind(this),
+    });
+  }
+
+  setAlert({message, type}) {
+    msg.show(message, {
+      type
     });
   }
 
@@ -71,10 +89,13 @@ export default class BucketsChooser extends React.Component {
     });
 
 		return (
-			<select id={this.props.id} ref="selectingComponent" class="form-control">
-				<option disabled value="def">Domain</option>
-			  {options}
-			</select>
+			<div>
+				<select id={this.props.id} ref="selectingComponent" class="form-control">
+					<option disabled value="def">Domain</option>
+				  {options}
+				</select>
+				<AlertContainer ref={(a) => global.msg = a} {...this.alertOptions} />
+			</div>
 		)
 	}
 }

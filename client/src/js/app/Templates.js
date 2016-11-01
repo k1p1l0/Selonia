@@ -55,9 +55,15 @@ export default class Templates extends React.Component {
 			error: function() {
 				console.log('Some trouble with token!');
 
-				auth.logout();
-				location.reload();
-			}
+				this.setAlert({
+          message: 'Bad connection....try again or relogin',
+					type: 'info'
+				});
+			}.bind(this),
+
+			complete: function(xhr, textStatus) {
+        console.log(xhr.status);
+    	} 
     })
   }
 
@@ -66,7 +72,7 @@ export default class Templates extends React.Component {
   		type: 'DELETE',
   		url: `${this.props.source}/templates`,
   		data: JSON.stringify({
-  			id,
+  			templateId: id,
   			name
   		}),
   		contentType: "application/json",
@@ -80,25 +86,24 @@ export default class Templates extends React.Component {
 
   			if (!data.errorMessage) {
 					this.setAlert({message: 'Template is successfully deleted ', type: 'success'});
-					this.loadTemplates();
+					this.startIntervalLoadTemplates();
 				} else {
 					this.setAlert({message: data.errorMessage, type: 'error'});
 				}
 
   		}.bind(this),
 
-  		error: function() {
-				console.log('Some trouble with token!');
-
-				// auth.logout();
-				// location.reload();
-			}
-  	});
+  		error: function(data) {
+  			this.setAlert({
+          message: 'Bad connection....try again or relogin',
+					type: 'info'
+				});
+			}.bind(this),
+  	})
   }
 
   componentWillMount() {
 		this.UnMount = false;
-		this.startIntervalLoadTemplates();
 	}  
 
 	componentWillUnmount() {
@@ -123,7 +128,7 @@ export default class Templates extends React.Component {
 				<tr key={i}>
 					<td>{value.name}</td>
 					<td><a href={`${config.STATIC_URL}/templates/${value.name}/html.ejs`}>Link</a></td>
-					<td><TemplateEditBtn setAlert={this.setAlert.bind(this)} source={this.props.source} loadTemplates={this.loadTemplates.bind(this)} data={value}>Edit</TemplateEditBtn></td>
+					<td><TemplateEditBtn setAlert={this.setAlert.bind(this)} source={this.props.source} loadTemplates={this.startIntervalLoadTemplates.bind(this)} data={value}>Edit</TemplateEditBtn></td>
 					<td><button onClick={this.deleteTemplate.bind(this, value)} class="btn btn-danger">Delete</button></td>
 				</tr>
       );
