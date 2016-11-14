@@ -26,7 +26,4 @@ function init (event, context, callback) {
   });
 }
 
-
 exports.handler = init;
-
-
